@@ -10,6 +10,7 @@ import (
 	"github.com/optimus/backend/utils"
 )
 
+
 func Login(c *gin.Context) {
 	var req dtos.LoginRequest
 
@@ -31,14 +32,14 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	if !utils.CompareSHA512(req.Passw, user.Passw) {
+	if !utils.CompareSHA512(req.Passw, user.Password) {
 		c.JSON(401, gin.H{
 			"message": "Email or password is not valid!",
 		})
 		return
 	}
 
-	token, err := utils.GenerateJWT(user.UserId)
+	token, err := utils.GenerateJWT(user.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Failed generate token",
@@ -51,7 +52,7 @@ func Login(c *gin.Context) {
 		"access_token": token,
 		"token_type": "Bearer",
 		"data": gin.H{
-			"id":    user.UserId,
+			"id":    user.Id,
 			"email": user.Email,
 		},
 	})
