@@ -1,9 +1,9 @@
 import Navbar from '../../components/Navbar';
-import LineChart from '../../components/guest/LineChart';
-import TopPackage from '../../components/guest/TopPackage';
-import BottomPackage from '../../components/guest/BottomPackage';
-import SearchData from '../../components/guest/SearchData';
-import PengadaanRecap from '../../components/guest/PengadaanRecap';
+import LineChart from '../../components/LineChart';
+import TopPackage from '../../components/TopPackage';
+import BottomPackage from '../../components/BottomPackage';
+import SearchData from '../../components/SearchData';
+import PengadaanRecap from '../../components/PengadaanRecap';
 
 export default function Dashboard() { 
 

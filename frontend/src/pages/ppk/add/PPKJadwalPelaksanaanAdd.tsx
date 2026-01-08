@@ -3,23 +3,45 @@ import { ArrowLeft, Upload, Download, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/Navbar';
-import { FormatCurrency } from '../../../libs/FormatCurrency';
 import * as XLSX from 'xlsx';
 import { SwalMessage } from '../../../libs/SwalMessage';
 import TableContent from '../../../ui/TableContent';
+import { FormatLoopExcel } from '../../../libs/FormatLoopExcel';
 
 interface RABItem {
   keterangan: string;
-  satuan: string;
-  volume: number;
-  hargaSatuan: number;
-  jumlahHarga: number;
+  jumlah: string;
+  bobot: number;
+  minggu: number[];
 }
+
+const WEEK_START_COL = 'P';
+
+const getTotalMingguFromExcel = (
+  worksheet: XLSX.WorkSheet,
+  startRow: number = 5,
+  maxWeek: number = 20
+): number => {
+  const startColIndex = XLSX.utils.decode_col(WEEK_START_COL);
+  let total = 0;
+
+  for (let i = 0; i < maxWeek; i++) {
+    const col = FormatLoopExcel(startColIndex + i);
+    const cell = worksheet[`${col}${startRow}`];
+
+    if (cell && cell.v !== '' && cell.v !== null) {
+      total = i + 1;
+    }
+  }
+
+  return total;
+};
 
 const parseRABExcel = (
   worksheet: XLSX.WorkSheet,
-  startRow: number = 13,
-  maxRow: number = 121
+  totalMinggu: number,
+  startRow: number = 5,
+  maxRow: number = 83
 ): RABItem[] => {
   const result: RABItem[] = [];
 
@@ -31,32 +53,44 @@ const parseRABExcel = (
     return cell ? cell.v : '';
   };
 
+  const startColIndex = XLSX.utils.decode_col(WEEK_START_COL);
+
   for (let row = startRow; row <= endRow; row++) {
+    const b = getCell('B', row);
     const c = getCell('C', row);
     const d = getCell('D', row);
     const e = getCell('E', row);
+    const f = getCell('F', row);
+    const g = getCell('G', row);
 
-    if (!c && !d && !e) continue;
+    if (!b && !c && !d && !e && !f && !g) continue;
     if (String(c).toUpperCase().includes('TOTAL')) break;
 
+    const minggu: number[] = [];
+
+    for (let i = 0; i < totalMinggu; i++) {
+      const col = FormatLoopExcel(startColIndex + i);
+      minggu.push(Number(getCell(col, row)) || 0);
+    }
+
     result.push({
-      keterangan: `${c} ${d} ${e}`.trim(),
-      satuan: String(getCell('F', row)),
-      volume: Number(getCell('G', row)) || 0,
-      hargaSatuan: Number(getCell('H', row)) || 0,
-      jumlahHarga: Number(getCell('I', row)) || 0,
+      keterangan: `${b} ${c} ${d} ${e} ${f} ${g}`.trim(),
+      jumlah: String(getCell('M', row)),
+      bobot: Number(getCell('O', row)) || 0,
+      minggu
     });
   }
 
   return result;
 };
 
-export default function PPKRencanaAnggaranAdd() {
+export default function PPKJadwalPelaksanaanAdd() {
   const navigate = useNavigate();
   const [dataFile, setDataFile] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState(false);
   const [showTender, setShowTender] = useState(false);
   const [selectedTender, setSelectedTender] = useState<any | null>(null);
+  const [totalMinggu, setTotalMinggu] = useState<number>(1);
   const [formData, setFormData] = useState({
     kodeTender: '',
     tahunAnggaran: '',
@@ -83,7 +117,7 @@ export default function PPKRencanaAnggaranAdd() {
 
   const handleDownloadTemplate = () => {
     const link = document.createElement('a');
-    link.href = '../../../../public/download/template-rab.xlsx';
+    link.href = '../../../../public/download/template-jadwal.xlsx';
     link.download = 'template-rab.xlsx';
     link.click();
   }
@@ -99,7 +133,8 @@ export default function PPKRencanaAnggaranAdd() {
       const workbook = XLSX.read(data, { type: 'binary' });
 
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      const parsedData = parseRABExcel(worksheet);
+      const totalMinggu = getTotalMingguFromExcel(worksheet);
+      const parsedData = parseRABExcel(worksheet, totalMinggu);
 
       SwalMessage({
         title: "Berhasil!",
@@ -107,6 +142,7 @@ export default function PPKRencanaAnggaranAdd() {
         type: "success"
       });
 
+      setTotalMinggu(totalMinggu);
       setDataFile(parsedData);
     };
 
@@ -124,7 +160,7 @@ export default function PPKRencanaAnggaranAdd() {
         window.scrollTo({
           top: 0,
           behavior: 'smooth'
-        });        
+        });
       } else {
         document.body.style.overflow = "auto"
         setShowTender(false)
@@ -194,9 +230,10 @@ export default function PPKRencanaAnggaranAdd() {
       tender: '10094830000',
       paket: "Pemasangan Vaving blok Kantor DPRD Kab. Konawe",
       revisi: "0"
-    },    
+    },
   ];
-  
+
+  console.log(dataFile);
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar type="ppk" />
@@ -240,7 +277,7 @@ export default function PPKRencanaAnggaranAdd() {
 
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h1 className="font-poppins-bold text-2xl text-gray-800 mb-6">
-              Rencana Anggaran Biaya
+              Jadwal Pelaksanaan Pekerjaan
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-poppins-regular">
@@ -252,7 +289,7 @@ export default function PPKRencanaAnggaranAdd() {
                   <div className="w-full text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins text-left text-gray-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 flex items-center justify-between">
                     <span>{formData.kodeTender || 'Pilih Tender'}</span>
                   </div>
-                  <button onClick={() => {setShowTender(true); setSelectedTender(null)}} className='font-poppins-regular text-white bg-primary px-4 py-2.5 w-32.5 text-[12px] rounded-lg cursor-pointer border-2 border-primary hover:bg-transparent hover:text-primary transition-all'>List Tender</button>
+                  <button onClick={() => { setShowTender(true); setSelectedTender(null) }} className='font-poppins-regular text-white bg-primary px-4 py-2.5 w-32.5 text-[12px] rounded-lg cursor-pointer border-2 border-primary hover:bg-transparent hover:text-primary transition-all'>List Tender</button>
                 </div>
               </div>
 
@@ -320,7 +357,7 @@ export default function PPKRencanaAnggaranAdd() {
                   type="text"
                   value={formData.kegiatan}
                   onChange={(e) => handleInputChange('kegiatan', e.target.value)}
-                  className="w-full  bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
                   placeholder="Masukkan kegiatan"
                   disabled
                 />
@@ -385,7 +422,7 @@ export default function PPKRencanaAnggaranAdd() {
                 onClick={() => handleShowDetail()}
                 className="px-6 py-2.5 bg-primary hover:bg-transparent hover:text-primary border-2 border-primary cursor-pointer text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
               >
-                Buat RAB
+                Buat Jadwal
               </button>
             </div>
           </div>
@@ -425,7 +462,7 @@ export default function PPKRencanaAnggaranAdd() {
                     className="flex items-center text-[12px] cursor-pointer gap-2 px-6 py-2.5 border border-primary text-primary hover:bg-primary hover:text-white font-poppins-medium rounded-lg transition-all duration-200"
                   >
                     <Download className="h-4 w-4" />
-                    Unduh Template RAB
+                    Unduh Template Jadwal Pelaksaan
                   </button>
                 </div>
                 <div className="flex lg:justify-end justify-start items-end">
@@ -445,24 +482,23 @@ export default function PPKRencanaAnggaranAdd() {
               <table className="w-full">
                 <thead className="bg-primary/10 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Keterangan
+                    <th rowSpan={2}>Keterangan</th>
+                    <th rowSpan={2}>Jumlah</th>
+                    <th rowSpan={2}>Bobot</th>
+
+                    <th colSpan={totalMinggu} className="text-center">
+                      Minggu
                     </th>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Satuan
-                    </th>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Volume
-                    </th>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Harga Satuan
-                    </th>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Total
-                    </th>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Aksi
-                    </th>
+
+                    <th rowSpan={2}>Aksi</th>
+                  </tr>
+
+                  <tr>
+                    {Array.from({ length: totalMinggu }).map((_, i) => (
+                      <th key={i} className="text-center px-4 py-2">
+                        {i + 1}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -485,17 +521,16 @@ export default function PPKRencanaAnggaranAdd() {
                           {item.keterangan}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {item.satuan}
+                          {item.jumlah}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {item.volume}
+                          {item.bobot}
                         </td>
-                        <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {FormatCurrency(item.hargaSatuan)}
-                        </td>
-                        <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {FormatCurrency(item.jumlahHarga)}
-                        </td>
+                        {item.minggu.map((val, i) => (
+                          <td key={i} className="px-4 py-2 text-center">
+                            {val}
+                          </td>
+                        ))}
                         <td className="px-6 py-4">
                           <button
                             onClick={() => handleDeleteRow(index)}

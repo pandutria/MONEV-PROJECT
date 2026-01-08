@@ -15,8 +15,8 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
 
   const ppkLaporanItems = [
     { label: 'Rencana Anggaran', path: '/ppk/tahun-anggaran' },
-    { label: 'Jadwal Pelaksanaan', path: '/laporan/jadwal' },
-    { label: 'Realisasi Pekerjaan', path: '/laporan/realisasi' },
+    { label: 'Jadwal Pelaksanaan', path: '/ppk/jadwal-pelaksanaan' },
+    { label: 'Realisasi Pekerjaan', path: '/ppk/realisasi-pekerjaan' },
     { label: 'Project Progress (Kurva S)', path: '/laporan/kurva-s' }
   ];
 
