@@ -3,6 +3,8 @@ package models
 import "time"
 
 type TenderPaket struct {
+	Id uint `gorm:"primaryKey" json:"id"`
+	Type *string `json:"type"`
 	ProcurementMethod *string `json:"procurement_method"`
 	TenderCode        *string `json:"tender_code"`
 	RupCode           *string `json:"rup_code"`
@@ -35,4 +37,15 @@ type TenderPaket struct {
 
 	EvidenceFile *string `json:"evidence_file"`
 	Note         *string `json:"note"`
+
+	RealizationStatus *string  `json:"realization_status"` 
+	PackageStatus *string  `json:"package_status"`     
+	DeliveryStatus *string  `json:"delivery_status"`   
+	TotalValue *float64 `json:"total_value"`
+	
+	SelectedPpkId *uint `gorm:"column:selected_ppk_id" json:"selected_ppk_id"`
+	SelectedPpk   *User `gorm:"foreignKey:SelectedPpkId;references:Id" json:"selected_ppk,omitempty"`
+
+	UserId        uint          `gorm:"column:user_id;not null" json:"user_id"`
+	User          *User         `gorm:"foreignKey:UserId;references:Id" json:"user,omitempty"`
 }

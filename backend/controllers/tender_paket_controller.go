@@ -26,7 +26,7 @@ func GetTenderById(c *gin.Context) {
 	id := c.Param("id")
 
 	var tender models.TenderPaket
-	config.DB.Preload("User").First(&tender, id)
+	config.DB.Preload("User.Role").Preload("SelectedPpk.Role").First(&tender, id)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data": tender,
@@ -35,10 +35,10 @@ func GetTenderById(c *gin.Context) {
 
 
 func CreateTender(c *gin.Context) {
-	var req dtos.CreateTenderRequest
+	var req dtos.CreateAndUpdateTenderRequest
 	userId, isNull := c.Get("user_id")
 
-	if isNull {
+	if !isNull {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Pengguna harus login terlebih dahulu!",
 		})
@@ -48,7 +48,7 @@ func CreateTender(c *gin.Context) {
 	var user models.User
 	config.DB.First(&user, userId)
 
-	err := c.ShouldBindBodyWithJSON(&req)
+	err := c.ShouldBind(&req)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": err.Error(),
@@ -78,6 +78,7 @@ func CreateTender(c *gin.Context) {
 	EvidencePath := saveUpload(EvidenceFile)
 
 	tender := models.TenderPaket{
+		Type: req.Type,
 		ProcurementMethod: req.ProcurementMethod,
 		TenderCode: req.TenderCode,
 		RupCode: req.RupCode,
@@ -105,6 +106,12 @@ func CreateTender(c *gin.Context) {
 		WinnerAddress: req.WinnerAddress,
 		WorkLocation: req.WorkLocation,
 		Note: req.Note,
+		PackageStatus: req.PackageStatus,
+		RealizationStatus: req.RealizationStatus,
+		DeliveryStatus: req.DeliveryStatus,
+		TotalValue: req.TotalValue,
+		UserId: user.Id,
+		SelectedPpkId: req.SelectedPpkId,
 	}
 
 	err = config.DB.Create(&tender).Error
@@ -115,6 +122,8 @@ func CreateTender(c *gin.Context) {
 		return
 	}
 
+	config.DB.Preload("User.Role").Preload("SelectedPpk.Role").Find(&tender)
+
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Create data success",
 		"data": tender,
@@ -122,5 +131,106 @@ func CreateTender(c *gin.Context) {
 }
 
 func UpdateTender(c *gin.Context) {
-	// id := c.Param("Id")
+	id := c.Param("id")
+	var req dtos.CreateAndUpdateTenderRequest
+
+	err := c.ShouldBind(&req)
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	EvidenceFile, _ := c.FormFile("evidence_file")
+
+	uploadDir := "uploads/tender"
+	_ = os.MkdirAll(uploadDir, os.ModePerm)
+
+	saveUpload := func(file *multipart.FileHeader) *string {
+		if file == nil {
+			return nil
+		}
+
+		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
+		path := filepath.Join(uploadDir, filename)
+
+		if err := c.SaveUploadedFile(file, path); err != nil {
+			return nil
+		}
+		return &path
+	}
+
+	EvidencePath := saveUpload(EvidenceFile)
+
+	var tender models.TenderPaket
+	config.DB.First(&tender, id)
+
+	tender.Type = req.Type
+	tender.ProcurementMethod = req.ProcurementMethod
+	tender.TenderCode = req.TenderCode
+	tender.RupCode = req.RupCode
+	tender.SatkerCode = req.SatkerCode
+	tender.SatkerName = req.SatkerName
+	tender.PackageName = req.PackageName
+	tender.FundingSource = req.FundingSource
+	tender.ProcurementType = req.ProcurementType
+	tender.BudgetValue = req.BudgetValue
+	tender.HpsValue = req.HpsValue
+	tender.ContractNumber = req.ContractNumber
+	tender.ContractDate = req.ContractDate
+	tender.PpkName = req.PpkName
+	tender.PpkPosition = req.PpkPosition
+	tender.CompanyLeader = req.CompanyLeader
+	tender.LeaderPosition = req.LeaderPosition
+	tender.WinnerName = req.WinnerName
+	tender.BidValue = req.BidValue
+	tender.NegotiationValue = req.NegotiationValue
+	tender.Phone = req.Phone
+	tender.Email = req.Email
+	tender.Npwp = req.Npwp
+	tender.EvidenceFile = EvidencePath
+	tender.WinnerAddress = req.WinnerAddress
+	tender.WorkLocation = req.WorkLocation
+	tender.Note = req.Note
+	tender.PackageStatus = req.PackageStatus
+	tender.RealizationStatus = req.RealizationStatus
+	tender.DeliveryStatus = req.DeliveryStatus
+	tender.TotalValue = req.TotalValue
+	tender.SelectedPpkId = req.SelectedPpkId
+	tender.FiscalYear = req.FiscalYear
+
+	err = config.DB.Save(&tender).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "update data failed",
+		})
+		return
+	}
+
+	config.DB.Preload("User.Role").Preload("SelectedPpk.Role").Find(&tender)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Update data success",
+		"data": tender,
+	})
+}
+
+func DeleteTender(c *gin.Context) {
+	id := c.Param("id")
+
+	var tender models.TenderPaket
+	config.DB.First(&tender, id)
+	err := config.DB.Delete(&tender).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Delete data failed",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Delete data success",
+		"data": tender,
+	})
 }

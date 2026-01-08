@@ -17,9 +17,12 @@ func main() {
 		&models.User{},
 		&models.PokjaGroups{},
 		&models.UserPokjaGroups{},
+		&models.TenderPaket{},
+		&models.RabHeader{},
+		&models.RabDetail{},
 	)
 
 	routes.SetupRoutes(r)
 
-	r.Run(":8095")
+	r.Run(":8096")
 }

@@ -2,7 +2,8 @@ package dtos
 
 import "time"
 
-type CreateTenderRequest struct {
+type CreateAndUpdateTenderRequest struct {
+	Type *string `form:"type"`
 	ProcurementMethod *string `form:"procurement_method"`
 	TenderCode        *string `form:"tender_code"`
 	RupCode           *string `form:"rup_code"`
@@ -34,4 +35,10 @@ type CreateTenderRequest struct {
 	WorkLocation  *string `form:"work_location"`
 
 	Note *string `form:"note"`
+	SelectedPpkId *uint `form:"selected_ppk_id"`
+
+	RealizationStatus *string  `form:"realization_status"` 
+	PackageStatus *string  `forn:"package_status"`     
+	DeliveryStatus *string  `form:"delivery_status"`   
+	TotalValue *float64 `form:"total_value"`
 }

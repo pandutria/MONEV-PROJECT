@@ -11,6 +11,7 @@ func SetupRoutes(r *gin.Engine) {
 	{
 		public.POST("/auth/login", controllers.Login)
 		public.GET("/user", controllers.ShowUser)
+		public.POST("/user/create", controllers.CreateUser)
 
 		public.GET("/role", controllers.ShowRole)
 		public.POST("/role/create", controllers.CreateRole)
@@ -26,12 +27,26 @@ func SetupRoutes(r *gin.Engine) {
 		public.PUT("/pokja-group/user/update/:id", controllers.UpdateUserPokja)
 		public.DELETE("/pokja-group/user/delete/:id", controllers.DeleteUserPokja)
 
-		public.POST("/user/create", controllers.CreateUser)
+		public.GET("/tender", controllers.GetAllTender)
+		public.GET("/tender/:id", controllers.GetTenderById)
+		public.PUT("/tender/update/:id", controllers.UpdateTender)
+		public.DELETE("/tender/delete/:id", controllers.DeleteTender)
+
+		public.GET("/rab", controllers.GetAllRabHeader)
+		public.GET("/rab/:id", controllers.GetRabHeaderById)
+		public.PUT("/rab/update/:id", controllers.UpdateRabHeader)
+		public.DELETE("/rab/delete/:id", controllers.DeleteRabHeader)
+
+		public.GET("/rab/detail", controllers.GetAllRabDetail)
+		public.POST("/rab/detail/create", controllers.CreateRabDetail)
+		public.DELETE("/rab/detail/:id", controllers.DeleteRabHeader)
 	}
 
 	private := r.Group("/api")
 	private.Use(middleware.BearerAuth())
 	{
 		private.GET("/auth/me", controllers.Me)
+		private.POST("/tender/create", controllers.CreateTender)
+		private.POST("/rab/create", controllers.CreateRabHeader)
 	}
 }
