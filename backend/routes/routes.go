@@ -16,6 +16,16 @@ func SetupRoutes(r *gin.Engine) {
 		public.POST("/role/create", controllers.CreateRole)
 		public.DELETE("/role/delete/:id", controllers.DeleteRole)
 
+		public.GET("/pokja-group", controllers.GetAllPokjaGroup)
+		public.POST("/pokja-group/create", controllers.CreatePokjaGroup)
+		public.PUT("/pokja-group/update/:id", controllers.UpdatePokjaGroup)
+		public.DELETE("/pokja-group/delete/:id", controllers.DeletePokjaGroups)
+
+		public.GET("/pokja-group/user", controllers.GetAllUserPokja)
+		public.POST("/pokja-group/user/create", controllers.CreateUserPokja)
+		public.PUT("/pokja-group/user/update/:id", controllers.UpdateUserPokja)
+		public.DELETE("/pokja-group/user/delete/:id", controllers.DeleteUserPokja)
+
 		public.POST("/user/create", controllers.CreateUser)
 	}
 

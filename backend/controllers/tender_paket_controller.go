@@ -1,19 +1,23 @@
 package controllers
 
 import (
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/optimus/backend/config"
-	"github.com/optimus/backend/models"
 	"github.com/optimus/backend/dtos"
+	"github.com/optimus/backend/models"
 )
 
 func GetAllTender(c *gin.Context) {
 	var tender []models.TenderPaket
 	config.DB.Preload("User").Find(&tender)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data success",
+		"message": "Mengambil data berhasil",
 		"data": tender,
 	})
 }
@@ -24,7 +28,7 @@ func GetTenderById(c *gin.Context) {
 	var tender models.TenderPaket
 	config.DB.Preload("User").First(&tender, id)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data success",
+		"message": "Mengambil data berhasil",
 		"data": tender,
 	})
 }
@@ -32,6 +36,17 @@ func GetTenderById(c *gin.Context) {
 
 func CreateTender(c *gin.Context) {
 	var req dtos.CreateTenderRequest
+	userId, isNull := c.Get("user_id")
+
+	if isNull {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Pengguna harus login terlebih dahulu!",
+		})
+		return
+	}
+
+	var user models.User
+	config.DB.First(&user, userId)
 
 	err := c.ShouldBindBodyWithJSON(&req)
 	if err != nil {
@@ -40,6 +55,27 @@ func CreateTender(c *gin.Context) {
 		})
 		return
 	}
+
+	EvidenceFile, _ := c.FormFile("evidence_file")
+
+	uploadDir := "uploads/tender"
+	_ = os.MkdirAll(uploadDir, os.ModePerm)
+
+	saveUpload := func(file *multipart.FileHeader) *string {
+		if file == nil {
+			return nil
+		}
+
+		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
+		path := filepath.Join(uploadDir, filename)
+
+		if err := c.SaveUploadedFile(file, path); err != nil {
+			return nil
+		}
+		return &path
+	}
+
+	EvidencePath := saveUpload(EvidenceFile)
 
 	tender := models.TenderPaket{
 		ProcurementMethod: req.ProcurementMethod,
@@ -65,6 +101,7 @@ func CreateTender(c *gin.Context) {
 		Phone: req.Phone,
 		Email: req.Email,
 		Npwp: req.Npwp,
+		EvidenceFile: EvidencePath,
 		WinnerAddress: req.WinnerAddress,
 		WorkLocation: req.WorkLocation,
 		Note: req.Note,
@@ -84,6 +121,6 @@ func CreateTender(c *gin.Context) {
 	})
 }
 
-func UpdateTemder(c *gin.Context) {
-	
+func UpdateTender(c *gin.Context) {
+	// id := c.Param("Id")
 }

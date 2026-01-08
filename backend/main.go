@@ -15,9 +15,11 @@ func main() {
 	config.DB.AutoMigrate(
 		&models.Role{},
 		&models.User{},
+		&models.PokjaGroups{},
+		&models.UserPokjaGroups{},
 	)
 
 	routes.SetupRoutes(r)
 
-	r.Run(":8093")
+	r.Run(":8095")
 }
