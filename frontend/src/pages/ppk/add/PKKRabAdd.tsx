@@ -1,10 +1,58 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArrowLeft, Upload, Download, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/Navbar';
+import { FormatCurrency } from '../../../libs/FormatCurrency';
+import * as XLSX from 'xlsx';
+import { SwalMessage } from '../../../libs/SwalMessage';
+
+interface RABItem {
+  keterangan: string;
+  satuan: string;
+  volume: number;
+  hargaSatuan: number;
+  jumlahHarga: number;
+}
+
+const parseRABExcel = (
+  worksheet: XLSX.WorkSheet,
+  startRow: number = 13,
+  maxRow: number = 121 
+): RABItem[] => {
+  const result: RABItem[] = [];
+
+  const range = XLSX.utils.decode_range(worksheet['!ref'] as string);
+  const endRow = Math.min(range.e.r + 1, maxRow);
+
+  const getCell = (col: string, row: number) => {
+    const cell = worksheet[`${col}${row}`];
+    return cell ? cell.v : '';
+  };
+
+  for (let row = startRow; row <= endRow; row++) {
+    const c = getCell('C', row);
+    const d = getCell('D', row);
+    const e = getCell('E', row);
+
+    if (!c && !d && !e) continue;
+    if (String(c).toUpperCase().includes('TOTAL')) break;
+
+    result.push({
+      keterangan: `${c} ${d} ${e}`.trim(),
+      satuan: String(getCell('F', row)),
+      volume: Number(getCell('G', row)) || 0,
+      hargaSatuan: Number(getCell('H', row)) || 0,
+      jumlahHarga: Number(getCell('I', row)) || 0,
+    });
+  }
+
+  return result;
+};
 
 export default function PPKRabAdd() {
   const navigate = useNavigate();
+  const [dataFile, setDataFile] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     kodeTender: '',
     tahunAnggaran: '',
@@ -46,14 +94,40 @@ export default function PPKRabAdd() {
     setDetailData(prev => prev.filter((_, i) => i !== index));
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
-    }).format(value);
+  const handleDownloadTemplate = () => {
+    const link = document.createElement('a');
+    link.href = '../../../../public/download/template-rab.xlsx';
+    link.download = 'template-rab.xlsx';
+    link.click();
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (evt) => {
+      const data = evt.target?.result;
+      const workbook = XLSX.read(data, { type: 'binary' });
+
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+      const parsedData = parseRABExcel(worksheet);
+
+      SwalMessage({
+        title: "Berhasil!",
+        text: "Data berhasil diimpor",
+        type: "success"
+      });
+
+      setDataFile(parsedData);
+    };
+
+    reader.readAsBinaryString(file);
   };
 
+  console.log(dataFile);
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar type="ppk" />
@@ -233,6 +307,7 @@ export default function PPKRabAdd() {
                     accept=".xlsx"
                     className="hidden"
                     id="file-upload"
+                    onChange={handleFileChange}
                   />
                   <label
                     htmlFor="file-upload"
@@ -246,14 +321,20 @@ export default function PPKRabAdd() {
 
               <div className="flex items-end">
                 <button
-                  onClick={() => console.log('Download Template')}
-                  className="flex items-center text-[12px] gap-2 px-6 py-2.5 border border-primary text-primary hover:bg-primary hover:text-white font-poppins-medium rounded-lg transition-all duration-200"
+                  onClick={() => handleDownloadTemplate()}
+                  className="flex items-center text-[12px] cursor-pointer gap-2 px-6 py-2.5 border border-primary text-primary hover:bg-primary hover:text-white font-poppins-medium rounded-lg transition-all duration-200"
                 >
                   <Download className="h-4 w-4" />
                   Unduh Template RAB
                 </button>
               </div>
-              <div className="flex lg:justify-end justify-start items-end">
+              <div className="flex lg:justify-end justify-start items-end gap-4">
+                {/* <button
+                  onClick={() => handleFile()}
+                  className="px-8 py-2.5 text-[12px] cursor-pointer border-2 border-primary hover:bg-transparent hover:text-primary bg-primary h-fit w-fit text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                >
+                  Impor data excel
+                </button> */}
                 <button
                   onClick={() => console.log('Simpan')}
                   className="px-8 py-2.5 text-[12px] cursor-pointer border-2 border-primary hover:bg-transparent hover:text-primary bg-primary h-fit w-fit text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
@@ -290,7 +371,7 @@ export default function PPKRabAdd() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {detailData.length === 0 ? (
+                  {dataFile.length === 0 ? (
                     <tr>
                       <td
                         colSpan={6}
@@ -300,7 +381,7 @@ export default function PPKRabAdd() {
                       </td>
                     </tr>
                   ) : (
-                    detailData.map((item, index) => (
+                    dataFile.map((item: RABItem, index) => (
                       <tr
                         key={index}
                         className="hover:bg-gray-50 transition-colors duration-150"
@@ -315,10 +396,10 @@ export default function PPKRabAdd() {
                           {item.volume}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {formatCurrency(item.hargaSatuan)}
+                          {FormatCurrency(item.hargaSatuan)}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {formatCurrency(item.total)}
+                          {FormatCurrency(item.jumlahHarga)}
                         </td>
                         <td className="px-6 py-4">
                           <button
