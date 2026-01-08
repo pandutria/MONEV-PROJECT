@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Eye, Edit2 } from 'lucide-react';
+import { Eye, Edit2, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
 
 interface TableColumn {
@@ -13,11 +13,13 @@ interface TableContentProps {
     isSelect?: boolean;
     showEdit?: boolean;
     showPreview?: boolean;
+    showSelect?: boolean;
     onEdit?: (item: any) => void;
     onPreview?: (item: any) => void;
     onSelectedChange?: (selected: any[]) => void;
     idKey?: string;
     onSelectedIdsChange?: (ids: any[]) => void;
+    onSelectedDataChange?: (data: any[]) => void;
 }
 
 export default function TableContent({
@@ -26,11 +28,13 @@ export default function TableContent({
     isSelect = false,
     showEdit = true,
     showPreview = true,
+    showSelect = false,
     onEdit,
     onPreview,
     onSelectedChange,
     idKey = 'no',
     onSelectedIdsChange,
+    onSelectedDataChange
 }: TableContentProps) {
     const [selectedIds, setSelectedIds] = useState<any[]>([]);
 
@@ -39,7 +43,9 @@ export default function TableContent({
             const allIds = data.map(item => item[idKey]);
             setSelectedIds(allIds);
             onSelectedChange?.(data);
+
             onSelectedIdsChange?.(allIds); 
+            onSelectedDataChange?.(data);
         } else {
             setSelectedIds([]);
             onSelectedChange?.([]);
@@ -62,6 +68,11 @@ export default function TableContent({
 
         onSelectedChange?.(newSelectedItems);
         onSelectedIdsChange?.(newSelectedIds);
+
+        const selectedData = data.filter(d =>
+          newSelectedIds.includes(d[idKey])
+        );
+        onSelectedDataChange?.(selectedData);
     };
 
     const isSelected = (item: any) => selectedIds.includes(item[idKey]);
@@ -91,7 +102,7 @@ export default function TableContent({
                                     {column.label}
                                 </th>
                             ))}
-                            {(showEdit || showPreview) && (
+                            {(showEdit || showPreview || showSelect) && (
                                 <th className="px-6 py-4 text-center font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
                                     Aksi
                                 </th>
@@ -132,7 +143,7 @@ export default function TableContent({
                                             {item[column.key]}
                                         </td>
                                     ))}
-                                    {(showEdit || showPreview) && (
+                                    {(showEdit || showPreview || showSelect) && (
                                         <td className="px-6 py-4">
                                             <div className="flex items-center justify-center gap-2">
                                                 {showEdit && (
@@ -153,6 +164,16 @@ export default function TableContent({
                                                     >
                                                         <Eye className="h-5 w-5" />
                                                         <p className='text-[12px]'>Lihat</p>
+                                                    </button>
+                                                )}
+                                                {showSelect && (
+                                                    <button
+                                                        onClick={() => onSelectedDataChange?.(item)}
+                                                        className="p-2 text-green-600 hover:bg-blue-50 rounded-lg transition-colors duration-200 cursor-pointer flex flex-row items-center gap-2"
+                                                        title="Pilih"
+                                                    >
+                                                        <CheckCircle className="h-5 w-5" />
+                                                        <p className='text-[12px]'>Pilih</p>
                                                     </button>
                                                 )}
                                             </div>

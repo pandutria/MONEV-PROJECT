@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ArrowLeft, Upload, Download, Trash2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/Navbar';
 import { FormatCurrency } from '../../../libs/FormatCurrency';
-import * as XLSX from 'xlsx';
-import { SwalMessage } from '../../../libs/SwalMessage';
 
 interface RABItem {
   keterangan: string;
@@ -15,42 +13,7 @@ interface RABItem {
   jumlahHarga: number;
 }
 
-const parseRABExcel = (
-  worksheet: XLSX.WorkSheet,
-  startRow: number = 13,
-  maxRow: number = 121 
-): RABItem[] => {
-  const result: RABItem[] = [];
-
-  const range = XLSX.utils.decode_range(worksheet['!ref'] as string);
-  const endRow = Math.min(range.e.r + 1, maxRow);
-
-  const getCell = (col: string, row: number) => {
-    const cell = worksheet[`${col}${row}`];
-    return cell ? cell.v : '';
-  };
-
-  for (let row = startRow; row <= endRow; row++) {
-    const c = getCell('C', row);
-    const d = getCell('D', row);
-    const e = getCell('E', row);
-
-    if (!c && !d && !e) continue;
-    if (String(c).toUpperCase().includes('TOTAL')) break;
-
-    result.push({
-      keterangan: `${c} ${d} ${e}`.trim(),
-      satuan: String(getCell('F', row)),
-      volume: Number(getCell('G', row)) || 0,
-      hargaSatuan: Number(getCell('H', row)) || 0,
-      jumlahHarga: Number(getCell('I', row)) || 0,
-    });
-  }
-
-  return result;
-};
-
-export default function PPKRabAdd() {
+export default function PPKRencanaAnggaranShow() {
   const navigate = useNavigate();
   const [dataFile, setDataFile] = useState<any[]>([]);
   const [formData, setFormData] = useState({
@@ -66,23 +29,6 @@ export default function PPKRabAdd() {
     alasan: ''
   });
 
-  const [detailData, setDetailData] = useState([
-    {
-      keterangan: 'Pekerjaan Persiapan',
-      satuan: 'M2',
-      volume: 100,
-      hargaSatuan: 50000,
-      total: 5000000
-    },
-    {
-      keterangan: 'Pekerjaan Struktur',
-      satuan: 'M3',
-      volume: 50,
-      hargaSatuan: 500000,
-      total: 25000000
-    }
-  ]);
-
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -90,47 +36,9 @@ export default function PPKRabAdd() {
     }));
   };
 
-  const handleDeleteRow = (index: number) => {
-    setDetailData(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const handleDownloadTemplate = () => {
-    const link = document.createElement('a');
-    link.href = '../../../../public/download/template-rab.xlsx';
-    link.download = 'template-rab.xlsx';
-    link.click();
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = (evt) => {
-      const data = evt.target?.result;
-      const workbook = XLSX.read(data, { type: 'binary' });
-
-      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-
-      const parsedData = parseRABExcel(worksheet);
-
-      SwalMessage({
-        title: "Berhasil!",
-        text: "Data berhasil diimpor",
-        type: "success"
-      });
-
-      setDataFile(parsedData);
-    };
-
-    reader.readAsBinaryString(file);
-  };
-
-  console.log(dataFile);
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar type="ppk" />
+      <Navbar type="ppk" />      
 
       <div className="pt-24 pb-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
@@ -152,11 +60,8 @@ export default function PPKRabAdd() {
                 <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
                   Kode Tender
                 </label>
-                <div className="flex flex-row w-full gap-4 items-center">
-                  <div className="w-full text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins text-left text-gray-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 flex items-center justify-between">
-                    <span>{formData.kodeTender || 'Pilih Tender'}</span>
-                  </div>
-                  <button className='font-poppins-regular text-white bg-primary px-4 py-2.5 w-32.5 text-[12px] rounded-lg cursor-pointer border-2 border-primary hover:bg-transparent hover:text-primary transition-all'>List Tender</button>
+                <div className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins text-left transition-all duration-200 flex items-center justify-between">
+                  <span>{formData.kodeTender || 'Pilih Tender'}</span>
                 </div>
               </div>
 
@@ -169,7 +74,7 @@ export default function PPKRabAdd() {
                   value={formData.tahunAnggaran}
                   onChange={(e) => handleInputChange('tahunAnggaran', e.target.value)}
                   className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                  placeholder="Masukkan tahun anggaran (otomatis)"
+                  placeholder="Masukkan tahun anggaran"
                   disabled
                 />
               </div>
@@ -183,7 +88,7 @@ export default function PPKRabAdd() {
                   value={formData.satuanKerja}
                   onChange={(e) => handleInputChange('satuanKerja', e.target.value)}
                   className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                  placeholder="Masukkan satuan kerja (otomatis)"
+                  placeholder="Masukkan satuan kerja"
                   disabled
                 />
               </div>
@@ -197,7 +102,7 @@ export default function PPKRabAdd() {
                   value={formData.kodeRUP}
                   onChange={(e) => handleInputChange('kodeRUP', e.target.value)}
                   className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                  placeholder="Masukkan kode RUP (otomatis)"
+                  placeholder="Masukkan kode RUP"
                   disabled
                 />
               </div>
@@ -210,8 +115,9 @@ export default function PPKRabAdd() {
                   type="text"
                   value={formData.programKegiatan}
                   onChange={(e) => handleInputChange('programKegiatan', e.target.value)}
-                  className="w-full text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
                   placeholder="Masukkan program kegiatan"
+                  disabled
                 />
               </div>
 
@@ -251,7 +157,8 @@ export default function PPKRabAdd() {
                   type="date"
                   value={formData.tanggalMulai}
                   onChange={(e) => handleInputChange('tanggalMulai', e.target.value)}
-                  className="w-full text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+                  disabled
                 />
               </div>
 
@@ -263,7 +170,8 @@ export default function PPKRabAdd() {
                   type="date"
                   value={formData.tanggalAkhir}
                   onChange={(e) => handleInputChange('tanggalAkhir', e.target.value)}
-                  className="w-full text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+                  disabled
                 />
               </div>
 
@@ -280,70 +188,7 @@ export default function PPKRabAdd() {
                 />
               </div>
             </div>
-
-            <div className="mt-6">
-              <button
-                onClick={() => console.log('Generate RAB')}
-                className="px-6 py-2.5 bg-primary hover:bg-primary/90 text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
-              >
-                Generate RAB
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 className="font-poppins-bold text-xl text-gray-800 mb-6">
-              Detail
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div>
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Input File .xlsx
-                </label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept=".xlsx"
-                    className="hidden"
-                    id="file-upload"
-                    onChange={handleFileChange}
-                  />
-                  <label
-                    htmlFor="file-upload"
-                    className="flex items-center justify-center gap-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg font-poppins text-gray-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 cursor-pointer"
-                  >
-                    <Upload className="h-5 w-5 text-primary" />
-                    <span>Pilih File Excel</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="flex items-end">
-                <button
-                  onClick={() => handleDownloadTemplate()}
-                  className="flex items-center text-[12px] cursor-pointer gap-2 px-6 py-2.5 border border-primary text-primary hover:bg-primary hover:text-white font-poppins-medium rounded-lg transition-all duration-200"
-                >
-                  <Download className="h-4 w-4" />
-                  Unduh Template RAB
-                </button>
-              </div>
-              <div className="flex lg:justify-end justify-start items-end gap-4">
-                {/* <button
-                  onClick={() => handleFile()}
-                  className="px-8 py-2.5 text-[12px] cursor-pointer border-2 border-primary hover:bg-transparent hover:text-primary bg-primary h-fit w-fit text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
-                >
-                  Impor data excel
-                </button> */}
-                <button
-                  onClick={() => console.log('Simpan')}
-                  className="px-8 py-2.5 text-[12px] cursor-pointer border-2 border-primary hover:bg-transparent hover:text-primary bg-primary h-fit w-fit text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
-                >
-                  Simpan
-                </button>
-              </div>
-            </div>
-          </div>
+          </div>          
 
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
@@ -364,9 +209,6 @@ export default function PPKRabAdd() {
                     </th>
                     <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
                       Total
-                    </th>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Aksi
                     </th>
                   </tr>
                 </thead>
@@ -400,15 +242,6 @@ export default function PPKRabAdd() {
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
                           {FormatCurrency(item.jumlahHarga)}
-                        </td>
-                        <td className="px-6 py-4">
-                          <button
-                            onClick={() => handleDeleteRow(index)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 cursor-pointer"
-                            title="Hapus"
-                          >
-                            <Trash2 className="h-5 w-5" />
-                          </button>
                         </td>
                       </tr>
                     ))

@@ -14,14 +14,14 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
   const navigate = useNavigate();
 
   const ppkLaporanItems = [
-    { label: 'Rencana Anggaran', path: '/ppk/rab' },
+    { label: 'Rencana Anggaran', path: '/ppk/tahun-anggaran' },
     { label: 'Jadwal Pelaksanaan', path: '/laporan/jadwal' },
     { label: 'Realisasi Pekerjaan', path: '/laporan/realisasi' },
     { label: 'Project Progress (Kurva S)', path: '/laporan/kurva-s' }
   ];
 
   const handleLogout = () => {
-    navigate('/login');
+    navigate('/masuk');
   };
 
   return (
@@ -74,9 +74,9 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
             <div className="hidden md:flex items-center">
               <button
                 className="font-poppins-medium text-black hover:text-primary text-sm md:text-base px-4 md:px-6 transition-colors duration-200 rounded-t-lg cursor-pointer"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/masuk")}
               >
-                Login
+                Masuk
               </button>
             </div>
 
@@ -161,9 +161,9 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
         >
           <button
             className="w-full text-left font-poppins-medium text-base px-4 py-3 mt-2 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/20"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/masuk")}
           >
-            Login
+            Masuk
           </button>
         </div>
       )}
@@ -178,7 +178,7 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
             <button
               className="w-full text-left font-poppins-medium text-base px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/20"
               onClick={() => {
-                navigate("/dashboard");
+                navigate("/");
                 setIsMenuOpen(false);
               }}
             >

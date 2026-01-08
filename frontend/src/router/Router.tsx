@@ -1,8 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import Login from "../pages/auth/Login"
 import Dashboard from "../pages/guest/Dashboard"
-import PPKRab from "../pages/ppk/PPKRab"
-import PPKRabAdd from "../pages/ppk/add/PKKRabAdd"
+import PPKRencanaAnggaran from "../pages/ppk/PPKRencanaAnggaran"
+import PPKRencanaAnggaranAdd from "../pages/ppk/add/PPKRencanaAnggaranAdd"
+import PPKRencanaAnggaranShow from "../pages/ppk/show/PPKRencanaAnggaranShow"
 
 export default function Router() {
   return (
@@ -12,11 +13,12 @@ export default function Router() {
         <Route path="/" element={<Dashboard />} />
 
         {/* Auth */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/masuk" element={<Login />} />
 
         {/* PPK */}
-        <Route path="/ppk/rab" element={<PPKRab/>}/>
-        <Route path="/ppk/rab/add" element={<PPKRabAdd/>}/>
+        <Route path="/ppk/tahun-anggaran" element={<PPKRencanaAnggaran/>}/>
+        <Route path="/ppk/tahun-anggaran/tambah" element={<PPKRencanaAnggaranAdd/>}/>
+        <Route path="/ppk/tahun-anggaran/:id" element={<PPKRencanaAnggaranShow/>}/>
       </Routes>
     </BrowserRouter>
   )
