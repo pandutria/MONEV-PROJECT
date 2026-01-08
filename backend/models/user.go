@@ -1,6 +1,5 @@
 package models
 
-
 type User struct {
 	Id uint `gorm:"primaryKey" json:"id"`
     FullName 		string `json:"fullname"`
@@ -11,19 +10,19 @@ type User struct {
     Nip 			string `json:"nip"`
     Group 			*string  `json:"group"`
 
-    RoleId uint `gorm:"not null"`
+    RoleId uint `gorm:"column:role_id;not null" json:"role_id"`
 
     SkNumber   			*string  `json:"sk_number"`
     SkFile 			*string `json:"sk_file"`
     Address  		*string `json:"address"`
-    PbjNumber            *string  `json:"pbj_number"`
+    PbjNumber            string  `json:"pbj_number"`
     PbjFile        *string `json:"pbj_file"`
-    CompetenceNumber  *string  `json:"competence_number"`
+    CompetenceNumber  string  `json:"competence_number"`
     CompetenceFile *string `json:"competence_file"`
     PhoneNumber     string  `json:"phone_number"`
     PhotoFile *string `json:"file_photo"`
     OpdOrganization *string `json:"opd_organization"`
     SatkerCode        *uint64 `json:"satker_code"`
     GpId           *uint64 `json:"gp_id"`
-	Role   Role `gorm:"foreignKey:RoleId;references:Id"`
+	Role   Role `gorm:"foreignKey:RoleId;references:Id" json:"role"`
 }
