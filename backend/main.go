@@ -20,6 +20,12 @@ func main() {
 		&models.TenderPaket{},
 		&models.RabHeader{},
 		&models.RabDetail{},
+		&models.ScheduleHeader{},
+		&models.ScheduleItem{},
+		&models.ScheduleWeek{},
+		&models.RealisasiHeader{},
+		&models.RealisasiItem{},
+		&models.RealisasiWeek{},
 	)
 
 	routes.SetupRoutes(r)

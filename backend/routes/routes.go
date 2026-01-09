@@ -39,7 +39,30 @@ func SetupRoutes(r *gin.Engine) {
 
 		public.GET("/rab/detail", controllers.GetAllRabDetail)
 		public.POST("/rab/detail/create", controllers.CreateRabDetail)
-		public.DELETE("/rab/detail/:id", controllers.DeleteRabHeader)
+		public.DELETE("/rab/detail/delete/:id", controllers.DeleteRabDetail)
+
+		public.GET("/schedule", controllers.GetAllScheduleHeader)
+		public.PUT("/schedule/update/:id", controllers.UpdateSchedule)
+		public.DELETE("/schedule/delete/:id", controllers.DeleteSchedule)
+
+		public.GET("/schedule/item", controllers.GetAllScheduleItem)
+		public.POST("/schedule/item/create", controllers.CreateScheduleItem)
+		public.DELETE("/schedule/item/delete/:id", controllers.DeleteScheduleItem)
+
+		public.GET("/schedule/week", controllers.GetWeekScheduleByScheduleItem)
+		public.POST("/schedule/week/create", controllers.CreateWeekSchedule)
+
+		public.GET("/realisasi", controllers.GetAllRealisasi)
+		public.PUT("/realisasi/update/:id", controllers.UpdateRealisasi)
+		public.DELETE("/realisasi/delete/:id", controllers.DeleteRealisasi)
+
+		public.GET("realisasi/item", controllers.GetRealisasiItemByHeader)
+		public.POST("realisasi/item/create", controllers.CreateRealisasiItem)
+		public.DELETE("realisasi/item/delete/:id", controllers.DeleteRealisasiItem)
+
+		public.GET("/realisasi/week", controllers.GetAllRealisasiWeek)
+		public.POST("realisasi/week", controllers.CreateRealisasiWeek)
+		public.DELETE("realisasi/week/delete/:id", controllers.DeleteRealisasiWeek)
 	}
 
 	private := r.Group("/api")
@@ -48,5 +71,7 @@ func SetupRoutes(r *gin.Engine) {
 		private.GET("/auth/me", controllers.Me)
 		private.POST("/tender/create", controllers.CreateTender)
 		private.POST("/rab/create", controllers.CreateRabHeader)
+		private.POST("/schedule/create", controllers.CreateScheduleHeader)
+		private.POST("/realisasi/create", controllers.CreateRealisasi)
 	}
 }

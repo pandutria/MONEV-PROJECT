@@ -12,7 +12,7 @@ import (
 
 func GetAllRabHeader(c *gin.Context) {
 	var header []models.RabHeader
-	config.DB.Preload("CreatedBy.Role").Find(&header)
+	config.DB.Preload("CreatedBy.Role").Preload("RabDetails").Find(&header)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Get data success",
 		"data": header,
@@ -124,7 +124,7 @@ func GetAllRabDetail(c *gin.Context) {
 	headerId := c.Query("headerId")
 
 	var detail []models.RabDetail
-	config.DB.Where("RabHeaderId = ?", headerId).Find(&detail)
+	config.DB.Where("rab_header_id = ?", headerId).Find(&detail)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Get data success",
 		"data": detail,
