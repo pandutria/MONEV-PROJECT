@@ -16,7 +16,6 @@ interface RABItem {
 }
 
 const WEEK_START_COL = 'P';
-
 const getTotalMingguFromExcel = (
   worksheet: XLSX.WorkSheet,
   startRow: number = 5,

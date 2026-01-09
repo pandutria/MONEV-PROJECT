@@ -13,6 +13,8 @@
     "@tailwindcss/vite": "^4.1.18",
     "aos": "^2.3.4",
     "chart.js": "^4.5.1",
+    "file-saver": "^2.0.5",
+    "html2pdf.js": "^0.13.0",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
     "react-chartjs-2": "^5.3.1",
@@ -25,6 +27,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/aos": "^3.0.7",
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",

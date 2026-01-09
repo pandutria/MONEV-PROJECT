@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import Login from "../pages/auth/Login"
-import Dashboard from "../pages/guest/Dashboard"
+import Dashboard from "../pages/Dashboard"
 import PPKRencanaAnggaran from "../pages/ppk/PPKRencanaAnggaran"
 import PPKRencanaAnggaranAdd from "../pages/ppk/add/PPKRencanaAnggaranAdd"
 import PPKRencanaAnggaranShow from "../pages/ppk/show/PPKRencanaAnggaranShow"
@@ -8,6 +8,13 @@ import PPKJadwalPelaksanaan from "../pages/ppk/PPKJadwalPelaksanaan"
 import PPKJadwalPelaksanaanAdd from "../pages/ppk/add/PPKJadwalPelaksanaanAdd"
 import PPKJadwalPelaksanaanShow from "../pages/ppk/show/PPKJadwalPelaksanaanShow"
 import PPKRealisasiPekerjaan from "../pages/ppk/PPKRealisasiPekerjaan"
+import PokjaLaporanPenjabatPengadaan from "../pages/pokja/PokjaLaporanPenjabatPengadaan"
+import PokjaLaporanPenjabatPengadaanAdd from "../pages/pokja/add/PokjaLaporanPenjabatPengadaanAdd"  
+import KepalaRencanaAnggaran from "../pages/kepala-bagian/laporan/KepalaRencanaAnggaran"
+import KepalaJadwalPelaksanaan from "../pages/kepala-bagian/laporan/KepalaJadwalPelaksanaan"
+import PokjaHasilKelompokKerja from "../pages/pokja/PokjaHasilKelompokKerja"
+import PokjaHasilPenjabatPengadaan from "../pages/pokja/PokjaHasilPenjabatPengadaan"
+import KepalaHasilPenjabatPengadaan from "../pages/kepala-bagian/hasil/KepalaHasilPenjabatPengadaan"
 
 export default function Router() {
   return (
@@ -20,15 +27,28 @@ export default function Router() {
         <Route path="/masuk" element={<Login />} />
 
         {/* PPK */}
-        <Route path="/ppk/tahun-anggaran" element={<PPKRencanaAnggaran/>}/>
-        <Route path="/ppk/tahun-anggaran/tambah" element={<PPKRencanaAnggaranAdd/>}/>
-        <Route path="/ppk/tahun-anggaran/:id" element={<PPKRencanaAnggaranShow/>}/>
+        <Route path="/ppk/rencana-anggaran" element={<PPKRencanaAnggaran/>}/>
+        <Route path="/ppk/rencana-anggaran/tambah" element={<PPKRencanaAnggaranAdd/>}/>
+        <Route path="/ppk/rencana-anggaran/:id" element={<PPKRencanaAnggaranShow/>}/>
 
         <Route path="/ppk/jadwal-pelaksanaan" element={<PPKJadwalPelaksanaan/>}/>
         <Route path="/ppk/jadwal-pelaksanaan/tambah" element={<PPKJadwalPelaksanaanAdd/>}/>
         <Route path="/ppk/jadwal-pelaksanaan/:id" element={<PPKJadwalPelaksanaanShow/>}/>
 
         <Route path="/ppk/realisasi-pekerjaan" element={<PPKRealisasiPekerjaan/>}/>
+
+        {/* Pokja */}
+        <Route path="/pokja/data-entry-penjabat-pengadaan" element={<PokjaLaporanPenjabatPengadaan/>}/>
+        <Route path="/pokja/data-entry-penjabat-pengadaan/tambah" element={<PokjaLaporanPenjabatPengadaanAdd/>}/>
+
+        <Route path="/pokja/penjabat-pengadaan" element={<PokjaHasilPenjabatPengadaan/>}/>
+        <Route path="/pokja/kelompok-kerja" element={<PokjaHasilKelompokKerja/>}/>
+
+        {/* Kepala Biro & Kepala Biro */}
+        <Route path="/kepala/rencana-anggaran" element={<KepalaRencanaAnggaran/>}/>
+        <Route path="/kepala/jadwal-pelaksanaan" element={<KepalaJadwalPelaksanaan/>}/>
+
+        <Route path="/kepala/penjabat-pengadaan" element={<KepalaHasilPenjabatPengadaan/>}/>
       </Routes>
     </BrowserRouter>
   )

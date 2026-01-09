@@ -97,7 +97,7 @@ export default function TableContent({
                             {columns.map((column) => (
                                 <th
                                     key={column.key}
-                                    className="px-6 py-4 text-center font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider"
+                                    className="px-8 py-4 text-center font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider"
                                 >
                                     {column.label}
                                 </th>
@@ -114,7 +114,7 @@ export default function TableContent({
                             <tr className='text-center'>
                                 <td
                                     colSpan={columns.length + (isSelect ? 1 : 0) + (showEdit || showPreview ? 1 : 0)}
-                                    className="px-6 py-8 text-center font-poppins text-gray-500"
+                                    className="px-8 py-8 text-center font-poppins text-gray-500"
                                 >
                                     Tidak ada data
                                 </td>

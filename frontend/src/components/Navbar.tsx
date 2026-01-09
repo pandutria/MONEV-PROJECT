@@ -4,20 +4,43 @@ import logo from "/image/logo/logo-monalisa.png";
 import { useNavigate } from 'react-router-dom';
 
 interface NavbarProps {
-  type?: 'guest' | 'ppk';
+  type?: 'guest' | 'ppk' | 'pokja' | 'kabag' | 'karo';
 }
 
 export default function Navbar({ type = "guest" }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isLaporanOpen, setIsLaporanOpen] = useState<boolean>(false);
+  const [isHasilOpen, setIsHasilOpen] = useState<boolean>(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const ppkLaporanItems = [
-    { label: 'Rencana Anggaran', path: '/ppk/tahun-anggaran' },
+    { label: 'Rencana Anggaran', path: '/ppk/rencana-anggaran' },
     { label: 'Jadwal Pelaksanaan', path: '/ppk/jadwal-pelaksanaan' },
     { label: 'Realisasi Pekerjaan', path: '/ppk/realisasi-pekerjaan' },
     { label: 'Project Progress (Kurva S)', path: '/laporan/kurva-s' }
+  ];
+
+  const pokjaLaporanItems = [
+    { label: 'Data Entry Penjabat Pengadaan', path: '/pokja/data-entry-penjabat-pengadaan' },
+    { label: 'Data Entry Kelompok Kerja', path: '/pokja/data-entry-kelompok-kerja' },
+  ];
+
+  const pokjaHasilItems = [
+    { label: 'Penjabat Pengadaan', path: '/pokja/penjabat-pengadaan' },
+    { label: 'Kelompok Kerja', path: '/pokja/kelompok-kerja' },
+  ];
+
+  const kepalaLaporanItems = [
+    { label: 'Rencana Anggaran', path: '/kepala/rencana-anggaran' },
+    { label: 'Jadwal Pelaksanaan', path: '/kepala/jadwal-pelaksanaan' },
+    { label: 'Realisasi Pekerjaan', path: '/kepala/realisasi-pekerjaan' },
+    { label: 'Project Progress (Kurva S)', path: '/kepala/kurva-s' }
+  ];
+
+  const kepalaHasilItems = [
+    { label: 'Penjabat Pengadaan', path: '/kepala/penjabat-pengadaan' },
+    { label: 'Kelompok Kerja', path: '/kepala/kelompok-kerja' },
   ];
 
   const handleLogout = () => {
@@ -67,6 +90,148 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
               </div>
             </div>
           )}
+
+          {type === 'pokja' && (
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                className="font-poppins-medium text-black hover:text-primary text-sm md:text-base px-4 md:px-6 py-2 transition-colors duration-200 rounded-lg cursor-pointer hover:bg-primary/10"
+                onClick={() => navigate("/")}
+              >
+                Dashboard
+              </button>
+
+              <div className="relative">
+                <button
+                  className="font-poppins-medium text-black hover:text-primary text-sm md:text-base px-4 md:px-6 py-2 transition-colors duration-200 rounded-lg cursor-pointer hover:bg-primary/10 flex items-center gap-2"
+                  onClick={() => {
+                    setIsLaporanOpen(!isLaporanOpen)
+                    setIsHasilOpen(false)
+                  }}
+                >
+                  Laporan Saya
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isLaporanOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isLaporanOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl py-2 z-50">
+                    {pokjaLaporanItems.map((item, index) => (
+                      <button
+                        key={index}
+                        className="w-full font-poppins-regular text-left font-poppins text-sm px-6 py-3 hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer"
+                        onClick={() => {
+                          navigate(item.path);
+                          setIsLaporanOpen(false);
+                        }}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="relative">
+                <button
+                  className="font-poppins-medium text-black hover:text-primary text-sm md:text-base px-4 md:px-6 py-2 transition-colors duration-200 rounded-lg cursor-pointer hover:bg-primary/10 flex items-center gap-2"
+                  onClick={() => {
+                    setIsLaporanOpen(false)
+                    setIsHasilOpen(!isHasilOpen)
+                  }}
+                >
+                  Laporan Hasil Pemilihan
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isHasilOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isHasilOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl py-2 z-50">
+                    {pokjaHasilItems.map((item, index) => (
+                      <button
+                        key={index}
+                        className="w-full font-poppins-regular text-left font-poppins text-sm px-6 py-3 hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer"
+                        onClick={() => {
+                          navigate(item.path);
+                          setIsHasilOpen(false);
+                        }}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {(type === 'kabag' || type === 'karo') && (
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                className="font-poppins-medium text-black hover:text-primary text-sm md:text-base px-4 md:px-6 py-2 transition-colors duration-200 rounded-lg cursor-pointer hover:bg-primary/10"
+                onClick={() => navigate("/")}
+              >
+                Dashboard
+              </button>
+
+              <div className="relative">
+                <button
+                  className="font-poppins-medium text-black hover:text-primary text-sm md:text-base px-4 md:px-6 py-2 transition-colors duration-200 rounded-lg cursor-pointer hover:bg-primary/10 flex items-center gap-2"
+                  onClick={() => {
+                    setIsLaporanOpen(!isLaporanOpen)
+                    setIsHasilOpen(false)
+                  }}
+                >
+                  Laporan Saya
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isLaporanOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isLaporanOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl py-2 z-50">
+                    {kepalaLaporanItems.map((item, index) => (
+                      <button
+                        key={index}
+                        className="w-full font-poppins-regular text-left font-poppins text-sm px-6 py-3 hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer"
+                        onClick={() => {
+                          navigate(item.path);
+                          setIsLaporanOpen(false);
+                        }}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="relative">
+                <button
+                  className="font-poppins-medium text-black hover:text-primary text-sm md:text-base px-4 md:px-6 py-2 transition-colors duration-200 rounded-lg cursor-pointer hover:bg-primary/10 flex items-center gap-2"
+                  onClick={() => {
+                    setIsLaporanOpen(false)
+                    setIsHasilOpen(!isHasilOpen)
+                  }}
+                >
+                  Laporan Hasil Pemilihan
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isHasilOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isHasilOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl py-2 z-50">
+                    {kepalaHasilItems.map((item, index) => (
+                      <button
+                        key={index}
+                        className="w-full font-poppins-regular text-left font-poppins text-sm px-6 py-3 hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer"
+                        onClick={() => {
+                          navigate(item.path);
+                          setIsHasilOpen(false);
+                        }}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {type === 'guest' && (
@@ -93,7 +258,7 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
           </>
         )}
 
-        {type === 'ppk' && (
+        {type !== 'guest' && (
           <>
             <div className="hidden md:flex items-center">
               <div className="relative">
@@ -103,27 +268,17 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                        <span className="font-poppins-medium text-primary text-sm">
-                          {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
-                        </span>
-                      </div>
+                      <span className="font-poppins-medium text-primary text-sm">
+                        {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </span>
+                    </div>
                     <span className="font-poppins-medium text-black text-sm">John Doe</span>
                   </div>
                   <ChevronDown className={`h-4 w-4 text-black transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-xl py-2 z-50">
-                    <button
-                      className="w-full text-left font-poppins text-sm px-6 py-3 hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer flex items-center gap-3"
-                      onClick={() => {
-                        navigate('/profile/edit');
-                        setIsProfileOpen(false);
-                      }}
-                    >
-                      <User className="h-4 w-4" />
-                      Edit Profile
-                    </button>
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-xl py-2 z-50">                    
                     <button
                       className="w-full text-left font-poppins text-sm px-6 py-3 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 cursor-pointer flex items-center gap-3"
                       onClick={() => {
@@ -218,10 +373,10 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
             <div className="border-t border-gray-200 pt-2 mt-2">
               <div className="flex items-center gap-3 px-4 py-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                    <span className="font-poppins-medium text-primary text-sm">
-                      {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </span>
-                  </div>
+                  <span className="font-poppins-medium text-primary text-sm">
+                    {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  </span>
+                </div>
                 <span className="font-poppins-medium text-black text-sm">John Doe</span>
               </div>
 
@@ -235,6 +390,210 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
                 <User className="h-4 w-4" />
                 Edit Profile
               </button>
+
+              <button
+                className="w-full text-left font-poppins-regular text-sm px-4 py-3 rounded-lg transition-all duration-200 text-red-600 cursor-pointer hover:bg-red-50 flex items-center gap-3"
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {type === 'pokja' && (
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out
+            ${isMenuOpen ? 'max-h-125 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}
+          `}
+        >
+          <div className="mt-4 space-y-2">
+            <button
+              className="w-full text-left font-poppins-medium text-base px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/20"
+              onClick={() => {
+                navigate("/");
+                setIsMenuOpen(false);
+              }}
+            >
+              Dashboard
+            </button>
+
+            <div>
+              <button
+                className="w-full text-left font-poppins-medium text-base px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/20 flex items-center justify-between"
+                onClick={() => setIsLaporanOpen(!isLaporanOpen)}
+              >
+                Laporan Saya
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isLaporanOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ml-4
+                  ${isLaporanOpen ? 'max-h-100 opacity-100' : 'max-h-0 opacity-0'}
+                `}
+              >
+                {pokjaLaporanItems.map((item, index) => (
+                  <button
+                    key={index}
+                    className="w-full text-left font-poppins text-sm px-4 py-2.5 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/10"
+                    onClick={() => {
+                      navigate(item.path);
+                      setIsLaporanOpen(false);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <button
+                className="w-full text-left font-poppins-medium text-base px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/20 flex items-center justify-between"
+                onClick={() => setIsHasilOpen(!isHasilOpen)}
+              >
+                Laporan Hasil Pemilihan
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isHasilOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ml-4
+                  ${isHasilOpen ? 'max-h-100 opacity-100' : 'max-h-0 opacity-0'}
+                `}
+              >
+                {pokjaHasilItems.map((item, index) => (
+                  <button
+                    key={index}
+                    className="w-full text-left font-poppins text-sm px-4 py-2.5 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/10"
+                    onClick={() => {
+                      navigate(item.path);
+                      setIsLaporanOpen(false);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 pt-2 mt-2">
+              <div className="flex items-center gap-3 px-4 py-3">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  <span className="font-poppins-medium text-primary text-sm">
+                    {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  </span>
+                </div>
+                <span className="font-poppins-medium text-black text-sm">John Doe</span>
+              </div>
+
+              <button
+                className="w-full text-left font-poppins-regular text-sm px-4 py-3 rounded-lg transition-all duration-200 text-red-600 cursor-pointer hover:bg-red-50 flex items-center gap-3"
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {(type === 'kabag' || type === 'karo') && (
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out
+            ${isMenuOpen ? 'max-h-125 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}
+          `}
+        >
+          <div className="mt-4 space-y-2">
+            <button
+              className="w-full text-left font-poppins-medium text-base px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/20"
+              onClick={() => {
+                navigate("/");
+                setIsMenuOpen(false);
+              }}
+            >
+              Dashboard
+            </button>
+
+            <div>
+              <button
+                className="w-full text-left font-poppins-medium text-base px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/20 flex items-center justify-between"
+                onClick={() => setIsLaporanOpen(!isLaporanOpen)}
+              >
+                Laporan Saya
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isLaporanOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ml-4
+                  ${isLaporanOpen ? 'max-h-100 opacity-100' : 'max-h-0 opacity-0'}
+                `}
+              >
+                {kepalaLaporanItems.map((item, index) => (
+                  <button
+                    key={index}
+                    className="w-full text-left font-poppins text-sm px-4 py-2.5 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/10"
+                    onClick={() => {
+                      navigate(item.path);
+                      setIsLaporanOpen(false);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <button
+                className="w-full text-left font-poppins-medium text-base px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/20 flex items-center justify-between"
+                onClick={() => setIsHasilOpen(!isHasilOpen)}
+              >
+                Laporan Hasil Pemilihan
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isHasilOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ml-4
+                  ${isHasilOpen ? 'max-h-100 opacity-100' : 'max-h-0 opacity-0'}
+                `}
+              >
+                {kepalaHasilItems.map((item, index) => (
+                  <button
+                    key={index}
+                    className="w-full text-left font-poppins text-sm px-4 py-2.5 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/10"
+                    onClick={() => {
+                      navigate(item.path);
+                      setIsLaporanOpen(false);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 pt-2 mt-2">
+              <div className="flex items-center gap-3 px-4 py-3">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  <span className="font-poppins-medium text-primary text-sm">
+                    {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  </span>
+                </div>
+                <span className="font-poppins-medium text-black text-sm">John Doe</span>
+              </div>
 
               <button
                 className="w-full text-left font-poppins-regular text-sm px-4 py-3 rounded-lg transition-all duration-200 text-red-600 cursor-pointer hover:bg-red-50 flex items-center gap-3"

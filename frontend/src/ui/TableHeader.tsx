@@ -4,6 +4,7 @@ import { Search, Plus, Trash } from 'lucide-react';
 interface TableHeaderProps {
     title: string;
     showHapus?: boolean;
+    showTambah?: boolean;
     onTambahClick?: () => void;
     onHapusClick?: () => void;
     tahunOptions?: any[];
@@ -15,12 +16,14 @@ interface TableHeaderProps {
     onSatuanKerjaChange?: (value: string) => void;
     onSearchChange?: (value: string) => void;
     className?: string;
+    type?: 'ppk' | 'pokja'
 }
 
 export default function TableHeader({
     title,
     onTambahClick,
     onHapusClick,
+    showTambah = true,
     showHapus = false,
     selectedTahun = '',
     selectedSatuanKerja = '',
@@ -31,6 +34,7 @@ export default function TableHeader({
     className,
     tahunOptions = [],
     satuanKerjaOptions = [],
+    type = "ppk"
 }: TableHeaderProps) {
     return (
         <div className={`w-full bg-white flex lg:flex-row flex-col lg:justify-between justify-center lg:items-end items-start lg:gap-0 gap-10 rounded-lg p-6 mb-6 ${className}`}>
@@ -40,30 +44,34 @@ export default function TableHeader({
                 </h1>
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                    <select
-                        value={selectedTahun}
-                        onChange={(e) => onTahunChange?.(e.target.value)}
-                        className="text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular"
-                    >
-                        <option value="">Pilih Tahun</option>
-                        {tahunOptions.map((item, index) => (
-                            <option key={index} value={item.id}>
-                                {item.tahun}
-                            </option>
-                        ))}
-                    </select>
-                    <select
-                        value={selectedSatuanKerja}
-                        onChange={(e) => onSatuanKerjaChange?.(e.target.value)}
-                        className="text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular"
-                    >
-                        <option value="">Pilih Satuan Kerja</option>
-                        {satuanKerjaOptions.map((item, index) => (
-                            <option key={index} value={item.id}>
-                                {item.text}
-                            </option>
-                        ))}
-                    </select>
+                    {type === 'ppk' && (
+                        <div className="flex flex-row gap-3 items-center">
+                            <select
+                                value={selectedTahun}
+                                onChange={(e) => onTahunChange?.(e.target.value)}
+                                className="text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular"
+                            >
+                                <option value="">Pilih Tahun</option>
+                                {tahunOptions.map((item, index) => (
+                                    <option key={index} value={item.id}>
+                                        {item.tahun}
+                                    </option>
+                                ))}
+                            </select>
+                            <select
+                                value={selectedSatuanKerja}
+                                onChange={(e) => onSatuanKerjaChange?.(e.target.value)}
+                                className="text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular"
+                            >
+                                <option value="">Pilih Satuan Kerja</option>
+                                {satuanKerjaOptions.map((item, index) => (
+                                    <option key={index} value={item.id}>
+                                        {item.text}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
                     <div className="relative">
                         <input
                             type="text"
@@ -77,13 +85,15 @@ export default function TableHeader({
                 </div>
             </div>
             <div className="flex flex-row gap-4 items-center justify-center">
-                <button
-                    onClick={onTambahClick}
-                    className="flex items-center text-[12px] gap-2 bg-primary border-2 border-primary hover:bg-transparent text-white hover:text-primary font-poppins-medium px-4 py-2.5 rounded-lg transition-colors duration-200 cursor-pointer shadow-sm hover:shadow-md w-fit"
-                >
-                    <Plus className="h-5 w-5" />
-                    Tambah
-                </button>
+                {showTambah && (
+                    <button
+                        onClick={onTambahClick}
+                        className="flex items-center text-[12px] gap-2 bg-primary border-2 border-primary hover:bg-transparent text-white hover:text-primary font-poppins-medium px-4 py-2.5 rounded-lg transition-colors duration-200 cursor-pointer shadow-sm hover:shadow-md w-fit"
+                    >
+                        <Plus className="h-5 w-5" />
+                        Tambah
+                    </button>
+                )}
                 {showHapus && (
                     <button
                         onClick={onHapusClick}
