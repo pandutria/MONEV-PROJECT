@@ -10,11 +10,14 @@ import PPKJadwalPelaksanaanShow from "../pages/ppk/show/PPKJadwalPelaksanaanShow
 import PPKRealisasiPekerjaan from "../pages/ppk/PPKRealisasiPekerjaan"
 import PokjaLaporanPenjabatPengadaan from "../pages/pokja/PokjaLaporanPenjabatPengadaan"
 import PokjaLaporanPenjabatPengadaanAdd from "../pages/pokja/add/PokjaLaporanPenjabatPengadaanAdd"  
-import KepalaRencanaAnggaran from "../pages/kepala-bagian/laporan/KepalaRencanaAnggaran"
-import KepalaJadwalPelaksanaan from "../pages/kepala-bagian/laporan/KepalaJadwalPelaksanaan"
+import KepalaRencanaAnggaran from "../pages/kepala/laporan/KepalaRencanaAnggaran"
+import KepalaJadwalPelaksanaan from "../pages/kepala/laporan/KepalaJadwalPelaksanaan"
 import PokjaHasilKelompokKerja from "../pages/pokja/PokjaHasilKelompokKerja"
 import PokjaHasilPenjabatPengadaan from "../pages/pokja/PokjaHasilPenjabatPengadaan"
-import KepalaHasilPenjabatPengadaan from "../pages/kepala-bagian/hasil/KepalaHasilPenjabatPengadaan"
+import KepalaHasilPenjabatPengadaan from "../pages/kepala/hasil/KepalaHasilPenjabatPengadaan"
+import KepalaHasilKelompokKerja from "../pages/kepala/hasil/KepalaHasilKelompokKerja"
+import AdminManajemenPengguna from "../pages/admin/AdminManajemenPengguna"
+import AdminKelompokKerja from "../pages/admin/AdminKelompokKerja"
 
 export default function Router() {
   return (
@@ -49,6 +52,11 @@ export default function Router() {
         <Route path="/kepala/jadwal-pelaksanaan" element={<KepalaJadwalPelaksanaan/>}/>
 
         <Route path="/kepala/penjabat-pengadaan" element={<KepalaHasilPenjabatPengadaan/>}/>
+        <Route path="/kepala/kelompok-kerja" element={<KepalaHasilKelompokKerja/>}/>
+
+        {/* Admin */}
+        <Route path="/admin/manajemen-pengguna" element={<AdminManajemenPengguna/>}/>
+        <Route path="/admin/kelompok-kerja" element={<AdminKelompokKerja/>}/>
       </Routes>
     </BrowserRouter>
   )

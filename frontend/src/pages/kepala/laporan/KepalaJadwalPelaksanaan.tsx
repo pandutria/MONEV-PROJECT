@@ -103,7 +103,7 @@ export default function KepalaJadwalPelaksanaan() {
     }, [selectPreview, navigate]);
     return (
         <div>
-            <Navbar type="kabag" />
+            <Navbar type="kepala" />
 
             <div className="lg:pt-32 pt-28" data-aos="fade-up" data-aos-duration="1000">
                 <TableHeader 

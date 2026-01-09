@@ -6,17 +6,21 @@ interface TableHeaderReportProps {
     tahunOptions?: any[];
     metodePengadaanOptions?: any[];
     sumberDanaOptions?: any[];
+    namaPenggunaOptions?: any[];
     selectedTahun?: string;
     selectedMetodePengadaan?: string;
     selectedSumberDana?: string;
+    selectedNamaPengguna?: string;
     onTahunChange?: (value: string) => void;
     onMetodePengadaanChange?: (value: string) => void;
     onSumberDanaChange?: (value: string) => void;
+    onNamaPenggunaChange?: (value: string) => void;
     onBuatReport?: () => void;
     onPrint?: () => void;
     onSavePDF?: () => void;
     onSaveExcel?: () => void;
     className?: string;
+    isKepala?: boolean;
 }
 
 export default function TableHeaderReport({
@@ -24,17 +28,21 @@ export default function TableHeaderReport({
     tahunOptions = [],
     metodePengadaanOptions = [],
     sumberDanaOptions = [],
+    namaPenggunaOptions = [],
     selectedTahun = '',
     selectedMetodePengadaan = '',
     selectedSumberDana = '',
+    selectedNamaPengguna = '',
     onTahunChange,
     onMetodePengadaanChange,
     onSumberDanaChange,
+    onNamaPenggunaChange,
     onBuatReport,
     onPrint,
     onSavePDF,
     onSaveExcel,
-    className
+    className,
+    isKepala = false
 }: TableHeaderReportProps) {
     return (
         <div className={`w-full bg-white rounded-lg p-6 mb-6 ${className}`}>
@@ -57,6 +65,21 @@ export default function TableHeaderReport({
                                 </option>
                             ))}
                         </select>
+
+                        {isKepala && (
+                            <select
+                                value={selectedNamaPengguna}
+                                onChange={(e) => onNamaPenggunaChange?.(e.target.value)}
+                                className="text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular"
+                            >
+                                <option value="">Pilih Nama Pengguna</option>
+                                {namaPenggunaOptions.map((item, index) => (
+                                    <option key={index} value={item.id || item}>
+                                        {item.text || item.name || item}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
 
                         <select
                             value={selectedMetodePengadaan}

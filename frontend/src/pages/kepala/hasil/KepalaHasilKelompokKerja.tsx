@@ -6,7 +6,7 @@ import TableContent from "../../../ui/TableContent";
 import html2pdf from "html2pdf.js";
 import * as XLSX from "xlsx";
 
-export default function KepalaHasilPenjabatPengadaan() {
+export default function KepalaHasilKelompokKerja() {
     const [tahun, setTahun] = useState('');
     const [metodePengadaan, setMetodePengadaan] = useState('');
     const [sumberDana, setSumberDana] = useState('');
@@ -267,7 +267,7 @@ export default function KepalaHasilPenjabatPengadaan() {
 
     return (
         <div>
-            <Navbar type="pokja" />
+            <Navbar type="kepala" />
 
             <div className="pt-24" data-aos="fade-up" data-aos-duration="1000">
                 <TableHeaderReport
@@ -282,10 +282,12 @@ export default function KepalaHasilPenjabatPengadaan() {
                     onMetodePengadaanChange={setMetodePengadaan}
                     onSumberDanaChange={setSumberDana}
                     onBuatReport={() => console.log('Buat Report')}
+                    isKepala={true}
                     onPrint={() => handlePrint()}
                     onSavePDF={() => handleSavePDF()}
                     onSaveExcel={() => handleSaveExcel()}
                 />
+
                 <div className="p-6" ref={tableRef}>
                     <TableContent
                         columns={columns}
