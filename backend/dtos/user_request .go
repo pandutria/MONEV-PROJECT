@@ -1,25 +1,25 @@
 package dtos
 
 type LoginRequest struct {
-	Email string `json:"email" binding:"required"`
+	Email string `json:"email" binding:"required,email"`
 	Passw string `json:"passw" binding:"required"`
 }
 
 type CreateUserRequest struct {
-	FullName *string `form:"fullname" binding:"required"`
-	Email    string `form:"email" binding:"required"`
+	Email    string `form:"email" binding:"required,email"`
 	Password string `form:"password" binding:"required"`
+	RoleId   uint   `form:"role_id" binding:"required"`
+
+	FullName *string `form:"fullname"`
 	IsActive *bool   `form:"is_active"`
 
-	Nik     *string  `form:"nik" binding:"required"`
-	Nip     *string  `form:"nip" binding:"required"`
-	Group   *string `form:"group" binding:"required"`
-	Address *string `form:"address" binding:"required"`
+	Nik     *string `form:"nik"`
+	Nip     *string `form:"nip"`
+	Group   *string `form:"group"`
+	Address *string `form:"address"`
 
-	RoleId uint `form:"role_id" binding:"required"`
-
-	PhoneNumber     *string  `form:"phone_number" binding:"required"`
-	OpdOrganization *string `form:"opd_organization" binding:"required"`
+	PhoneNumber     *string `form:"phone_number"`
+	OpdOrganization *string `form:"opd_organization"`
 
 	SkNumber         *string `form:"sk_number"`
 	PbjNumber        *string `form:"pbj_number"`

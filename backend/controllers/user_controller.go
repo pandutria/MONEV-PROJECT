@@ -86,7 +86,7 @@ func CreateUser(c *gin.Context) {
 		SkFile:            skPath,
 		PbjNumber:         req.PbjNumber,
 		PbjFile:           pbjPath,
-		CompetenceNumber:  *req.CompetenceNumber,
+		CompetenceNumber:  req.CompetenceNumber,
 		CompetenceFile:    competencePath,
 		PhotoFile:         photoPath,
 		SatkerCode:        req.SatkerCode,

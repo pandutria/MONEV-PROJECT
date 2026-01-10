@@ -17,7 +17,7 @@ type User struct {
 	Address          *string `json:"address"`
 	PbjNumber        *string  `json:"pbj_number"`
 	PbjFile          *string `json:"pbj_file"`
-	CompetenceNumber string  `json:"competence_number"`
+	CompetenceNumber *string  `json:"competence_number"`
 	CompetenceFile   *string `json:"competence_file"`
 	PhoneNumber      *string  `json:"phone_number"`
 	PhotoFile        *string `json:"file_photo"`
