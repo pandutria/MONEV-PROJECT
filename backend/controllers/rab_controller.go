@@ -153,7 +153,7 @@ func CreateRabDetail(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "",
+		"message": "Membuat data ",
 		"data": detail,
 	})
 }
