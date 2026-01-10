@@ -9,7 +9,7 @@ export default function Dashboard() {
 
   return (
     <div className="bg-white">
-      <Navbar type='admin'/>      
+      <Navbar type='pokja'/>      
       <SearchData/>
       <LineChart/>
       <TopPackage/>

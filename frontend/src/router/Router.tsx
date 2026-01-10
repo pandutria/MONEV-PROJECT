@@ -18,6 +18,7 @@ import KepalaHasilPenjabatPengadaan from "../pages/kepala/hasil/KepalaHasilPenja
 import KepalaHasilKelompokKerja from "../pages/kepala/hasil/KepalaHasilKelompokKerja"
 import AdminManajemenPengguna from "../pages/admin/AdminManajemenPengguna"
 import AdminKelompokKerja from "../pages/admin/AdminKelompokKerja"
+import EditProfile from "../pages/EditProfile"
 
 export default function Router() {
   return (
@@ -25,6 +26,7 @@ export default function Router() {
       <Routes>
         {/* All User */}
         <Route path="/" element={<Dashboard />} />
+        <Route path="/ubah-profile" element={<EditProfile/>}/>
 
         {/* Auth */}
         <Route path="/masuk" element={<Login />} />

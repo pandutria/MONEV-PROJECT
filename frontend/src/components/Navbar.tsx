@@ -275,7 +275,7 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
                     ))}
                   </div>
                 )}
-              </div>              
+              </div>
             </div>
           )}
         </div>
@@ -324,17 +324,31 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-xl py-2 z-50">                    
-                    <button
-                      className="w-full text-left font-poppins text-sm px-6 py-3 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 cursor-pointer flex items-center gap-3"
-                      onClick={() => {
-                        handleLogout();
-                        setIsProfileOpen(false);
-                      }}
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Logout
-                    </button>
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-xl py-2 z-50">
+                    <div className="">
+                      <button
+                        className="w-full text-left font-poppins text-sm px-6 py-3 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 cursor-pointer flex items-center gap-3"
+                        onClick={() => {
+                          navigate("/ubah-profile")
+                          setIsProfileOpen(false);
+                        }}
+                      >
+                        <User className="h-4 w-4" />
+                        Ubah Profile
+                      </button>
+                    </div>
+                    <div className="">
+                      <button
+                        className="w-full text-left font-poppins text-sm px-6 py-3 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 cursor-pointer flex items-center gap-3"
+                        onClick={() => {
+                          handleLogout();
+                          setIsProfileOpen(false);
+                        }}
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Logout
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -429,7 +443,7 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
               <button
                 className="w-full text-left font-poppins-regular text-sm px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/10 flex items-center gap-3"
                 onClick={() => {
-                  navigate('/profile/edit');
+                  navigate('/ubah-profile');
                   setIsMenuOpen(false);
                 }}
               >
@@ -540,6 +554,17 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
               </div>
 
               <button
+                className="w-full text-left font-poppins-regular text-sm px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/10 flex items-center gap-3"
+                onClick={() => {
+                  navigate('/ubah-profile');
+                  setIsMenuOpen(false);
+                }}
+              >
+                <User className="h-4 w-4" />
+                Edit Profile
+              </button>
+
+              <button
                 className="w-full text-left font-poppins-regular text-sm px-4 py-3 rounded-lg transition-all duration-200 text-red-600 cursor-pointer hover:bg-red-50 flex items-center gap-3"
                 onClick={() => {
                   handleLogout();
@@ -642,6 +667,17 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
               </div>
 
               <button
+                className="w-full text-left font-poppins-regular text-sm px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/10 flex items-center gap-3"
+                onClick={() => {
+                  navigate('/ubah-profile');
+                  setIsMenuOpen(false);
+                }}
+              >
+                <User className="h-4 w-4" />
+                Edit Profile
+              </button>
+
+              <button
                 className="w-full text-left font-poppins-regular text-sm px-4 py-3 rounded-lg transition-all duration-200 text-red-600 cursor-pointer hover:bg-red-50 flex items-center gap-3"
                 onClick={() => {
                   handleLogout();
@@ -701,7 +737,7 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
                   </button>
                 ))}
               </div>
-            </div>            
+            </div>
 
             <div className="border-t border-gray-200 pt-2 mt-2">
               <div className="flex items-center gap-3 px-4 py-3">
@@ -712,6 +748,17 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
                 </div>
                 <span className="font-poppins-medium text-black text-sm">John Doe</span>
               </div>
+
+              <button
+                className="w-full text-left font-poppins-regular text-sm px-4 py-3 rounded-lg transition-all duration-200 text-black cursor-pointer hover:text-primary hover:bg-primary/10 flex items-center gap-3"
+                onClick={() => {
+                  navigate('/ubah-profile');
+                  setIsMenuOpen(false);
+                }}
+              >
+                <User className="h-4 w-4" />
+                Edit Profile
+              </button>
 
               <button
                 className="w-full text-left font-poppins-regular text-sm px-4 py-3 rounded-lg transition-all duration-200 text-red-600 cursor-pointer hover:bg-red-50 flex items-center gap-3"

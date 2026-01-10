@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ArrowLeft, Upload, Download, Trash2, X } from 'lucide-react';
+import { Upload, Download, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/Navbar';
 import * as XLSX from 'xlsx';
 import { SwalMessage } from '../../../libs/SwalMessage';
 import TableContent from '../../../ui/TableContent';
-import { FormatLoopExcel } from '../../../libs/FormatLoopExcel';
+import BackButton from '../../../ui/BackButton';
+import ShowTableForm from '../../../ui/ShowTableForm';
+import FormInput from '../../../ui/FormInput';
+import SubmitButton from '../../../ui/SubmitButton';
 
 interface RABItem {
   keterangan: string;
@@ -16,6 +19,16 @@ interface RABItem {
 }
 
 const WEEK_START_COL = 'P';
+export const formatLoopExcel = (index: number): string => {
+  let col = '';
+  while (index >= 0) {
+    col = String.fromCharCode((index % 26) + 65) + col;
+    index = Math.floor(index / 26) - 1;
+  }
+  return col;
+};
+
+
 const getTotalMingguFromExcel = (
   worksheet: XLSX.WorkSheet,
   startRow: number = 5,
@@ -25,7 +38,7 @@ const getTotalMingguFromExcel = (
   let total = 0;
 
   for (let i = 0; i < maxWeek; i++) {
-    const col = FormatLoopExcel(startColIndex + i);
+    const col = formatLoopExcel(startColIndex + i);
     const cell = worksheet[`${col}${startRow}`];
 
     if (cell && cell.v !== '' && cell.v !== null) {
@@ -68,7 +81,7 @@ const parseRABExcel = (
     const minggu: number[] = [];
 
     for (let i = 0; i < totalMinggu; i++) {
-      const col = FormatLoopExcel(startColIndex + i);
+      const col = formatLoopExcel(startColIndex + i);
       minggu.push(Number(getCell(col, row)) || 0);
     }
 
@@ -266,13 +279,7 @@ export default function PPKJadwalPelaksanaanAdd() {
 
       <div className="pt-24 pb-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 cursor-pointer text-gray-600 hover:text-primary font-poppins-medium mb-6 transition-colors duration-200"
-          >
-            <ArrowLeft className="h-5 w-5" />
-            Kembali
-          </button>
+          <BackButton />
 
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h1 className="font-poppins-bold text-2xl text-gray-800 mb-6">
@@ -280,150 +287,92 @@ export default function PPKJadwalPelaksanaanAdd() {
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-poppins-regular">
-              <div>
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Kode Tender
-                </label>
-                <div className="flex flex-row w-full gap-4 items-center">
-                  <div className="w-full text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins text-left text-gray-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 flex items-center justify-between">
-                    <span>{formData.kodeTender || 'Pilih Tender'}</span>
-                  </div>
-                  <button onClick={() => { setShowTender(true); setSelectedTender(null) }} className='font-poppins-regular text-white bg-primary px-4 py-2.5 w-32.5 text-[12px] rounded-lg cursor-pointer border-2 border-primary hover:bg-transparent hover:text-primary transition-all'>List Tender</button>
-                </div>
-              </div>
+              <ShowTableForm
+                tenderCode={formData.kodeTender}
+                onClick={() => {
+                  setShowTender(true);
+                  setSelectedTender(null);
+                }}
+              />
 
-              <div>
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Tahun Anggaran
-                </label>
-                <input
-                  type="text"
-                  value={formData.tahunAnggaran}
-                  onChange={(e) => handleInputChange('tahunAnggaran', e.target.value)}
-                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                  placeholder="Masukkan tahun anggaran (otomatis)"
-                  disabled
-                />
-              </div>
+              <FormInput
+                title='Tahun Anggaran'
+                placeholder='Masukkan tahun anggaran (otomatis)'
+                value={formData.tahunAnggaran}
+                disabled={true}
+                onChange={(e) => handleInputChange('tahunAnggaran', e.target.value)}
+              />
 
-              <div>
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Satuan Kerja
-                </label>
-                <input
-                  type="text"
-                  value={formData.satuanKerja}
-                  onChange={(e) => handleInputChange('satuanKerja', e.target.value)}
-                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                  placeholder="Masukkan satuan kerja (otomatis)"
-                  disabled
-                />
-              </div>
+              <FormInput
+                title='Satuan Kerja'
+                placeholder='Masukkan tahun satuan kerja (otomatis)'
+                value={formData.satuanKerja}
+                disabled={true}
+                onChange={(e) => handleInputChange('satuanKerja', e.target.value)}
+              />
 
-              <div>
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Kode RUP
-                </label>
-                <input
-                  type="text"
-                  value={formData.kodeRUP}
-                  onChange={(e) => handleInputChange('kodeRUP', e.target.value)}
-                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                  placeholder="Masukkan kode RUP (otomatis)"
-                  disabled
-                />
-              </div>
+              <FormInput
+                title='Kode RUP'
+                placeholder='Masukkan tahun kode RUP (otomatis)'
+                value={formData.kodeRUP}
+                disabled={true}
+                onChange={(e) => handleInputChange('kodeRUP', e.target.value)}
+              />
 
-              <div>
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Program Kegiatan
-                </label>
-                <input
-                  type="text"
-                  value={formData.programKegiatan}
-                  onChange={(e) => handleInputChange('programKegiatan', e.target.value)}
-                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                  placeholder="Masukkan program kegiatan"
-                  disabled
-                />
-              </div>
+              <FormInput
+                title='Program Kegiatan'
+                placeholder='Masukkan program kegiatan (otomatis)'
+                value={formData.programKegiatan}
+                disabled={true}
+                onChange={(e) => handleInputChange('programKegiatan', e.target.value)}
+              />
 
-              <div>
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Kegiatan
-                </label>
-                <input
-                  type="text"
-                  value={formData.kegiatan}
-                  onChange={(e) => handleInputChange('kegiatan', e.target.value)}
-                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                  placeholder="Masukkan kegiatan"
-                  disabled
-                />
-              </div>
+              <FormInput
+                title='Kegiatan'
+                placeholder='Masukkan kegiatan (otomatis)'
+                value={formData.kegiatan}
+                disabled={true}
+                onChange={(e) => handleInputChange('kegiatan', e.target.value)}
+              />
 
-              <div className="md:col-span-2">
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Lokasi Pekerjaan
-                </label>
-                <textarea
-                  value={formData.lokasiPekerjaan}
-                  onChange={(e) => handleInputChange('lokasiPekerjaan', e.target.value)}
-                  rows={3}
-                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 resize-none"
-                  placeholder="Masukkan lokasi pekerjaan (otomatis)"
-                  disabled
-                />
-              </div>
+              <FormInput
+                title='Lokasi Pekerjaan'
+                placeholder='Masukkan lokasi pekerjaan (otomatis)'
+                value={formData.lokasiPekerjaan}
+                disabled={true}
+                onChange={(e) => handleInputChange('lokasiPekerjaan', e.target.value)}
+                type='textarea'
+              />
 
-              <div>
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Tanggal Mulai
-                </label>
-                <input
-                  type="date"
-                  value={formData.tanggalMulai}
-                  onChange={(e) => handleInputChange('tanggalMulai', e.target.value)}
-                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                  disabled
-                />
-              </div>
+              <FormInput
+                title='Tanggal Awal'
+                placeholder='Masukkan tanggal awal (otomatis)'
+                value={formData.tanggalMulai}
+                disabled={true}
+                type='date'
+                onChange={(e) => handleInputChange('tanggalAwal', e.target.value)}
+              />
 
-              <div>
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Tanggal Akhir
-                </label>
-                <input
-                  type="date"
-                  value={formData.tanggalAkhir}
-                  onChange={(e) => handleInputChange('tanggalAkhir', e.target.value)}
-                  className="w-full bg-gray-100 text-gray-500 cursor-not-allowed text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                  disabled
-                />
-              </div>
+              <FormInput
+                title='Tanggal Akhir'
+                placeholder='Masukkan tanggal akhir (otomatis)'
+                value={formData.tanggalAkhir}
+                disabled={true}
+                type='date'
+                onChange={(e) => handleInputChange('tanggalAkhir', e.target.value)}
+              />
 
-              <div className="md:col-span-2">
-                <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                  Alasan
-                </label>
-                <textarea
-                  value={formData.alasan}
-                  disabled
-                  rows={3}
-                  className="w-full text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins bg-gray-100 text-gray-500 resize-none cursor-not-allowed"
-                  placeholder="Alasan"
-                />
-              </div>
+              <FormInput
+                title='Alasan'
+                placeholder='Alasan'
+                value={formData.alasan}
+                disabled={true}
+                type='textarea'
+                onChange={(e) => handleInputChange('alasan', e.target.value)}
+              />
             </div>
 
-            <div className="mt-6">
-              <button
-                onClick={() => handleShowDetail()}
-                className="px-6 py-2.5 bg-primary hover:bg-transparent hover:text-primary border-2 border-primary cursor-pointer text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
-              >
-                Buat Jadwal
-              </button>
-            </div>
+            <SubmitButton text='Buat Jadwal' onClick={() => handleShowDetail()}/>
           </div>
 
           {showDetail && (

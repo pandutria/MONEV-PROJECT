@@ -1,14 +1,12 @@
-import { ArrowLeft, Search, Upload } from 'lucide-react';
+import { Search, Upload } from 'lucide-react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/Navbar';
+import BackButton from '../../../ui/BackButton';
 
 type MetodePengadaan = '' | 'pengadaan_langsung' | 'e_purchasing_v5' | 'e_purchasing_v6';
 
 export default function PokjaLaporanPenjabatPengadaanAdd() {
-    const navigate = useNavigate();
     const [metodePengadaan, setMetodePengadaan] = useState<MetodePengadaan>('');
-
     const [formData, setFormData] = useState({
         kodePaket: '',
         kodeRUP: '',
@@ -70,13 +68,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
             <div className="pt-24 pb-12 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000">
                 <div className="max-w-7xl mx-auto">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-gray-600 hover:text-primary font-poppins-medium mb-6 transition-colors duration-200 cursor-pointer"
-                    >
-                        <ArrowLeft className="h-5 w-5" />
-                        Kembali
-                    </button>
+                    <BackButton/>
 
                     <div className="bg-white rounded-lg shadow-md p-6">
                         <h1 className="font-poppins-bold text-2xl text-gray-800 mb-8">
