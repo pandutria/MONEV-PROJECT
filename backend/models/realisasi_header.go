@@ -8,7 +8,7 @@ type RealisasiHeader struct {
 
 	RevisionCount int     `json:"revision_count"`
 	RevisionText  *string `json:"revision_text"`
-	Status        string  `json:"status"`
+	Status        *string `json:"status"`
 
 	CreatedById uint      `json:"created_by_id"`
 	CreatedAt   time.Time `json:"created_at"`

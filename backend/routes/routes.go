@@ -56,13 +56,13 @@ func SetupRoutes(r *gin.Engine) {
 		public.PUT("/realisasi/update/:id", controllers.UpdateRealisasi)
 		public.DELETE("/realisasi/delete/:id", controllers.DeleteRealisasi)
 
-		public.GET("realisasi/item", controllers.GetRealisasiItemByHeader)
-		public.POST("realisasi/item/create", controllers.CreateRealisasiItem)
-		public.DELETE("realisasi/item/delete/:id", controllers.DeleteRealisasiItem)
+		public.GET("/realisasi/item", controllers.GetRealisasiItemByHeader)
+		public.POST("/realisasi/item/create", controllers.CreateRealisasiItem)
+		public.DELETE("/realisasi/item/delete/:id", controllers.DeleteRealisasiItem)
 
 		public.GET("/realisasi/week", controllers.GetAllRealisasiWeek)
-		public.POST("realisasi/week", controllers.CreateRealisasiWeek)
-		public.DELETE("realisasi/week/delete/:id", controllers.DeleteRealisasiWeek)
+		public.POST("/realisasi/week/create", controllers.CreateRealisasiWeek)
+		public.DELETE("/realisasi/week/delete/:id", controllers.DeleteRealisasiWeek)
 	}
 
 	private := r.Group("/api")

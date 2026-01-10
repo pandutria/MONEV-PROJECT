@@ -1,9 +1,13 @@
 package controllers
 
 import (
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/optimus/backend/config"
 	"github.com/optimus/backend/dtos"
 	"github.com/optimus/backend/models"
@@ -64,12 +68,20 @@ func UpdateRealisasi(c *gin.Context) {
 	id := c.Param("id")
 	var req dtos.UpdateRealisasiRequest
 
+	err := c.ShouldBindBodyWithJSON(&req)
+	if err!= nil {
+		c.JSON(http.StatusConflict, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
 	var header models.RealisasiHeader
 	config.DB.First(&header, id)
 	header.RevisionText = req.RevisionText
 	header.RevisionCount += 1
 
-	err := config.DB.Save(&header).Error
+	err = config.DB.Save(&header).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Update data failed",
@@ -108,14 +120,18 @@ func GetRealisasiItemByHeader(c *gin.Context) {
 	id := c.Query("headerId")
 
 	var week models.RealisasiItem
-	err := config.DB.Where("realisasi_header_id = ?", id).Preload("Weeks").Find(&week).Error
+	err := config.DB.Where("realisasi_header_id = ?", id).Find(&week).Error
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Create data success",
-			"data": week,
+			"message": "Get data failed",
 		})
 		return
 	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Get data succes",
+		"data": week,
+	})
 }
 
 func CreateRealisasiItem(c *gin.Context) {
@@ -180,7 +196,7 @@ func GetAllRealisasiWeek(c *gin.Context) {
 func CreateRealisasiWeek(c *gin.Context) {
 	var req dtos.CreateRealisasiWeekRequest
 
-	err := c.ShouldBindBodyWithJSON(&req)
+	err := c.ShouldBind(&req)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": err.Error(),
@@ -188,11 +204,31 @@ func CreateRealisasiWeek(c *gin.Context) {
 		return
 	}
 
+	EvidenceFile, _ := c.FormFile("evidence")
+	uploadDir := "uploads/realisasi"
+	_ = os.MkdirAll(uploadDir, os.ModePerm)
+
+	saveUploaded := func(file *multipart.FileHeader) *string {
+		if file == nil {
+			return nil
+		}
+
+		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
+		path := filepath.Join(uploadDir, filename)
+
+		if err := c.SaveUploadedFile(file, path); err != nil {
+			return nil
+		}
+		return &path
+	}
+
+	EvidencePath := saveUploaded(EvidenceFile)
+
 	week := models.RealisasiWeek{
 		RealisasiItemId: req.RealisasiItemId,
 		WeekNumber: req.WeekNumber,
 		Value: req.Value,
-		Evidence: req.Evidence,
+		Evidence: EvidencePath,
 	}
 
 	err = config.DB.Create(&week).Error

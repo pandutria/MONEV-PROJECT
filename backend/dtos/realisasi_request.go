@@ -16,10 +16,10 @@ type CreateRealisasiItemRequest struct {
 }
 
 type CreateRealisasiWeekRequest struct {
-	RealisasiItemId uint     `json:"realisasi_item_id" binding:"required"`
-	WeekNumber      int      `json:"week_number" binding:"required,min=1"`
-	Value           float64  `json:"value" binding:"required"`
-	Evidence        *string  `json:"evidence"`
+	RealisasiItemId uint     `form:"realisasi_item_id" binding:"required"`
+	WeekNumber      int      `form:"week_number" binding:"required,min=1"`
+	Value           float64  `form:"value" binding:"required"`
+	// Evidence        *string  `json:"evidence"`
 }
 
 type UpdateRealisasiWeekRequest struct {
