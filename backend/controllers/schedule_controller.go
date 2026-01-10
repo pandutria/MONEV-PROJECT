@@ -102,13 +102,13 @@ func DeleteSchedule(c *gin.Context) {
 	err := config.DB.Delete(&schedule).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delete data failed",
+			"message": "Menghapus data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data success",
+		"message": "Menghapus data berhasil",
 		"data": schedule,
 	})
 }
@@ -117,7 +117,7 @@ func GetAllScheduleItem(c *gin.Context) {
 	var item []models.ScheduleItem
 	config.DB.Preload("Weeks").Order("number ASC").Find(&item)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data success",
+		"message": "Mengambil data berhasil",
 		"data": item,
 	})
 }
@@ -144,13 +144,13 @@ func CreateScheduleItem(c *gin.Context) {
 	err = config.DB.Create(&item).Error 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Create data failed",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Create data success",
+		"message": "Membuat data berhasil",
 		"data": item,
 	})
 }
@@ -164,7 +164,7 @@ func DeleteScheduleItem(c *gin.Context) {
 	err := config.DB.Where("ScheduleItemId = ?", id).Delete(&week).Error 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delete data faield",
+			"message": "Menghapus data gagal!",
 		})
 		return
 	}
@@ -172,13 +172,13 @@ func DeleteScheduleItem(c *gin.Context) {
 	err = config.DB.Delete(&item).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delete data failed",
+			"message": "Menghapus data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data succes",
+		"message": "Menghapus data berhasil",
 		"data": item,
 	})
 }
@@ -190,13 +190,13 @@ func GetWeekScheduleByScheduleItem(c *gin.Context) {
 	err := config.DB.Where("schedule_item_id = ?", id).Order("week_number ASC").Find(&week).Error
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
-			"message": "Get data failed",
+			"message": "Mengambil data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data success",
+		"message": "Mengambil data berhasil",
 		"data": week,
 	})	
 }
@@ -221,13 +221,13 @@ func CreateWeekSchedule(c *gin.Context) {
 	err = config.DB.Create(&week).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Create data failed",
+			"message": "Membuat data gagal!",
 		})
 		return
 	} 
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Create data success",
+		"message": "Membuat data berhasil",
 		"data": week,
 	})
 }

@@ -117,7 +117,7 @@ func CreateTender(c *gin.Context) {
 	err = config.DB.Create(&tender).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Create data failed",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
@@ -125,7 +125,7 @@ func CreateTender(c *gin.Context) {
 	config.DB.Preload("User.Role").Preload("SelectedPpk.Role").Find(&tender)
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Create data success",
+		"message": "Membuat data berhasil",
 		"data": tender,
 	})
 }
@@ -203,7 +203,7 @@ func UpdateTender(c *gin.Context) {
 	err = config.DB.Save(&tender).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "update data failed",
+			"message": "Mengubah data gagal!",
 		})
 		return
 	}
@@ -211,7 +211,7 @@ func UpdateTender(c *gin.Context) {
 	config.DB.Preload("User.Role").Preload("SelectedPpk.Role").Find(&tender)
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Update data success",
+		"message": "Mengubah data berhasil",
 		"data": tender,
 	})
 }
@@ -224,13 +224,13 @@ func DeleteTender(c *gin.Context) {
 	err := config.DB.Delete(&tender).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delete data failed",
+			"message": "Menghapus data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data success",
+		"message": "Menghapus data berhasil",
 		"data": tender,
 	})
 }

@@ -17,7 +17,7 @@ func GetAllRealisasi(c *gin.Context) {
 	var header []models.RealisasiHeader
 	config.DB.Find(&header)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data success",
+		"message": "Membuat data berhasil",
 		"data": header,
 	})
 }
@@ -53,13 +53,13 @@ func CreateRealisasi(c *gin.Context) {
 	err = config.DB.Create(&header).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Create data faield",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Create data success",
+		"message": "Membuat data berhasil",
 		"data": header,
 	})
 }
@@ -84,13 +84,13 @@ func UpdateRealisasi(c *gin.Context) {
 	err = config.DB.Save(&header).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Update data failed",
+			"message": "Memperbarui data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Update data success",
+		"message": "Membuat data berhasil",
 		"data": header,
 	})
 }
@@ -104,13 +104,13 @@ func DeleteRealisasi(c *gin.Context) {
 	err := config.DB.Delete(&header).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delete data failed",
+			"message": "Membuat data gagal",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data success",
+		"message": "Membuat data berhasil",
 		"data": header,
 	})
 }
@@ -123,13 +123,13 @@ func GetRealisasiItemByHeader(c *gin.Context) {
 	err := config.DB.Where("realisasi_header_id = ?", id).Find(&week).Error
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Get data failed",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data succes",
+		"message": "Membuat data berhasil",
 		"data": week,
 	})
 }
@@ -153,13 +153,13 @@ func CreateRealisasiItem(c *gin.Context) {
 	err = config.DB.Create(&item).Error
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
-			"message": "Delete data failed",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Create data success",
+		"message": "Membuat data berhasil",
 		"data": item,
 	})
 }
@@ -173,13 +173,13 @@ func DeleteRealisasiItem(c *gin.Context) {
 	err := config.DB.Delete(&item).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delete data failed",
+			"message": "Mengahapus data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data success",
+		"message": "Mengahapus data berhasil",
 		"data": item,
 	})
 }
@@ -188,7 +188,7 @@ func GetAllRealisasiWeek(c *gin.Context) {
 	var week []models.RealisasiWeek
 	config.DB.Find(&week)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data succes",
+		"message": "Mengambil data berhasil",
 		"data": week,
 	})
 }
@@ -234,13 +234,13 @@ func CreateRealisasiWeek(c *gin.Context) {
 	err = config.DB.Create(&week).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Create data failed",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Create data success",
+		"message": "Membuat data berhasil",
 		"data": week,
 	})
 }
@@ -255,13 +255,13 @@ func DeleteRealisasiWeek(c *gin.Context) {
 	err := config.DB.Delete(&week).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delete data failed",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data success",
+		"message": "Menmbuat data berhasil",
 		"data": week,
 	})
 }
