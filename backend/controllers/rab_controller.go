@@ -14,7 +14,7 @@ func GetAllRabHeader(c *gin.Context) {
 	var header []models.RabHeader
 	config.DB.Preload("CreatedBy.Role").Preload("RabDetails").Find(&header)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data success",
+		"message": "Mengambil data berhasil",
 		"data": header,
 	})
 }
@@ -25,7 +25,7 @@ func GetRabHeaderById(c *gin.Context) {
 	var header models.RabHeader
 	config.DB.Preload("CreatedBy.Role").First(&header, id)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data success",
+		"message": "Mengambil data berhasil",
 		"data": header,
 	})
 }
@@ -64,7 +64,7 @@ func CreateRabHeader(c *gin.Context) {
 	err = config.DB.Create(&header).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Create data failed",
+			"message": "Membuat data gagal",
 		})
 		return
 	}
@@ -72,7 +72,7 @@ func CreateRabHeader(c *gin.Context) {
 	config.DB.Preload("RabDetails").Preload("CreatedBy.Role").Find(&header)
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Create data success",
+		"message": "Membuat data berhasil",
 		"data": &header,
 	})
 }
@@ -90,7 +90,7 @@ func UpdateRabHeader(c *gin.Context) {
 	err := config.DB.Save(&header).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Update data failed",
+			"message": "Memperbarui data gagal!",
 		})
 		return
 	}
@@ -98,7 +98,7 @@ func UpdateRabHeader(c *gin.Context) {
 	// config.DB.Preload("RabHeader").Find(&header)
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Update data succes",
+		"message": "Memperbarui data berhasil",
 		"data": header,
 	})
 }
@@ -111,11 +111,11 @@ func DeleteRabHeader(c *gin.Context) {
 	err := config.DB.Delete(&header).Error
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Delete data failed",
+			"message": "Menghapus data gagal!",
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data success",
+		"message": "Menghapus data berhasil",
 		"data": &header,
 	})
 }
@@ -126,7 +126,7 @@ func GetAllRabDetail(c *gin.Context) {
 	var detail []models.RabDetail
 	config.DB.Where("rab_header_id = ?", headerId).Find(&detail)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data success",
+		"message": "Mengambil data berhasil",
 		"data": detail,
 	})
 }
@@ -147,13 +147,13 @@ func CreateRabDetail(c *gin.Context) {
 	err := config.DB.Save(&detail).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Create data faield",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Create data succes",
+		"message": "",
 		"data": detail,
 	})
 }

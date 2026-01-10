@@ -36,13 +36,13 @@ func CreatePokjaGroup(c *gin.Context) {
 	err = config.DB.Create(&group).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H {
-			"message": "Create data failed!",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Create data succes",
+		"message": "Membuat data berhasil",
 		"data": group,
 	})
 }
@@ -66,13 +66,13 @@ func UpdatePokjaGroup(c *gin.Context) {
 	err = config.DB.Save(&group).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H {
-			"message": "Create data failed!",
+			"message": "Memperbarui data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Update data succes",
+		"message": "Memperbarui data berhasil",
 		"data": group,
 	})
 }
@@ -86,13 +86,13 @@ func DeletePokjaGroups(c *gin.Context) {
 	err := config.DB.Delete(&group).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delere data failed",
+			"message": "Mengahapus dara gagal!",
 		})
 		return
 	}
 	
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data success",
+		"message": "Menghapus data berhasil",
 		"data": group,
 	})
 }
