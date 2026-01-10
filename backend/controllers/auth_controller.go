@@ -48,7 +48,7 @@ func Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Login successfully!",
+		"message": "Masuk berhasil!",
 		"access_token": token,
 		"token_type": "Bearer",
 		"data": gin.H{
@@ -64,7 +64,7 @@ func Me(c *gin.Context) {
 	
 	if !isNull {
 		c.JSON(http.StatusUnauthorized, gin.H {
-			"message": "Unauthorized",
+			"message": "Penggunaa harus login terlebih dahulu!",
 		})
 		return
 	}
