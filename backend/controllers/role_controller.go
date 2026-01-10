@@ -13,7 +13,7 @@ func ShowRole(c *gin.Context) {
 	var role []models.Role
 	config.DB.Find(&role)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data successfully",
+		"message": "Mengambil data berhasil",
 		"data": role,
 	})
 	return
@@ -37,13 +37,13 @@ func CreateRole(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H {
-			"message": "Create role failed!",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H {
-		"message": "Create data success!",
+		"message": "Membuat data berhasil",
 		"data": role,
 	})
 }
@@ -60,26 +60,19 @@ func UpdateRole(c *gin.Context) {
 	}
 
 	var role models.Role
-	err := config.DB.First(&role, roleId).Error
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"message": "Data not found",
-		})
-		return
-	}
-
+	config.DB.First(&role, roleId)
 	role.Name = req.Name
 
-	err = config.DB.Save(&role).Error	
+	err := config.DB.Save(&role).Error	
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H {
-			"message": "Create data failed!",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H {
-		"message": "Create data success!",
+		"message": "Membuat data berhasil",
 		"data": role,
 	})
 }
@@ -93,13 +86,13 @@ func DeleteRole(c *gin.Context) {
 	err := config.DB.Delete(&role).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delete data failed!",
+			"message": "Menghapus data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data success",
+		"message": "Mengahpus data berhasil",
 		"data": role,
 	})
 }

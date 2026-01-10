@@ -13,7 +13,7 @@ func GetAllUserPokja(c *gin.Context) {
 	var pokja []models.UserPokjaGroups
 	config.DB.Preload("User.Role").Preload("PokjaGroup").Find(&pokja)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Get data success",
+		"message": "Mengambil data berhasil",
 		"data": pokja,
 	})
 }
@@ -37,13 +37,13 @@ func CreateUserPokja(c *gin.Context) {
 	err = config.DB.Create(&pokja).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Create data failed",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Create data success",
+		"message": "Membuat data berhasil",
 		"data": pokja,
 	})
 }
@@ -68,13 +68,13 @@ func UpdateUserPokja(c *gin.Context) {
 	err = config.DB.Save(&pokja).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Update data failed",
+			"message": "Memperbarui data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Update data success",
+		"message": "Memperbarui data berhasil",
 		"data": pokja,
 	})
 }
@@ -88,13 +88,13 @@ func DeleteUserPokja(c *gin.Context) {
 	err := config.DB.Delete(&pokja).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delete data failed",
+			"message": "Menghapus data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data success",
+		"message": "Menghapus data berhasil",
 		"data": pokja,
 	})
 }

@@ -153,7 +153,7 @@ func CreateRabDetail(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Membuat data ",
+		"message": "Membuat data berhasil",
 		"data": detail,
 	})
 }
@@ -167,13 +167,13 @@ func DeleteRabDetail(c *gin.Context) {
 	err := config.DB.Delete(&detail).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Delete data failed",
+			"message": "Membuat data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Delete data success",
+		"message": "Membuat data berhasil",
 		"data": detail,
 	})
 }
