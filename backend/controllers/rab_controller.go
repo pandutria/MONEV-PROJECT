@@ -2,71 +2,178 @@ package controllers
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
+	
 	"github.com/optimus/backend/config"
+	"github.com/optimus/backend/dtos"
 	"github.com/optimus/backend/models"
 )
 
+func GetAllRabHeader(c *gin.Context) {
+	var header []models.RabHeader
+	config.DB.Preload("CreatedBy.Role").Preload("RabDetails").Find(&header)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Get data success",
+		"data": header,
+	})
+}
 
-func GetTop10(c *gin.Context) {
-	var headers []models.Rab_Header
+func GetRabHeaderById(c *gin.Context) {
+	id := c.Param("id")
 
-	err := config.DB.Preload("Rab_Detail").Find(&headers).Error
+	var header models.RabHeader
+	config.DB.Preload("CreatedBy.Role").First(&header, id)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Get data success",
+		"data": header,
+	})
+}
+
+func CreateRabHeader(c *gin.Context) {
+	var req dtos.CreateRabHeaderRequest
+	userId, isNull := c.Get("user_id")
+
+	if !isNull {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Pengguna harus login terlebih dahulu!",
+		})
+		return;
+	}
+
+	err := c.ShouldBindBodyWithJSON(&req)
 	if err != nil {
-		c.JSON(404, gin.H{"message": "Data not found!"})
+		c.JSON(http.StatusConflict, gin.H{
+			"message": err.Error(),
+		})
 		return
 	}
 
-	type Top10Response struct {
-		TahunAnggaran   int       `json:"tahun_anggaran"`
-		Satker          string    `json:"satker"`
-		KodeTender      string    `json:"kode_tender"`
-		NamaPaket       string    `json:"nama_paket"`
-		TanggalMulai    *time.Time `json:"tanggal_mulai"`
-		TanggalSelesai  *time.Time `json:"tanggal_selesai"`
-		DurasiPekerjaan float64   `json:"durasi_pekerjaan"`
+	var user models.User
+	config.DB.First(&user, userId)
+
+	header := models.RabHeader{
+		TenderId: req.TenderId,
+		Program: req.Program,
+		StartDate: req.StartDate,
+		EndDate: req.EndDate,
+		CreatedById: &user.Id,
+		RevisionCount: 0,
 	}
 
-	var response []Top10Response
-
-	for _, h := range headers {
-		var totalPerencanaan float64
-		var totalAktual float64
-
-		for _, d := range h.Rab_Detail {
-			if d.SubTotal != nil {
-				totalPerencanaan += *d.SubTotal
-			}
-			if d.SubTotal != nil {
-				totalAktual += *d.SubTotal
-			}
-		}
-
-		var durasi float64
-		if h.StartedDate != nil && h.FinishedDate != nil {
-			durasi = h.FinishedDate.Sub(*h.StartedDate).Hours() / 24
-		}
-
-		respItem := Top10Response{
-			TahunAnggaran:   h.BudgetYear,
-			Satker:          h.SatkerName,
-			KodeTender:      h.RupCode,
-			NamaPaket:       h.ActivityName,
-			TanggalMulai:    h.StartedDate,
-			TanggalSelesai:  h.FinishedDate,
-			DurasiPekerjaan: durasi,
-		}
-
-		response = append(response, respItem)
+	err = config.DB.Create(&header).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Create data failed",
+		})
+		return
 	}
 
-	if len(response) > 10 {
-		response = response[:10]
+	config.DB.Preload("RabDetails").Preload("CreatedBy.Role").Find(&header)
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Create data success",
+		"data": &header,
+	})
+}
+
+func UpdateRabHeader(c *gin.Context) {
+	id := c.Param("id")
+	var req dtos.UpdateRabHeaderRequest
+	c.ShouldBindBodyWithJSON(&req)
+
+	var header models.RabHeader
+	config.DB.First(&header, id)
+	header.RevisionText = req.RevisionText
+	header.RevisionCount += 1
+
+	err := config.DB.Save(&header).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Update data failed",
+		})
+		return
+	}
+
+	// config.DB.Preload("RabHeader").Find(&header)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Update data succes",
+		"data": header,
+	})
+}
+
+func DeleteRabHeader(c *gin.Context) {
+	id := c.Param("id")
+
+	var header models.RabHeader
+	config.DB.First(&header, id)
+	err := config.DB.Delete(&header).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Delete data failed",
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Delete data success",
+		"data": &header,
+	})
+}
+
+func GetAllRabDetail(c *gin.Context) {
+	headerId := c.Query("headerId")
+
+	var detail []models.RabDetail
+	config.DB.Where("rab_header_id = ?", headerId).Find(&detail)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Get data success",
+		"data": detail,
+	})
+}
+
+func CreateRabDetail(c *gin.Context) {
+	var req dtos.CreateRabDetailRequest
+	c.ShouldBindBodyWithJSON(&req)
+
+	detail := models.RabDetail{
+		RabHeaderId: req.RabHeaderId,
+		Description: req.Description,
+		Volume: req.Volume,
+		Unit: req.Unit,
+		UnitPrice: req.UnitPrice,
+		Total: req.Total,
+	}
+
+	err := config.DB.Save(&detail).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Create data faield",
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Create data succes",
+		"data": detail,
+	})
+}
+
+func DeleteRabDetail(c *gin.Context) {
+	id := c.Param("id")
+
+	var detail models.RabDetail
+	config.DB.First(&detail, id)
+
+	err := config.DB.Delete(&detail).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Delete data failed",
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": response,
+		"message": "Delete data success",
+		"data": detail,
 	})
 }
