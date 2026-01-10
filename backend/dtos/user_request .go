@@ -2,7 +2,7 @@ package dtos
 
 type LoginRequest struct {
 	Email string `json:"email" binding:"required,email"`
-	Passw string `json:"passw" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 type CreateUserRequest struct {

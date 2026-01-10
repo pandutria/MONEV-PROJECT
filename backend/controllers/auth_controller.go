@@ -15,7 +15,7 @@ func Login(c *gin.Context) {
 	var req dtos.LoginRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, 
+		c.JSON(http.StatusConflict, 
 			gin.H{
 				"message": err.Error(),
 			})
@@ -26,15 +26,15 @@ func Login(c *gin.Context) {
 	err := config.DB.Where("email = ?", req.Email).First(&user).Error
 	
 	if err != nil {
-		c.JSON(401, gin.H{
-			"message": "Email or password is not valid!",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Email atau password tidak benar!",
 		},)
 		return
 	}
 
-	if !utils.CompareSHA512(req.Passw, user.Password) {
+	if !utils.CompareSHA512(req.Password, user.Password) {
 		c.JSON(401, gin.H{
-			"message": "Email or password is not valid!",
+			"message": "Email atau password tidak benar!",
 		})
 		return
 	}
@@ -42,7 +42,7 @@ func Login(c *gin.Context) {
 	token, err := utils.GenerateJWT(user.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Failed generate token",
+			"message": "Membuat token gagal",
 		})
 		return
 	}
@@ -63,7 +63,7 @@ func Me(c *gin.Context) {
 	userId, isNull := c.Get("user_id")
 	
 	if !isNull {
-		c.JSON(401, gin.H {
+		c.JSON(http.StatusUnauthorized, gin.H {
 			"message": "Unauthorized",
 		})
 		return
@@ -71,17 +71,17 @@ func Me(c *gin.Context) {
 
 	var user models.User
 
-	err := config.DB.First(&user, userId).Error
+	err := config.DB.Preload("Role").First(&user, userId).Error
 
 	if err != nil {
-		c.JSON(404, gin.H {
-			"message": "User not found!",
+		c.JSON(http.StatusNotFound, gin.H {
+			"message": "User tidak di temukan!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H {
-		"message": "Get data successfully",
+		"message": "Mengambil data berhasil",
 		"data": user,
 	})
 }
