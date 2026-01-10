@@ -160,16 +160,16 @@ func DeleteScheduleItem(c *gin.Context) {
 	var item models.ScheduleItem
 	config.DB.First(&item, id)
 
-	// var week []models.ScheduleWeek
-	// err := config.DB.Where("ScheduleItemId = ?", id).Delete(&week).Error 
-	// if err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{
-	// 		"message": "Delete data faield",
-	// 	})
-	// 	return
-	// }
+	var week []models.ScheduleWeek
+	err := config.DB.Where("ScheduleItemId = ?", id).Delete(&week).Error 
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Delete data faield",
+		})
+		return
+	}
 
-	err := config.DB.Delete(&item).Error
+	err = config.DB.Delete(&item).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Delete data failed",
