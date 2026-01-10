@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
+import { SwalMessage } from '../utils/SwalMessage';
+import API from '../server/API';
 
 export default function useAuthHooks() {
     const [email, setEmail] = useState<string>('');
@@ -26,14 +28,39 @@ export default function useAuthHooks() {
         setCaptchaCode(generateCaptcha());
     }, []);
 
-    const handleLogin = (): void => {
+    const handleLogin = async() => {
         if (captchaInput !== captchaCode) {
-            alert('Kode CAPTCHA salah!');
+            SwalMessage({
+                title: "Gagal!",
+                text: "Kode Capctha Salah!",
+                type: "error"
+            })
             refreshCaptcha();
             return;
         }
 
-        alert('Form siap diproses! Silakan tambahkan logic login Anda.');
+        try {
+            const response = await API.post('/auth/login', {
+                email,
+                password
+            });
+
+            const token = response.data.access_token;
+            const message = response.data.message;
+
+            localStorage.setItem("token", token);
+            SwalMessage({
+                title: "Berhasil!",
+                text: message,
+                type: 'success'
+            })
+        } catch (error: any) {
+            SwalMessage({
+                title: "Gagal",
+                text: error.response.data.message,
+                type: 'error'
+            })
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

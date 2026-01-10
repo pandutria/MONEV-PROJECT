@@ -120,7 +120,7 @@ export default function Login() {
           </div>
           <button
             type="button"
-            onClick={handleLogin}
+            onClick={() => handleLogin()}
             className="w-full text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             style={{ backgroundColor: '#f60' }}
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ff7a1a'}

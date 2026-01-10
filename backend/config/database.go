@@ -10,7 +10,7 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	dsn := "postgres://postgres:postgres@localhost:5432/monev?sslmode=disable"
+	dsn := "postgres://postgres:rayzen7@100.74.236.13:5432/postgres?sslmode=disable"
 
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 

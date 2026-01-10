@@ -14,7 +14,6 @@ import (
 	"github.com/optimus/backend/utils"
 )
 
-
 func ShowUser(c *gin.Context) {
 	var users []models.User
 	config.DB.Preload("Role").Find(&users)
@@ -82,15 +81,15 @@ func CreateUser(c *gin.Context) {
 		PhoneNumber:     req.PhoneNumber,
 		OpdOrganization: req.OpdOrganization,
 
-		SkNumber:          req.SkNumber,
-		SkFile:            skPath,
-		PbjNumber:         req.PbjNumber,
-		PbjFile:           pbjPath,
-		CompetenceNumber:  *req.CompetenceNumber,
-		CompetenceFile:    competencePath,
-		PhotoFile:         photoPath,
-		SatkerCode:        req.SatkerCode,
-		GpId:              req.GpId,
+		SkNumber:         req.SkNumber,
+		SkFile:           skPath,
+		PbjNumber:        req.PbjNumber,
+		PbjFile:          pbjPath,
+		CompetenceNumber: *req.CompetenceNumber,
+		CompetenceFile:   competencePath,
+		PhotoFile:        photoPath,
+		SatkerCode:       req.SatkerCode,
+		GpId:             req.GpId,
 	}
 
 	err = config.DB.Create(&user).Error
@@ -104,15 +103,15 @@ func CreateUser(c *gin.Context) {
 	var createdUser models.User
 
 	if err := config.DB.
-    	Preload("Role").First(&createdUser, user.Id).Error; err != nil {
-    	c.JSON(http.StatusInternalServerError, gin.H{
-        	"message": err.Error(),
-    	})
-    	return
+		Preload("Role").First(&createdUser, user.Id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Create data success",
-		"data": createdUser,
+		"data":    createdUser,
 	})
 }
