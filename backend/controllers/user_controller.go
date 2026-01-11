@@ -15,10 +15,13 @@ import (
 )
 
 
-func ShowUser(c *gin.Context) {
+func GetAllUser(c *gin.Context) {
 	var users []models.User
-	config.DB.Preload("Role").Find(&users)
-	c.JSON(http.StatusOK, users)
+	config.DB.Preload("Role").Preload("PokjaGroup").Find(&users)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Berhasil mengambil data",
+		"data": users,
+	})
 }
 
 func CreateUser(c *gin.Context) {
