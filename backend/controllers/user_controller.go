@@ -141,7 +141,6 @@ func GetUserById(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 	var req dtos.CreateUserRequest
-
 	id, ok := c.Get("user_id")
 	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{
