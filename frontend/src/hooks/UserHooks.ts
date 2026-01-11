@@ -26,10 +26,16 @@ export default function useUserHooks() {
     const [listUser, setListUser] = useState<UserProps[]>([]);
 
     useEffect(() => {
-        const fetchUser = async() => {
+        const fetchUser = async () => {
             try {
                 const response = await API.get("/user");
-                setListUser(SortDescById(response.data.data));
+                const users = SortDescById(response.data.data).map((item: any) => ({
+                    ...item,
+                    role: item.role?.name || '-',
+                    status: item.is_active ? "Aktif" : "Tidak Aktif"
+                }));
+
+                setListUser(users);
             } catch (error) {
                 console.error(error);
             }
@@ -68,7 +74,7 @@ export default function useUserHooks() {
             if (skFile) formData.append("sk_file", skFile);
             if (pbjFile) formData.append("pbj_file", pbjFile);
             if (competenceFile) formData.append("competence_file", competenceFile);
-            if (filePhoto) formData.append("photo", filePhoto);
+            if (filePhoto) formData.append("file_photo", filePhoto);
 
             const response = await API.post("/user/create", formData);
             const message = response.data.message;
@@ -125,6 +131,29 @@ export default function useUserHooks() {
         if (name === "photo_file") setFilePhoto(files[0]);
     };
 
+    const handleShowUser = (data: UserProps) => {
+        setEmail(data?.email ?? '');
+        setPassword('');
+        setRoleId(data?.role_id?.toString() ?? '');
+        setFullname(data?.fullname ?? '');
+        setNik(data?.nik ?? '');
+        setNip(data?.nip ?? '');
+        setPokjaGroupId(data?.pokja_group_id?.toString() ?? '');
+        setAddress(data?.address ?? '');
+        setPhoneNumber(data?.phone_number ?? '');
+        setOpdOrganization(data?.opd_organization ?? '');
+        setGroup(data?.group ?? '');
+        setSkNumber(data?.sk_number ?? '');
+        setPbjNumber(data?.pbj_number ?? '');
+        setCompotenceNumber(data?.competence_number ?? '');
+
+        setSkFile(null);
+        setPbjFile(null);
+        setCompotenceFile(null);
+        setFilePhoto(null);
+    };
+
+
 
     return {
         email,
@@ -148,7 +177,8 @@ export default function useUserHooks() {
         handleUserPost,
         handleChangeUser,
         handleFileChangeUser,
-        listUser
+        listUser,
+        handleShowUser
     };
 
 }

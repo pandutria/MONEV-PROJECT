@@ -22,6 +22,7 @@ declare global {
 
     phone_number?: string
     opd_organization?: string
+    pokja_group_id: pokjaGroupProps
 
     sk_number?: string
     pbj_number?: string
@@ -29,6 +30,11 @@ declare global {
 
     satker_code?: number
     gp_id?: number
+
+    sk_file: string;
+    pbj_file: string;
+    competence_file: string;
+    file_photo: string;
   }
 
   export interface pokjaGroupProps {

@@ -24,17 +24,25 @@ export default function AdminManajemenPengguna() {
 
     const columns = [
         {
-            key: 'no',
+            key: 'id',
             label: 'No'
         },
         {
-            key: 'nama',
+            key: 'fullname',
             label: "Nama Pengguna"
         },
         {
-            key: 'jabatan',
+            key: 'email',
+            label: "Email Pengguna"
+        },
+        {
+            key: 'role',
             label: 'Jabatan'
-        }
+        },
+        {
+            key: 'status',
+            label: "Status"
+        },
     ];
 
     useEffect(() => {
@@ -51,8 +59,19 @@ export default function AdminManajemenPengguna() {
         }
 
         const filteringUserData = () => {
-            const dataFilter = listUser?.filter((item: UserProps) => {
-                const filter = search ? item.fullname.toLowerCase().includes(search.toLowerCase()) : true;
+            const dataFilter = listUser.filter((item: UserProps) => {
+                const keyword = search.toLowerCase();
+                const filter = search
+                    ? [
+                        item.fullname,
+                        item.email,
+                        item.role?.name,
+                    ]
+                        .join(' ')
+                        .toLowerCase()
+                        .includes(keyword)
+                    : true;
+
                 return filter;
             });
 
@@ -63,21 +82,36 @@ export default function AdminManajemenPengguna() {
         fetchPreview();
         filteringUserData();
     }, [selectedEdit, selectPreview, listUser, search]);
-    
+
     if (loading) {
-        return <LoadingSpinner/>
+        return <LoadingSpinner />
     }
 
     if (user?.role.name != "admin" || !user) {
-        return <Navigate to="/" replace/>
+        return <Navigate to="/" replace />
     }
 
     return (
         <div>
-            <Navbar/>
-            <AdminTambahUserModal isOpen={showModalAdd} onClose={() => setShowModalAdd(false)}/>
-            <AdminLihatUserModal isOpen={showModalPreview} onClose={() => setShowModalPreview(false)} data={selectPreview}/>
-            <AdminUbahUserModal isOpen={showModalEdit} onClose={() => setShowModalEdit(false)} data={selectedEdit}/>
+            <Navbar />
+            <AdminTambahUserModal
+                isOpen={showModalAdd}
+                onClose={() => setShowModalAdd(false)}
+            />
+            <AdminLihatUserModal
+                isOpen={showModalPreview}
+                onClose={() => setShowModalPreview(false)}
+                data={selectPreview}
+            />
+            <AdminUbahUserModal
+                isOpen={showModalEdit}
+                onClose={() => {
+                    setShowModalEdit(false);
+                    setSelectedEdit(null);
+                }
+                }
+                data={selectedEdit}
+            />
 
             <div className="pt-28" data-aos="fade-up" data-aos-duration="1000">
                 <TableHeader

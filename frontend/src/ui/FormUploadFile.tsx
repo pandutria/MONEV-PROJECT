@@ -6,6 +6,7 @@ interface FormUploadFileProps {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     value?: File | null;
     name?: string;
+    disabled?: boolean;
 }
 
 export default function FormUploadFile({
@@ -13,6 +14,7 @@ export default function FormUploadFile({
     onChange,
     value,
     name,
+    disabled=false
 }: FormUploadFileProps) {
     return (
         <div>
@@ -28,6 +30,7 @@ export default function FormUploadFile({
                     className="hidden"
                     accept=".pdf,.jpg,.jpeg,.png"
                     onChange={onChange}
+                    disabled={disabled}
                 />
 
                 <label

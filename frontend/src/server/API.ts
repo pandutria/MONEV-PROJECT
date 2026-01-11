@@ -5,3 +5,4 @@ const API = axios.create({
 });
 
 export default API;
+export const BASE_URL_FILE = "http://localhost:8000";
