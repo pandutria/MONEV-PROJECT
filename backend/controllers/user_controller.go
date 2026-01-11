@@ -141,7 +141,7 @@ func GetUserById(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 	var req dtos.CreateUserRequest
-	id := c.Param("user_id")
+	id := c.Param("id")
 
 	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
