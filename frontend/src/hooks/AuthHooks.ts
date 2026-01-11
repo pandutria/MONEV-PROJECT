@@ -54,6 +54,10 @@ export default function useAuthHooks() {
                 text: message,
                 type: 'success'
             })
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
         } catch (error: any) {
             SwalMessage({
                 title: "Gagal",
@@ -62,6 +66,19 @@ export default function useAuthHooks() {
             })
         }
     };
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        SwalMessage({
+            type: 'success',
+            title: "Berhasil1",
+            text: "Keluar Berhasil!"
+        });
+
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -77,6 +94,7 @@ export default function useAuthHooks() {
         captchaCode,
         refreshCaptcha,
         captchaInput,
-        setCaptchaInput
+        setCaptchaInput,
+        handleLogout
     }
 }

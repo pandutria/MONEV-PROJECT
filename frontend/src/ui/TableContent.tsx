@@ -32,7 +32,7 @@ export default function TableContent({
     onEdit,
     onPreview,
     onSelectedChange,
-    idKey = 'no',
+    idKey = 'id',
     onSelectedIdsChange,
     onSelectedDataChange
 }: TableContentProps) {
@@ -44,11 +44,13 @@ export default function TableContent({
             setSelectedIds(allIds);
             onSelectedChange?.(data);
 
-            onSelectedIdsChange?.(allIds); 
+            onSelectedIdsChange?.(allIds);
             onSelectedDataChange?.(data);
         } else {
             setSelectedIds([]);
             onSelectedChange?.([]);
+            onSelectedIdsChange?.([]);
+            onSelectedDataChange?.([]);
         }
     };
 
@@ -70,7 +72,7 @@ export default function TableContent({
         onSelectedIdsChange?.(newSelectedIds);
 
         const selectedData = data.filter(d =>
-          newSelectedIds.includes(d[idKey])
+            newSelectedIds.includes(d[idKey])
         );
         onSelectedDataChange?.(selectedData);
     };
@@ -140,7 +142,7 @@ export default function TableContent({
                                             key={column.key}
                                             className="px-6 py-4 font-poppins text-[12px] text-gray-700"
                                         >
-                                            {item[column.key]}
+                                            {column.key === 'id' ? index + 1 : item[column.key]}
                                         </td>
                                     ))}
                                     {(showEdit || showPreview || showSelect) && (

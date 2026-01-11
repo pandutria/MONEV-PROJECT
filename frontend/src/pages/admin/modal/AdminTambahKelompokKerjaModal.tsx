@@ -1,25 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { X } from 'lucide-react'
-import { useState } from 'react'
+import usePokjaGroupHooks from '../../../hooks/PokjaGroupHooks'
 
 interface TambahKelompokKerjaModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit?: (data: { namaKelompokKerja: string }) => void
 }
 
 export default function AdminTambahKelompokKerjaModal({
   isOpen,
   onClose,
-  onSubmit
 }: TambahKelompokKerjaModalProps) {
-  const [namaKelompokKerja, setNamaKelompokKerja] = useState('')
-
-  const handleSubmit = () => {
-    onSubmit?.({ namaKelompokKerja })
-    onClose()
-  }
-
+  const { pokjaGroupName, handlePokjaGroupChange, handlePokjaGroupPost } = usePokjaGroupHooks();
   if (!isOpen) return null
 
   return (
@@ -48,8 +39,9 @@ export default function AdminTambahKelompokKerjaModal({
           </label>
           <input
             type="text"
-            value={namaKelompokKerja}
-            onChange={(e) => setNamaKelompokKerja(e.target.value)}
+            value={pokjaGroupName}
+            name='pokja-group'
+            onChange={handlePokjaGroupChange}
             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
             placeholder="Masukkan nama kelompok kerja"
           />
@@ -57,7 +49,7 @@ export default function AdminTambahKelompokKerjaModal({
 
         <div className="flex justify-end gap-4 p-6 border-t border-gray-200">
           <button
-            onClick={handleSubmit}
+            onClick={() => handlePokjaGroupPost()}
             className="px-8 py-2.5 bg-primary hover:bg-transparent border-2 border-primary hover:text-primary text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
           >
             Simpan

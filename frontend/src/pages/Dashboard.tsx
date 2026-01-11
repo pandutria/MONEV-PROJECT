@@ -5,11 +5,11 @@ import BottomPackage from '../components/BottomPackage';
 import SearchData from '../components/SearchData';
 import PengadaanRecap from '../components/PengadaanRecap';
 
-export default function Dashboard() { 
+export default function Dashboard() {
 
   return (
     <div className="bg-white">
-      <Navbar type='guest'/>      
+      <Navbar/>
       <SearchData/>
       <LineChart/>
       <TopPackage/>

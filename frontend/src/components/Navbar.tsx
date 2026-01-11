@@ -1,18 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Menu, X, ChevronDown, User, LogOut } from 'lucide-react';
 import logo from "/image/logo/logo-monalisa.png";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import useAuthHooks from '../hooks/AuthHooks';
 
-interface NavbarProps {
-  type?: 'guest' | 'ppk' | 'pokja' | 'kepala' | 'admin';
-}
-
-export default function Navbar({ type = "guest" }: NavbarProps) {
+export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isLaporanOpen, setIsLaporanOpen] = useState<boolean>(false);
   const [isHasilOpen, setIsHasilOpen] = useState<boolean>(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  const { handleLogout } = useAuthHooks();
+  const type = user ? user.role.name : 'guest';
 
   const ppkLaporanItems = [
     { label: 'Rencana Anggaran', path: '/ppk/rencana-anggaran' },
@@ -48,10 +50,9 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
     { label: 'Kelompok Kerja', path: '/admin/kelompok-kerja' },
   ];
 
-  const handleLogout = () => {
-    navigate('/masuk');
-  };
-
+  if (loading) {
+    return;
+  }
   return (
     <nav className={`w-full px-4 md:px-8 shadow-lg fixed top-0 left-0 right-0 z-50 bg-white ${type == 'guest' ? 'py-3 md:py-6' : 'py-2 md:py-2'}`}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -315,10 +316,10 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                       <span className="font-poppins-medium text-primary text-sm">
-                        {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                       </span>
                     </div>
-                    <span className="font-poppins-medium text-black text-sm">John Doe</span>
+                    <span className="font-poppins-medium text-black text-sm">{user?.fullname}</span>
                   </div>
                   <ChevronDown className={`h-4 w-4 text-black transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
                 </button>
@@ -434,10 +435,10 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
               <div className="flex items-center gap-3 px-4 py-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                   <span className="font-poppins-medium text-primary text-sm">
-                    {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                   </span>
                 </div>
-                <span className="font-poppins-medium text-black text-sm">John Doe</span>
+                <span className="font-poppins-medium text-black text-sm">{user?.fullname}</span>
               </div>
 
               <button
@@ -547,10 +548,10 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
               <div className="flex items-center gap-3 px-4 py-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                   <span className="font-poppins-medium text-primary text-sm">
-                    {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                   </span>
                 </div>
-                <span className="font-poppins-medium text-black text-sm">John Doe</span>
+                <span className="font-poppins-medium text-black text-sm">{user?.fullname}</span>
               </div>
 
               <button
@@ -660,10 +661,10 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
               <div className="flex items-center gap-3 px-4 py-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                   <span className="font-poppins-medium text-primary text-sm">
-                    {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                   </span>
                 </div>
-                <span className="font-poppins-medium text-black text-sm">John Doe</span>
+                <span className="font-poppins-medium text-black text-sm">{user?.fullname}</span>
               </div>
 
               <button
@@ -743,10 +744,10 @@ export default function Navbar({ type = "guest" }: NavbarProps) {
               <div className="flex items-center gap-3 px-4 py-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                   <span className="font-poppins-medium text-primary text-sm">
-                    {"John Doe".split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    {user?.fullname.split(' ').map((n: any) => n[0]).join('').slice(0, 2)}
                   </span>
                 </div>
-                <span className="font-poppins-medium text-black text-sm">John Doe</span>
+                <span className="font-poppins-medium text-black text-sm">{user?.fullname}</span>
               </div>
 
               <button

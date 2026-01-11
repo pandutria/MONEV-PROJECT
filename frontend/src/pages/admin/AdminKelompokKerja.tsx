@@ -5,52 +5,68 @@ import TableContent from "../../ui/TableContent";
 import TableHeader from "../../ui/TableHeader";
 import AdminTambahKelompokKerjaModal from "./modal/AdminTambahKelompokKerjaModal";
 import AdminUbahKelompokKerjaModal from "./modal/AdminUbahKelompokKerjaModal";
+import usePokjaGroupHooks from "../../hooks/PokjaGroupHooks";
+import LoadingSpinner from "../../utils/LoadingSpinner";
 
 export default function AdminKelompokKerja() {
     const [selectedIds, setSelectedIds] = useState<any>([]);
     const [selectedEdit, setSelectedEdit] = useState<any>(null);
     const [showModalEdit, setShowModalEdit] = useState(false);
     const [showModalAdd, setShowModalAdd] = useState(false);
+    const [search, setSearch] = useState('');
+    const { pokjaGroup, handlePokjaGroupDelete } = usePokjaGroupHooks();
+    const [pokjaGroupFilter, setPokjaGroupFilter] = useState<pokjaGroupProps[]>([]);
     const columns = [
         {
-            key: 'no',
+            key: 'id',
             label: 'No'
         },
         {
-            key: 'kelompok',
+            key: 'name',
             label: "Kelompok Kerja"
         },        
-    ];
-
-    const data = [
-        {
-            no: 1,
-            kelompok: 'Kelompok Kerja 1',
-        },
-        {
-            no: 2,
-            kelompok: 'Kelompok Kerja 2',
-        },
-        {
-            no: 3,
-            kelompok: 'Kelompok Kerja 3',
-        },
     ];
 
     useEffect(() => {
         const fetchEdit = () => {
             if (selectedEdit) {
-                setShowModalEdit(true)
+                setShowModalEdit(true);
             }
         }
 
+        const filteringPokjaGroups = () => {
+            const filter = pokjaGroup.filter((item: pokjaGroupProps) => {
+                const dataFilter = search ? item.name.toLowerCase().includes(search.toLowerCase()) : true;
+                return dataFilter;
+            });
+
+            setPokjaGroupFilter(filter);
+        }
+
         fetchEdit();
-    }, [selectedEdit]);
+        filteringPokjaGroups();
+    }, [selectedEdit, search, pokjaGroup]);
+
+    if (!pokjaGroup) {
+        return <LoadingSpinner/>
+    }
+    
     return (
         <div>
-            <Navbar type="admin" />
-            <AdminTambahKelompokKerjaModal isOpen={showModalAdd} onClose={() => setShowModalAdd(false)}/>
-            <AdminUbahKelompokKerjaModal isOpen={showModalEdit} onClose={() => setShowModalEdit(false)} data={selectedEdit}/>
+            <Navbar/>
+            <AdminTambahKelompokKerjaModal 
+                isOpen={showModalAdd} 
+                onClose={() => setShowModalAdd(false)}
+            />
+            <AdminUbahKelompokKerjaModal 
+                isOpen={showModalEdit} 
+                onClose={() => {
+                        setShowModalEdit(false); 
+                        setSelectedEdit(null);
+                    }
+                } 
+                data={selectedEdit}
+            />
 
             <div className="pt-28" data-aos="fade-up" data-aos-duration="1000">
                 <TableHeader
@@ -58,17 +74,19 @@ export default function AdminKelompokKerja() {
                     showTambah={true}
                     showHapus={true}
                     type="pokja"
+                    searchValue={search}
+                    onSearchChange={(item) => setSearch(item)}
                     onTambahClick={() => setShowModalAdd(true)}
+                    onHapusClick={() => handlePokjaGroupDelete(selectedIds)}
                 />
                 <div className="p-6">
                     <TableContent
                         columns={columns}
-                        data={data}
+                        data={pokjaGroupFilter}
                         isSelect={true}
                         showEdit={true}
                         showPreview={false}
                         showSelect={false}
-                        idKey="no"
                         onEdit={(item) => setSelectedEdit(item)}
                         onSelectedIdsChange={(ids) => setSelectedIds(ids)}
                     />
