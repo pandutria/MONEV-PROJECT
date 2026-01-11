@@ -14,6 +14,7 @@ func SetupRoutes(r *gin.Engine) {
 		public.GET("/user/:id", controllers.GetUserById)
 		public.POST("/user/create", controllers.CreateUser)
 		public.PUT("/user/update/status/:id", controllers.UpdateStatus)
+		public.PUT("/user/update/:id", controllers.UpdateUser)
 
 		public.GET("/role", controllers.ShowRole)
 		public.POST("/role/create", controllers.CreateRole)
@@ -75,6 +76,5 @@ func SetupRoutes(r *gin.Engine) {
 		private.POST("/rab/create", controllers.CreateRabHeader)
 		private.POST("/schedule/create", controllers.CreateScheduleHeader)
 		private.POST("/realisasi/create", controllers.CreateRealisasi)
-		private.PUT("/user/update/:id", controllers.UpdateUser)
 	}
 }
