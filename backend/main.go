@@ -11,6 +11,8 @@ import (
 func main() {
 	r := gin.Default()
 
+	r.Static("/uploads", "./uploads")
+
 	config.ConnectDB()
 
 	config.DB.AutoMigrate(
