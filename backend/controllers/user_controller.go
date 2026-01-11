@@ -141,14 +141,7 @@ func GetUserById(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 	var req dtos.CreateUserRequest
-
-	id, ok := c.Get("user_id")
-	if !ok {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "Pengguna harus login terlebih dahulu",
-		})
-		return
-	}
+	id := c.Param("id")
 
 	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

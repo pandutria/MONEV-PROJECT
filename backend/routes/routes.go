@@ -14,7 +14,7 @@ func SetupRoutes(r *gin.Engine) {
 		public.GET("/user/:id", controllers.GetUserById)
 		public.POST("/user/create", controllers.CreateUser)
 		public.PUT("/user/update/status/:id", controllers.UpdateStatus)
-		public.PUT("/user/update", controllers.UpdateUser)
+		public.PUT("/user/update/:id", controllers.UpdateUser)
 
 		public.GET("/role", controllers.ShowRole)
 		public.POST("/role/create", controllers.CreateRole)
