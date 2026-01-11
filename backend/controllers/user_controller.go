@@ -125,7 +125,14 @@ func GetUserById(c *gin.Context) {
 	id := c.Param("id")
 
 	var user models.User
-	config.DB.Preload("Role").First(&user, id)
+	err := config.DB.Preload("Role").First(&user, id).Error
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{
+			"message": "Mengambil data gagal",
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data":    user,
@@ -134,16 +141,16 @@ func GetUserById(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 	var req dtos.CreateUserRequest
-	id, isNull := c.Get("user_id")
-	if !isNull {
+
+	id, ok := c.Get("user_id")
+	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Pengguna harus login terlebih dahulu",
 		})
 		return
 	}
 
-	err := c.ShouldBind(&req)
-	if err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -151,29 +158,37 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	var user models.User
-	err = config.DB.Where("email = ?", req.Email).First(&user, id).Error
-	if err == nil {
-		c.JSON(http.StatusConflict, gin.H{
-			"message": "Email sudah digunakan!",
+	if err := config.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "User tidak ditemukan",
 		})
 		return
 	}
 
-	skFile, _ := c.FormFile("sk_file")
-	pbjFile, _ := c.FormFile("pbj_file")
-	competenceFile, _ := c.FormFile("competence_file")
-	photoFile, _ := c.FormFile("file_photo")
+	if req.Email != "" {
+		var count int64
+		config.DB.Model(&models.User{}).
+			Where("email = ? AND id <> ?", req.Email, id).
+			Count(&count)
 
-	uploadDir := "uploads/users"
-	_ = os.MkdirAll(uploadDir, os.ModePerm)
+		if count > 0 {
+			c.JSON(http.StatusConflict, gin.H{
+				"message": "Email sudah digunakan!",
+			})
+			return
+		}
+	}
 
-	saveUploaded := func(file *multipart.FileHeader) *string {
-		if file == nil {
+	// upload file
+	saveUploaded := func(field string) *string {
+		file, err := c.FormFile(field)
+		if err != nil {
 			return nil
 		}
 
+		_ = os.MkdirAll("uploads/users", os.ModePerm)
 		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
-		path := filepath.Join(uploadDir, filename)
+		path := filepath.Join("uploads/users", filename)
 
 		if err := c.SaveUploadedFile(file, path); err != nil {
 			return nil
@@ -181,58 +196,56 @@ func UpdateUser(c *gin.Context) {
 		return &path
 	}
 
-	skPath := saveUploaded(skFile)
-	pbjPath := saveUploaded(pbjFile)
-	competencePath := saveUploaded(competenceFile)
-	photoPath := saveUploaded(photoFile)
+	if p := saveUploaded("sk_file"); p != nil {
+		user.SkFile = p
+	}
+	if p := saveUploaded("pbj_file"); p != nil {
+		user.PbjFile = p
+	}
+	if p := saveUploaded("competence_file"); p != nil {
+		user.CompetenceFile = p
+	}
+	if p := saveUploaded("file_photo"); p != nil {
+		user.PhotoFile = p
+	}
 
+	// update field
 	user.FullName = req.FullName
 	user.Email = req.Email
-	user.Password = utils.HashSHA512(req.Password)
 	user.IsActive = req.IsActive
-
 	user.Nik = req.Nik
 	user.Nip = req.Nip
 	user.Group = req.Group
 	user.RoleId = req.RoleId
 	user.PokjaGroupsId = req.PokjaGroupsId
-
 	user.PhoneNumber = req.PhoneNumber
 	user.OpdOrganization = req.OpdOrganization
-
 	user.SkNumber = req.SkNumber
-	user.SkFile = skPath
 	user.PbjNumber = req.PbjNumber
-	user.PbjFile = pbjPath
 	user.CompetenceNumber = req.CompetenceNumber
-	user.CompetenceFile = competencePath
-	user.PhotoFile = photoPath
 	user.SatkerCode = req.SatkerCode
 	user.GpId = req.GpId
 	user.Address = req.Address
 
-	err = config.DB.Save(&user).Error
-	if err != nil {
+	if req.Password != "" {
+		user.Password = utils.HashSHA512(req.Password)
+	}
+
+	if err := config.DB.Save(&user).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 
-	var createdUser models.User
+	config.DB.Preload("Role").First(&user, user.Id)
 
-	if err := config.DB.Preload("Role").First(&createdUser, user.Id).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusCreated, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengubah data berhasil",
-		"data":    createdUser,
+		"data":    user,
 	})
 }
+
 
 func UpdateStatus(c *gin.Context) {
 	id := c.Param("user_id")
