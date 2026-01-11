@@ -10,7 +10,7 @@ func SetupRoutes(r *gin.Engine) {
 	public := r.Group("/api")
 	{
 		public.POST("/auth/login", controllers.Login)
-		public.GET("/user", controllers.ShowUser)
+		public.GET("/user", controllers.GetAllUser)
 		public.POST("/user/create", controllers.CreateUser)
 
 		public.GET("/role", controllers.ShowRole)
