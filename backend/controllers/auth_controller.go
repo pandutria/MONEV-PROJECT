@@ -39,6 +39,10 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// if user.IsActive == 0 {
+
+	// }
+
 	token, err := utils.GenerateJWT(user.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -46,6 +50,8 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+
+	config.DB.Preload("Role")
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Masuk berhasil!",
