@@ -44,7 +44,7 @@ func CreateUser(c *gin.Context) {
 	skFile, _ := c.FormFile("sk_file")
 	pbjFile, _ := c.FormFile("pbj_file")
 	competenceFile, _ := c.FormFile("competence_file")
-	photoFile, _ := c.FormFile("photo_file")
+	photoFile, _ := c.FormFile("file_photo")
 
 	uploadDir := "uploads/users"
 	_ = os.MkdirAll(uploadDir, os.ModePerm)
@@ -78,6 +78,7 @@ func CreateUser(c *gin.Context) {
 		Nip:    req.Nip,
 		Group:  req.Group,
 		RoleId: req.RoleId,
+		PokjaGroupsId: req.PokjaGroupsId,
 
 		PhoneNumber:     req.PhoneNumber,
 		OpdOrganization: req.OpdOrganization,
@@ -91,6 +92,7 @@ func CreateUser(c *gin.Context) {
 		PhotoFile:         photoPath,
 		SatkerCode:        req.SatkerCode,
 		GpId:              req.GpId,
+		Address: req.Address,
 	}
 
 	err = config.DB.Create(&user).Error

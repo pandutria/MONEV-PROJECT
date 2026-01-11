@@ -1,14 +1,16 @@
 package dtos
 
 type LoginRequest struct {
-	Email string `json:"email" binding:"required,email"`
+	Email string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 type CreateUserRequest struct {
-	Email    string `form:"email" binding:"required,email"`
+	Email    string `form:"email" binding:"required"`
 	Password string `form:"password" binding:"required"`
 	RoleId   uint   `form:"role_id" binding:"required"`
+
+	PokjaGroupsId *uint `form:"pokja_group_id"`
 
 	FullName *string `form:"fullname"`
 	IsActive *bool   `form:"is_active"`

@@ -17,7 +17,7 @@ func main() {
 		&models.Role{},
 		&models.User{},
 		&models.PokjaGroups{},
-		&models.UserPokjaGroups{},
+		// &models.UserPokjaGroups{},
 		&models.TenderPaket{},
 		&models.RabHeader{},
 		&models.RabDetail{},
