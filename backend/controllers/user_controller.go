@@ -125,7 +125,14 @@ func GetUserById(c *gin.Context) {
 	id := c.Param("id")
 
 	var user models.User
-	config.DB.Preload("Role").First(&user, id)
+	err := config.DB.Preload("Role").First(&user, id).Error
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{
+			"message": "Mengambil data gagal",
+		})
+		return
+	}
+	
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data": user,
