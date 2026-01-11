@@ -2,12 +2,23 @@ import { Mail, Lock, RefreshCw } from 'lucide-react';
 import useAuthHooks from '../../hooks/AuthHooks';
 import logo from "/image/logo/logo-monalisa.png";
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import background from "/image/auth/background.jpg";
+import { useAuth } from '../../context/AuthContext';
+import LoadingSpinner from '../../ui/LoadingSpinner';
 
 export default function Login() {
   const { email, password, handleChange, handleLogin, captchaCode, captchaInput, refreshCaptcha, setCaptchaInput } = useAuthHooks();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
+
+  if (loading) {
+    return <LoadingSpinner/>
+  }
+
+  if (user) {
+    return <Navigate to="/" replace/>
+  }
   return (
     <div
       className="h-screen flex items-center justify-center p-4 overflow-hidden"

@@ -6,6 +6,10 @@ import TableHeader from "../../ui/TableHeader";
 import AdminTambahUserModal from "./modal/AdminTambahUserModal";
 import AdminUbahUserModal from "./modal/AdminUbahUserModal";
 import AdminLihatUserModal from "./modal/AdminLihatUserModal";
+import { useAuth } from "../../context/AuthContext";
+import LoadingSpinner from "../../ui/LoadingSpinner";
+import { Navigate } from "react-router-dom";
+import useUserHooks from "../../hooks/UserHooks";
 
 export default function AdminManajemenPengguna() {
     const [selectPreview, setSelectPreview] = useState<any>(null);
@@ -13,6 +17,10 @@ export default function AdminManajemenPengguna() {
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalEdit, setShowModalEdit] = useState(false);
     const [showModalPreview, setShowModalPreview] = useState(false);
+    const [search, setSearch] = useState("");
+    const [listUserFilter, setListUserFilter] = useState<UserProps[]>([]);
+    const { user, loading } = useAuth();
+    const { listUser } = useUserHooks();
 
     const columns = [
         {
@@ -29,24 +37,6 @@ export default function AdminManajemenPengguna() {
         }
     ];
 
-    const data = [
-        {
-            no: 1,
-            nama: 'Setio Nugraha',
-            jabatan: 'Mentor Website'
-        },
-        {
-            no: 2,
-            nama: 'Pandu Tria Adyatama',
-            jabatan: 'Mentor Software'
-        },
-        {
-            no: 3,
-            nama: 'Muhammad Khadafi',
-            jabatan: 'Mentor Design'
-        },
-    ];
-
     useEffect(() => {
         const fetchEdit = () => {
             if (selectedEdit) {
@@ -60,13 +50,31 @@ export default function AdminManajemenPengguna() {
             }
         }
 
+        const filteringUserData = () => {
+            const dataFilter = listUser?.filter((item: UserProps) => {
+                const filter = search ? item.fullname.toLowerCase().includes(search.toLowerCase()) : true;
+                return filter;
+            });
+
+            setListUserFilter(dataFilter);
+        }
+
         fetchEdit();
         fetchPreview();
-    }, [selectedEdit, selectPreview]);
+        filteringUserData();
+    }, [selectedEdit, selectPreview, listUser, search]);
+    
+    if (loading) {
+        return <LoadingSpinner/>
+    }
+
+    if (user?.role.name != "admin" || !user) {
+        return <Navigate to="/" replace/>
+    }
 
     return (
         <div>
-            <Navbar type="admin" />
+            <Navbar/>
             <AdminTambahUserModal isOpen={showModalAdd} onClose={() => setShowModalAdd(false)}/>
             <AdminLihatUserModal isOpen={showModalPreview} onClose={() => setShowModalPreview(false)} data={selectPreview}/>
             <AdminUbahUserModal isOpen={showModalEdit} onClose={() => setShowModalEdit(false)} data={selectedEdit}/>
@@ -77,15 +85,16 @@ export default function AdminManajemenPengguna() {
                     showTambah={true}
                     onTambahClick={() => setShowModalAdd(true)}
                     type="pokja"
+                    searchValue={search}
+                    onSearchChange={(item) => setSearch(item)}
                 />
                 <div className="p-6">
                     <TableContent
                         columns={columns}
-                        data={data}
+                        data={listUserFilter}
                         isSelect={false}
                         showEdit={true}
                         showPreview={true}
-                        idKey="no"
                         onPreview={(item) => setSelectPreview(item)}
                         onEdit={(item) => setSelectedEdit(item)}
                     />

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { SwalMessage } from "../utils/SwalMessage";
 import API from "../server/API";
+import { SortDescById } from "../utils/SortDescById";
 
 export default function usePokjaGroupHooks() {
     const [pokjaGroupName, setPokjaGroupName] = useState('');
@@ -11,7 +12,7 @@ export default function usePokjaGroupHooks() {
         const fetchPokjaGroup = async () => {
             try {
                 const response = await API.get("/pokja-group");
-                setPokjaGroup(response.data.data)
+                setPokjaGroup(SortDescById(response.data.data));
             } catch (error) {
                 console.error(error);
             }

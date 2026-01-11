@@ -6,7 +6,9 @@ import TableHeader from "../../ui/TableHeader";
 import AdminTambahKelompokKerjaModal from "./modal/AdminTambahKelompokKerjaModal";
 import AdminUbahKelompokKerjaModal from "./modal/AdminUbahKelompokKerjaModal";
 import usePokjaGroupHooks from "../../hooks/PokjaGroupHooks";
-import LoadingSpinner from "../../utils/LoadingSpinner";
+import LoadingSpinner from "../../ui/LoadingSpinner";
+import { useAuth } from "../../context/AuthContext";
+import { Navigate } from "react-router-dom";
 
 export default function AdminKelompokKerja() {
     const [selectedIds, setSelectedIds] = useState<any>([]);
@@ -16,6 +18,7 @@ export default function AdminKelompokKerja() {
     const [search, setSearch] = useState('');
     const { pokjaGroup, handlePokjaGroupDelete } = usePokjaGroupHooks();
     const [pokjaGroupFilter, setPokjaGroupFilter] = useState<pokjaGroupProps[]>([]);
+    const { user, loading } = useAuth();
     const columns = [
         {
             key: 'id',
@@ -35,7 +38,7 @@ export default function AdminKelompokKerja() {
         }
 
         const filteringPokjaGroups = () => {
-            const filter = pokjaGroup.filter((item: pokjaGroupProps) => {
+            const filter = pokjaGroup?.filter((item: pokjaGroupProps) => {
                 const dataFilter = search ? item.name.toLowerCase().includes(search.toLowerCase()) : true;
                 return dataFilter;
             });
@@ -47,8 +50,12 @@ export default function AdminKelompokKerja() {
         filteringPokjaGroups();
     }, [selectedEdit, search, pokjaGroup]);
 
-    if (!pokjaGroup) {
-        return <LoadingSpinner/>
+    if (loading) {
+        return <LoadingSpinner/>;
+    }
+
+    if (!user || user.role.name != "admin") {
+        return <Navigate to="/" replace/>
     }
     
     return (

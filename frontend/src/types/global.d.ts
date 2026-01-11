@@ -1,13 +1,16 @@
 export { };
 
 declare global {
+  export interface RoleProps {
+    id: number;
+    name: string;
+  }
+
   export interface UserProps {
     email: string
     password: string
     role_id: number
-    role: {
-      name: string
-    }
+    role: RoleProps
 
     fullname: string
     is_active?: boolean
@@ -29,6 +32,7 @@ declare global {
   }
 
   export interface pokjaGroupProps {
+    id: number;
     name: string;
   }
 }

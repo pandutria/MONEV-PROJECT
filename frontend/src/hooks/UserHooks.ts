@@ -1,31 +1,154 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SwalMessage } from "../utils/SwalMessage";
 import API from "../server/API";
+import { SortDescById } from "../utils/SortDescById";
 
 export default function useUserHooks() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [roleId, setRoleId] = useState('');
     const [fullname, setFullname] = useState('');
-    const [isActive, setIsActive] = useState('');
     const [nik, setNik] = useState('');
     const [nip, setNip] = useState('');
-    const [group, setGroup] = useState('');
+    const [pokjaGroupId, setPokjaGroupId] = useState('');
     const [address, setAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [opdOrganization, setOpdOrganization] = useState('');
+    const [group, setGroup] = useState('');
     const [skNumber, setSkNumber] = useState('');
     const [pbjNumber, setPbjNumber] = useState('');
     const [competenceNumber, setCompotenceNumber] = useState('');
-    const [satkerCode, setSatkerCode] = useState('');
-    const [gpId, setGpId] = useState('');
+    const [skFile, setSkFile] = useState<File | null>(null);
+    const [pbjFile, setPbjFile] = useState<File | null>(null);
+    const [competenceFile, setCompotenceFile] = useState<File | null>(null);
+    const [filePhoto, setFilePhoto] = useState<File | null>(null);
+    const [listUser, setListUser] = useState<UserProps[]>([]);
 
-    const handleUserPost = async() => {
+    useEffect(() => {
+        const fetchUser = async() => {
+            try {
+                const response = await API.get("/user");
+                setListUser(SortDescById(response.data.data));
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchUser();
+    }, []);
+
+    const handleUserPost = async () => {
         try {
-            
-        } catch (error) {
-            
+            if (!email || !password || !fullname) {
+                SwalMessage({
+                    title: "Gagal!",
+                    text: "Nama, email dan kata sandi wajib diisi!",
+                    type: "error"
+                });
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("email", email);
+            formData.append("password", password);
+            formData.append("role_id", roleId);
+            formData.append("is_active", "true");
+            if (fullname) formData.append("fullname", fullname);
+            if (nik) formData.append("nik", nik);
+            if (nip) formData.append("nip", nip);
+            if (pokjaGroupId) formData.append("pokja_group_id", pokjaGroupId);
+            if (address) formData.append("address", address);
+            if (phoneNumber) formData.append("phone_number", phoneNumber);
+            if (opdOrganization) formData.append("opd_organization", opdOrganization);
+            if (group) formData.append("group", group);
+            if (skNumber) formData.append("sk_number", skNumber);
+            if (pbjNumber) formData.append("pbj_number", pbjNumber);
+            if (competenceNumber) formData.append("competence_number", competenceNumber);
+            if (skFile) formData.append("sk_file", skFile);
+            if (pbjFile) formData.append("pbj_file", pbjFile);
+            if (competenceFile) formData.append("competence_file", competenceFile);
+            if (filePhoto) formData.append("photo", filePhoto);
+
+            const response = await API.post("/user/create", formData);
+            const message = response.data.message;
+
+            SwalMessage({
+                title: "Berhasil!",
+                text: message,
+                type: "success"
+            });
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } catch (error: any) {
+            SwalMessage({
+                title: "Gagal!",
+                text: error.response.data.message,
+                type: "error"
+            });
         }
     }
+
+    const handleChangeUser = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+
+        const setters: Record<string, React.Dispatch<React.SetStateAction<string>>> = {
+            email: setEmail,
+            password: setPassword,
+            roleId: setRoleId,
+            fullname: setFullname,
+            nik: setNik,
+            nip: setNip,
+            pokjaGroupId: setPokjaGroupId,
+            address: setAddress,
+            phoneNumber: setPhoneNumber,
+            opdOrganization: setOpdOrganization,
+            group: setGroup,
+            skNumber: setSkNumber,
+            pbjNumber: setPbjNumber,
+            competenceNumber: setCompotenceNumber,
+        };
+
+        const setState = setters[name];
+        if (setState) setState(value);
+    };
+
+    const handleFileChangeUser = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, files } = e.target;
+        if (!files?.[0]) return;
+
+        if (name === "sk_file") setSkFile(files[0]);
+        if (name === "pbj_file") setPbjFile(files[0]);
+        if (name === "competence_file") setCompotenceFile(files[0]);
+        if (name === "photo_file") setFilePhoto(files[0]);
+    };
+
+
+    return {
+        email,
+        password,
+        roleId,
+        fullname,
+        nik,
+        nip,
+        pokjaGroupId,
+        address,
+        phoneNumber,
+        opdOrganization,
+        group,
+        skNumber,
+        pbjNumber,
+        competenceNumber,
+        skFile,
+        pbjFile,
+        competenceFile,
+        filePhoto,
+        handleUserPost,
+        handleChangeUser,
+        handleFileChangeUser,
+        listUser
+    };
+
 }

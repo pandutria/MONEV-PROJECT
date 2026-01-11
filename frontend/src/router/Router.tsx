@@ -19,7 +19,6 @@ import KepalaHasilKelompokKerja from "../pages/kepala/hasil/KepalaHasilKelompokK
 import AdminManajemenPengguna from "../pages/admin/AdminManajemenPengguna"
 import AdminKelompokKerja from "../pages/admin/AdminKelompokKerja"
 import EditProfile from "../pages/EditProfile"
-import RoleRoute from "./RoleRoute"
 
 export default function Router() {
   return (
@@ -30,11 +29,7 @@ export default function Router() {
         <Route path="/ubah-profile" element={<EditProfile/>}/>
 
         {/* Auth */}
-        <Route path="/masuk" element={
-          <RoleRoute allowedRoles={['']}>
-            <Login />
-          </RoleRoute>
-        } />
+        <Route path="/masuk" element={<Login/>} />
 
         {/* PPK */}
         <Route path="/ppk/rencana-anggaran" element={<PPKRencanaAnggaran/>}/>
@@ -62,11 +57,7 @@ export default function Router() {
         <Route path="/kepala/kelompok-kerja" element={<KepalaHasilKelompokKerja/>}/>
 
         {/* Admin */}
-        <Route path="/admin/manajemen-pengguna" element={
-          <RoleRoute allowedRoles={['admin']}>
-            <AdminManajemenPengguna/>
-          </RoleRoute>
-        }/>
+        <Route path="/admin/manajemen-pengguna" element={<AdminManajemenPengguna/>}/>        
         <Route path="/admin/kelompok-kerja" element={<AdminKelompokKerja/>}/>
       </Routes>
     </BrowserRouter>

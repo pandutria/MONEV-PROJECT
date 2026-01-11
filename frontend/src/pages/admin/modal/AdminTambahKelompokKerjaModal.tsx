@@ -1,5 +1,6 @@
 import { X } from 'lucide-react'
 import usePokjaGroupHooks from '../../../hooks/PokjaGroupHooks'
+import FormInput from '../../../ui/FormInput';
 
 interface TambahKelompokKerjaModalProps {
   isOpen: boolean
@@ -34,16 +35,12 @@ export default function AdminTambahKelompokKerjaModal({
         </div>
 
         <div className="p-6">
-          <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-            Nama Kelompok Kerja <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
+          <FormInput
+            title='Nama Kelompok Kerja'
             value={pokjaGroupName}
             name='pokja-group'
             onChange={handlePokjaGroupChange}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-            placeholder="Masukkan nama kelompok kerja"
+            placeholder='Masukkan nama kelompok kerja'
           />
         </div>
 
