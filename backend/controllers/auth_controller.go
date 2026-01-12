@@ -39,9 +39,13 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// if user.IsActive == 0 {
+	if user.IsActive == nil || !*user.IsActive {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Pengguna sudah tidak aktif!",
+		})
+		return
+	}
 
-	// }
 
 	token, err := utils.GenerateJWT(user.Id)
 	if err != nil {
