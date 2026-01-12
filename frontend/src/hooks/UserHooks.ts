@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { SwalMessage } from "../utils/SwalMessage";
 import API from "../server/API";
 import { SortDescById } from "../utils/SortDescById";
+import SwalLoading from "../utils/SwalLoading";
 
 export default function useUserHooks() {
     const [email, setEmail] = useState('');
@@ -23,6 +24,7 @@ export default function useUserHooks() {
     const [pbjFile, setPbjFile] = useState<File | null>(null);
     const [competenceFile, setCompotenceFile] = useState<File | null>(null);
     const [filePhoto, setFilePhoto] = useState<File | null>(null);
+    const [isActive, setIsActive] = useState<any>("true");
     const [listUser, setListUser] = useState<UserProps[]>([]);
 
     useEffect(() => {
@@ -101,9 +103,8 @@ export default function useUserHooks() {
         try {
             const formData = new FormData();
             formData.append("email", email);
-            formData.append("password", password);
             formData.append("role_id", roleId);
-            formData.append("is_active", "true");
+            formData.append("is_active", `${isActive}`);
             if (fullname) formData.append("fullname", fullname);
             if (nik) formData.append("nik", nik);
             if (nip) formData.append("nip", nip);
@@ -120,6 +121,7 @@ export default function useUserHooks() {
             if (competenceFile) formData.append("competence_file", competenceFile);
             if (filePhoto) formData.append("file_photo", filePhoto);
 
+            SwalLoading();
             const response = await API.put(`/user/update/${id}`, formData);
             const message = response.data.message;
 
@@ -144,7 +146,7 @@ export default function useUserHooks() {
     const handleChangeUser = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
-        const setters: Record<string, React.Dispatch<React.SetStateAction<string>>> = {
+        const setters: Record<string, React.Dispatch<React.SetStateAction<any>>> = {
             email: setEmail,
             password: setPassword,
             roleId: setRoleId,
@@ -223,7 +225,9 @@ export default function useUserHooks() {
         handleFileChangeUser,
         listUser,
         handleShowUser,
-        handleUserPut
+        handleUserPut,
+        isActive,
+        setIsActive
     };
 
 }

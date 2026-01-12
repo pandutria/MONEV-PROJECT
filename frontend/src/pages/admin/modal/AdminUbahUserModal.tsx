@@ -11,6 +11,7 @@ import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate } from 'react-router-dom';
 import SubmitButton from '../../../ui/SubmitButton';
+import FormCheckboxStatus from '../../../ui/FormCheckboxStatus';
 
 interface UbahUserModalProps {
   isOpen: boolean;
@@ -22,7 +23,6 @@ interface UbahUserModalProps {
 export default function AdminUbahUserModal({ isOpen, onClose, data }: UbahUserModalProps) {
   const {
     email,
-    password,
     roleId,
     fullname,
     nik,
@@ -42,7 +42,9 @@ export default function AdminUbahUserModal({ isOpen, onClose, data }: UbahUserMo
     handleChangeUser,
     handleFileChangeUser,
     handleShowUser,
-    handleUserPut
+    handleUserPut,
+    isActive,
+    setIsActive
   } = useUserHooks();
 
   const { role } = useRoleHooks();
@@ -127,7 +129,8 @@ export default function AdminUbahUserModal({ isOpen, onClose, data }: UbahUserMo
               )}
 
               <FormInput title="Email" name="email" value={email} onChange={handleChangeUser} placeholder="Masukkan email" />
-              <FormInput title="Kata Sandi" name="password" value={password} onChange={handleChangeUser} placeholder="Masukkan kata sandi" />
+              
+              <FormCheckboxStatus title='Status Pengguna' value={isActive} onChange={setIsActive}/>
             </div>
           </div>
 

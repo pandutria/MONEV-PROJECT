@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { SwalMessage } from '../utils/SwalMessage';
 import API from '../server/API';
+import SwalLoading from '../utils/SwalLoading';
 
 export default function useAuthHooks() {
     const [email, setEmail] = useState<string>('');
@@ -40,6 +41,7 @@ export default function useAuthHooks() {
         }
 
         try {
+            SwalLoading();
             const response = await API.post('/auth/login', {
                 email,
                 password
@@ -71,7 +73,7 @@ export default function useAuthHooks() {
         localStorage.removeItem("token");
         SwalMessage({
             type: 'success',
-            title: "Berhasil1",
+            title: "Berhasil!",
             text: "Keluar Berhasil!"
         });
 

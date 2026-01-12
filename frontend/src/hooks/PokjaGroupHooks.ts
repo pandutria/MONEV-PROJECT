@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { SwalMessage } from "../utils/SwalMessage";
 import API from "../server/API";
 import { SortDescById } from "../utils/SortDescById";
+import SwalLoading from "../utils/SwalLoading";
 
 export default function usePokjaGroupHooks() {
     const [pokjaGroupName, setPokjaGroupName] = useState('');
@@ -31,6 +32,7 @@ export default function usePokjaGroupHooks() {
                 })
             }
 
+            SwalLoading();
             const response = await API.post("/pokja-group/create", {
                 name: pokjaGroupName
             });

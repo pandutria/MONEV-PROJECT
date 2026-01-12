@@ -21,7 +21,6 @@ interface UbahUserModalProps {
 export default function AdminLihatUserModal({ isOpen, onClose, data }: UbahUserModalProps) {
   const {
     email,
-    password,
     roleId,
     fullname,
     nik,
@@ -125,7 +124,6 @@ export default function AdminLihatUserModal({ isOpen, onClose, data }: UbahUserM
               )}
 
               <FormInput title="Email" name="email" value={email} onChange={handleChangeUser} placeholder="Masukkan email" disabled={true} />
-              <FormInput title="Kata Sandi" name="password" value={password} onChange={handleChangeUser} placeholder="Masukkan kata sandi" disabled={true} />
             </div>
           </div>
 
