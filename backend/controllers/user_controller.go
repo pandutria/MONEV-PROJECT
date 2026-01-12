@@ -172,7 +172,6 @@ func UpdateUser(c *gin.Context) {
 		}
 	}
 
-	// upload file
 	saveUploaded := func(field string) *string {
 		file, err := c.FormFile(field)
 		if err != nil {
@@ -202,7 +201,6 @@ func UpdateUser(c *gin.Context) {
 		user.PhotoFile = p
 	}
 
-	// update field
 	user.FullName = req.FullName
 	user.Email = req.Email
 	user.IsActive = req.IsActive
@@ -220,9 +218,9 @@ func UpdateUser(c *gin.Context) {
 	user.GpId = req.GpId
 	user.Address = req.Address
 
-	if req.Password != "" {
-		user.Password = utils.HashSHA512(req.Password)
-	}
+	// if req.Password != "" {
+	// 	user.Password = utils.HashSHA512(req.Password)
+	// }
 
 	if err := config.DB.Save(&user).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
