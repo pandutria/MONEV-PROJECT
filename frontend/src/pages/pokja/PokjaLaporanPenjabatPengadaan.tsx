@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import TableContent from "../../ui/TableContent";
 import TableHeader from "../../ui/TableHeader";
 import { useEffect, useState } from 'react';
 import PokjaLaporanPenjabatPengadaanShow from "./show/PokjaLaporanPernjabatPengadaanShowModal";
+import { useAuth } from "../../context/AuthContext";
+import LoadingSpinner from "../../ui/LoadingSpinner";
 
 export default function PokjaLaporanPenjabatPengadaan() {
     const [search, setSearch] = useState('');
@@ -13,6 +15,7 @@ export default function PokjaLaporanPenjabatPengadaan() {
     const [selectPreview, setSelectPreview] = useState<any>(null);
     const [dataTable, setDataTable] = useState<any[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { user, loading } = useAuth();    
     const navigate = useNavigate();
 
     const columns = [
@@ -79,9 +82,17 @@ export default function PokjaLaporanPenjabatPengadaan() {
         filteringData();
     }, [selectRevisi, selectPreview, navigate, search]);
 
+    if (loading) {
+        return <LoadingSpinner/>
+    }
+
+    if (!user || user.role.name != "pokja") {
+        return <Navigate to="/" replace/>
+    }
+
     return (
         <div>
-            <Navbar type="pokja" />
+            <Navbar/>
 
             {selectPreview && (
                 <PokjaLaporanPenjabatPengadaanShow

@@ -1,12 +1,19 @@
-import { Search, Upload } from 'lucide-react';
+import { Search, Upload, X } from 'lucide-react';
 import { useState } from 'react';
 import Navbar from '../../../components/Navbar';
 import BackButton from '../../../ui/BackButton';
+import useTenderHooks from '../../../hooks/TenderHooks';
+import FormSelect from '../../../ui/FormSelect';
+import ShowTableForm from '../../../ui/ShowTableForm';
+import TableContent from '../../../ui/TableContent';
 
 type MetodePengadaan = '' | 'pengadaan_langsung' | 'e_purchasing_v5' | 'e_purchasing_v6';
 
 export default function PokjaLaporanPenjabatPengadaanAdd() {
     const [metodePengadaan, setMetodePengadaan] = useState<MetodePengadaan>('');
+    const { tenderData } = useTenderHooks();
+    const [showTender, setShowTender] = useState(false);
+    const [selectedTender, setSelectedTender] = useState<any | null>(null);
     const [formData, setFormData] = useState({
         kodePaket: '',
         kodeRUP: '',
@@ -38,9 +45,9 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
     });
 
     const metodePengadaanOptions = [
-        { value: 'pengadaan_langsung', label: 'Pengadaan Langsung' },
-        { value: 'e_purchasing_v5', label: 'E-Purchasing V5' },
-        { value: 'e_purchasing_v6', label: 'E-Purchasing V6' }
+        { id: 1, name: 'Pengadaan Langsung' },
+        { id: 2, name: 'E-Purchasing V5' },
+        { id: 3, name: 'E-Purchasing V6' }
     ];
 
     const ppkOptions = [
@@ -56,19 +63,74 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         }));
     };
 
-    const handleMetodePengadaanChange = (value: MetodePengadaan) => {
-        setMetodePengadaan(value);
-    };
+    const tenderColumns = [
+        {
+            key: "id",
+            label: "No"
+        },
+        {
+            key: "tender_code",
+            label: "Kode Tender"
+        },
+        {
+            key: "rup_code",
+            label: "Kode RUP"
+        },
+        {
+            key: "fiscal_year",
+            label: "Tahun Anggaran"
+        },
+        {
+            key: "satker_name",
+            label: "Satuan Kerja"
+        },
+        {
+            key: "rup_name",
+            label: "Nama Paket"
+        },
+        {
+            key: "funding_source",
+            label: "Sumber Dana"
+        },    
+    ]
 
+    console.log(tenderData)
     const isEPurchasing = metodePengadaan === 'e_purchasing_v5' || metodePengadaan === 'e_purchasing_v6';
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Navbar type="pokja" />
+            <Navbar />
 
             <div className="pt-24 pb-12 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000">
                 <div className="max-w-7xl mx-auto">
-                    <BackButton/>
+                    <BackButton />
+
+                    {showTender && (
+                        <div className="absolute inset-0 flex justify-center items-center bg-black/20 z-20">
+                            <div className="bg-white p-4 rounded-lg flex flex-col max-w-[90vw] max-h-[60vh] gap-4 relative">
+                                <div className="absolute top-4 right-4 cursor-pointer text-primary" onClick={() => setShowTender(false)}>
+                                    <X/>
+                                </div>
+                                <h1 className="font-poppins-semibold text-center text-[26px] shrink-0 mb-6">
+                                    Data Tender Pekerja Konstruksi
+                                </h1>
+                                <div className="overflow-y-auto max-h-[70vh] w-full">
+                                    <TableContent
+                                        columns={tenderColumns}
+                                        data={tenderData}
+                                        isSelect={false}
+                                        showEdit={false}
+                                        showPreview={false}
+                                        showSelect={true}
+                                        idKey="id"
+                                        // onEdit={(item) => console.log('Edit:', item)}
+                                        // onPreview={(item) => console.log('Preview:', item)}
+                                        onSelectedDataChange={(item) => setSelectedTender(item)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="bg-white rounded-lg shadow-md p-6">
                         <h1 className="font-poppins-bold text-2xl text-gray-800 mb-8">
@@ -82,21 +144,11 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="md:col-span-2">
-                                        <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                                            Metode Pengadaan <span className="text-red-500">*</span>
-                                        </label>
-                                        <select
-                                            value={metodePengadaan}
-                                            onChange={(e) => handleMetodePengadaanChange(e.target.value as MetodePengadaan)}
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-white"
-                                        >
-                                            <option value="" disabled selected>Pilih Metode Pengadaan</option>
-                                            {metodePengadaanOptions.map((option) => (
-                                                <option key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </option>
+                                        <FormSelect title="Metode Pengadaan" name="" value={metodePengadaan}>
+                                            {metodePengadaanOptions.map((item, index) => (
+                                                <option key={index} value={item.id}>{item.name}</option>
                                             ))}
-                                        </select>
+                                        </FormSelect>
                                     </div>
 
                                     <div className="md:col-span-2">
@@ -104,13 +156,20 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                             Kode Paket/Non Tender <span className="text-red-500">*</span>
                                         </label>
                                         <button
-                                            onClick={() => console.log('Cari Paket')}
+                                            onClick={() => {
+                                                setShowTender(true);
+                                            }}
                                             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg font-poppins text-left text-gray-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 flex items-center justify-between"
                                         >
                                             <span>{formData.kodePaket || 'Pilih Kode Paket'}</span>
                                             <Search className="h-5 w-5 text-primary" />
                                         </button>
                                     </div>
+
+                                    <ShowTableForm tenderCode={""} onClick={() => {
+                                        setShowTender(true);
+                                        setSelectedTender(null);
+                                    }} />
 
                                     <div>
                                         <label className="block font-poppins-medium text-sm text-gray-700 mb-2">

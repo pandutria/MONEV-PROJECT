@@ -202,7 +202,7 @@ export default function PPKRencanaAnggaranAdd() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar type="ppk" />
+      <Navbar/>
 
       {showTender && (
         <div className="absolute inset-0 flex justify-center items-center bg-black/20 z-20">
