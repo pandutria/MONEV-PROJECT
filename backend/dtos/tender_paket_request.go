@@ -37,6 +37,16 @@ type CreateAndUpdateTenderRequest struct {
 	Note *string `form:"note"`
 	SelectedPpkId *uint `form:"selected_ppk_id"`
 
+	KlpdCode *string `form:"klpd_code"`
+	AccountCode *string `form:"account_code"`
+	RupDescription *string `form:"rup_description"`
+	RupName *string `form:"rup_name"`
+	OrderDate *time.Time `form:"order_date"`
+	OrderId *string `form:"order_id"`
+	VendorId *int `form:"vendor_id"`
+	InaProcStatus *string `form:"inaproc_status"`
+	TotalQuantity *int `form:"total_quantity"`
+
 	RealizationStatus *string  `form:"realization_status"` 
 	PackageStatus *string  `forn:"package_status"`     
 	DeliveryStatus *string  `form:"delivery_status"`   

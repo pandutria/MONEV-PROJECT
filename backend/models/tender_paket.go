@@ -17,6 +17,7 @@ type TenderPaket struct {
 
 	BudgetValue *int `json:"budget_value"`
 	HpsValue    *int `json:"hps_value"`
+	ShippingFee *int `json:"shipping_fee"`
 
 	ContractNumber *string    `json:"contract_number"`
 	ContractDate   *time.Time `json:"contract_date"`
@@ -42,6 +43,16 @@ type TenderPaket struct {
 	PackageStatus     *string  `json:"package_status"`
 	DeliveryStatus    *string  `json:"delivery_status"`
 	TotalValue        *float64 `json:"total_value"`
+
+	AccountCode    *string `json:"account_code"`
+	KlpdCode       *string `json:"klpd_code"`
+	RupDescription *string `json:"rup_description"`
+	RupName        *string `json:"rup_name"`
+	OrderDate      *string `json:"order_date"`
+	OrderId        *string `json:"order_id"`
+	VendorId       *int    `json:"vendor_id"`
+	TotalQuantity  *int    `json:"total_quantity"`
+	CountProduct   *int    `json:"count_product"`
 
 	SelectedPpkId *uint `gorm:"column:selected_ppk_id" json:"selected_ppk_id"`
 	SelectedPpk   *User `gorm:"foreignKey:SelectedPpkId;references:Id" json:"selected_ppk,omitempty"`
