@@ -26,9 +26,10 @@ type InaProcItem struct {
 	RupName        string `json:"rup_name"`
 	Status         string `json:"status"`
 	ShipmentStatus string `json:"shipment_status"`
-	ShippingFee    int `json:"shipping_fee"`
+	ShippingFee    int    `json:"shipping_fee"`
 	TotalQty       int    `json:"total_qty"`
 	FiscalYear     int    `json:"fiscal_year"`
 	Funding        string `json:"funding_source"`
 	Total          int    `json:"total"`
+	KdSatker       string `json:"kd_satker"`
 }
