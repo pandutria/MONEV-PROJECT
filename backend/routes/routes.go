@@ -66,6 +66,11 @@ func SetupRoutes(r *gin.Engine) {
 		public.GET("/realisasi/week", controllers.GetAllRealisasiWeek)
 		public.POST("/realisasi/week/create", controllers.CreateRealisasiWeek)
 		public.DELETE("/realisasi/week/delete/:id", controllers.DeleteRealisasiWeek)
+
+		// Inaproc
+		public.GET("/inaproc/cache", controllers.GetInaProcCache)
+		public.GET("/inaproc/cache/:tender_id", controllers.GetInaProcByTenderId)
+		// public.POST("/inaproc/cache/add", controllers.PostInaProcCache)
 	}
 
 	private := r.Group("/api")

@@ -1,5 +1,4 @@
 {
-    "success": true,
     "data": [
         {
             "count_product": 1,
@@ -2201,10 +2200,5 @@
             "total": 199800000,
             "total_qty": 1
         }
-    ],
-    "meta": {
-        "cursor": "eyJpZCI6MjUwNzQ5OTk2NTc4NDU3MDA1OH0=",
-        "has_more": true,
-        "limit": 100
-    }
+    ]
 }
