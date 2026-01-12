@@ -218,9 +218,9 @@ func UpdateUser(c *gin.Context) {
 	user.GpId = req.GpId
 	user.Address = req.Address
 
-	if req.Password != "" {
-		user.Password = utils.HashSHA512(req.Password)
-	}
+	// if req.Password != "" {
+	// 	user.Password = utils.HashSHA512(req.Password)
+	// }
 
 	if err := config.DB.Save(&user).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
