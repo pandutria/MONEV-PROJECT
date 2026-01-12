@@ -41,8 +41,8 @@ export default function AdminUbahUserModal({ isOpen, onClose, data }: UbahUserMo
     filePhoto,
     handleChangeUser,
     handleFileChangeUser,
-    handleUserPost,
-    handleShowUser
+    handleShowUser,
+    handleUserPut
   } = useUserHooks();
 
   const { role } = useRoleHooks();
@@ -161,13 +161,13 @@ export default function AdminUbahUserModal({ isOpen, onClose, data }: UbahUserMo
               <FormInput title="No. Kompetensi Sertifikat" name="competenceNumber" value={competenceNumber} onChange={handleChangeUser} placeholder="Masukkan No. Kompetensi sertifikat" />
 
               <FormUploadFile title="Unggah Kompetensi Sertifikat" name="competence_file" value={competenceFile as any} onChange={handleFileChangeUser} />
-              <FormUploadFile title="Unggah Foto Pengguna" name="filePhoto" value={filePhoto as any} onChange={handleFileChangeUser} />
+              <FormUploadFile title="Unggah Foto Pengguna" name="photo_file" value={filePhoto as any} onChange={handleFileChangeUser} />
             </div>
           </div>
         </div>
 
         <div className="flex justify-end gap-4 p-6 border-t border-gray-200">
-          <SubmitButton text='Simpan' onClick={() => handleUserPost()} />
+          <SubmitButton text='Simpan' onClick={() => handleUserPut(data?.id)} />
         </div>
       </div>
     </div>

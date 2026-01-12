@@ -100,7 +100,10 @@ export default function AdminManajemenPengguna() {
             />
             <AdminLihatUserModal
                 isOpen={showModalPreview}
-                onClose={() => setShowModalPreview(false)}
+                onClose={() => {
+                    setShowModalPreview(false)
+                    setSelectPreview(null)
+                }}
                 data={selectPreview}
             />
             <AdminUbahUserModal

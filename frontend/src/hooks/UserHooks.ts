@@ -97,6 +97,50 @@ export default function useUserHooks() {
         }
     }
 
+    const handleUserPut = async (id: number) => {
+        try {
+            const formData = new FormData();
+            formData.append("email", email);
+            formData.append("password", password);
+            formData.append("role_id", roleId);
+            formData.append("is_active", "true");
+            if (fullname) formData.append("fullname", fullname);
+            if (nik) formData.append("nik", nik);
+            if (nip) formData.append("nip", nip);
+            if (pokjaGroupId) formData.append("pokja_group_id", pokjaGroupId);
+            if (address) formData.append("address", address);
+            if (phoneNumber) formData.append("phone_number", phoneNumber);
+            if (opdOrganization) formData.append("opd_organization", opdOrganization);
+            if (group) formData.append("group", group);
+            if (skNumber) formData.append("sk_number", skNumber);
+            if (pbjNumber) formData.append("pbj_number", pbjNumber);
+            if (competenceNumber) formData.append("competence_number", competenceNumber);
+            if (skFile) formData.append("sk_file", skFile);
+            if (pbjFile) formData.append("pbj_file", pbjFile);
+            if (competenceFile) formData.append("competence_file", competenceFile);
+            if (filePhoto) formData.append("file_photo", filePhoto);
+
+            const response = await API.put(`/user/update/${id}`, formData);
+            const message = response.data.message;
+
+            SwalMessage({
+                title: "Berhasil!",
+                text: message,
+                type: "success"
+            });
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } catch (error: any) {
+            SwalMessage({
+                title: "Gagal!",
+                text: error.response?.data?.message,
+                type: "error"
+            });
+        }
+    }
+
     const handleChangeUser = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
@@ -147,10 +191,10 @@ export default function useUserHooks() {
         setPbjNumber(data?.pbj_number ?? '');
         setCompotenceNumber(data?.competence_number ?? '');
 
-        setSkFile(null);
-        setPbjFile(null);
-        setCompotenceFile(null);
-        setFilePhoto(null);
+        setSkFile(data?.sk_file as any);
+        setPbjFile(data?.pbj_file as any);
+        setCompotenceFile(data?.competence_file as any);
+        setFilePhoto(data?.file_photo as any);
     };
 
 
@@ -178,7 +222,8 @@ export default function useUserHooks() {
         handleChangeUser,
         handleFileChangeUser,
         listUser,
-        handleShowUser
+        handleShowUser,
+        handleUserPut
     };
 
 }

@@ -150,16 +150,16 @@ export default function AdminLihatUserModal({ isOpen, onClose, data }: UbahUserM
               <FormInput title="NIP" name="nip" value={nip} onChange={handleChangeUser} placeholder="Masukkan NIP" disabled={true} />
               <FormInput title="No. SK" name="skNumber" value={skNumber} onChange={handleChangeUser} placeholder="Masukkan No. SK" disabled={true} />
 
-              <FormUploadFile title="Lihat SK" name="sk_file" value={skFile as any} onChange={handleFileChangeUser} disabled={true} />
+              <FormUploadFile type='show' title="Lihat SK" name="sk_file" value={skFile as any} onChange={handleFileChangeUser} disabled={true} />
 
               <FormInput title="No. PBJ Sertifikat" name="pbj_number" value={pbjNumber} onChange={handleChangeUser} placeholder="Masukkan No. PBJ Sertifikat" disabled={true} />
 
-              <FormUploadFile title="Lihat PBJ Sertifikat" name="pbj_file" value={pbjFile as any} onChange={handleFileChangeUser} disabled={true} />
+              <FormUploadFile type='show' title="Lihat PBJ Sertifikat" name="pbj_file" value={pbjFile as any} onChange={handleFileChangeUser} disabled={true} />
 
               <FormInput title="No. Kompetensi Sertifikat" name="competenceNumber" value={competenceNumber} onChange={handleChangeUser} placeholder="Masukkan No. Kompetensi sertifikat" disabled={true} />
 
-              <FormUploadFile title="Lihat Kompetensi Sertifikat" name="competence_file" value={competenceFile as any} onChange={handleFileChangeUser} disabled={true} />
-              <FormUploadFile title="Lihat Foto Pengguna" name="filePhoto" value={filePhoto as any} onChange={handleFileChangeUser} disabled={true} />
+              <FormUploadFile type='show' title="Lihat Kompetensi Sertifikat" name="competence_file" value={competenceFile as any} onChange={handleFileChangeUser} disabled={true} />
+              <FormUploadFile type='show' title="Lihat Foto Pengguna" name="filePhoto" value={filePhoto as any} onChange={handleFileChangeUser} disabled={true} />
             </div>
           </div>
         </div>

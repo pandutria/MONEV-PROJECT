@@ -7,7 +7,7 @@ interface FormSelectProps {
     onChange?: (e: React.ChangeEvent<any>) => void;
     children: any;
     name?: string;
-    disabled?: boolean;
+    disabled?: boolean;    
 }
 
 export default function FormSelect({ title, value, onChange, children, name, disabled=false }: FormSelectProps) {
