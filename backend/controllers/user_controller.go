@@ -172,7 +172,6 @@ func UpdateUser(c *gin.Context) {
 		}
 	}
 
-	// upload file
 	saveUploaded := func(field string) *string {
 		file, err := c.FormFile(field)
 		if err != nil {
@@ -202,7 +201,6 @@ func UpdateUser(c *gin.Context) {
 		user.PhotoFile = p
 	}
 
-	// update field
 	user.FullName = req.FullName
 	user.Email = req.Email
 	user.IsActive = req.IsActive
