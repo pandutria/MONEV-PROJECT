@@ -128,7 +128,7 @@ export default function AdminUbahUserModal({ isOpen, onClose, data }: UbahUserMo
                 </FormSelect>
               )}
 
-              <FormInput title="Email" name="email" value={email} onChange={handleChangeUser} placeholder="Masukkan email" />
+              <FormInput type='email' title="Email" name="email" value={email} onChange={handleChangeUser} placeholder="Masukkan email" />
               
               <FormCheckboxStatus title='Status Pengguna' value={isActive} onChange={setIsActive}/>
             </div>
@@ -142,7 +142,7 @@ export default function AdminUbahUserModal({ isOpen, onClose, data }: UbahUserMo
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormInput title="Nama lengkap" name="fullname" value={fullname} onChange={handleChangeUser} placeholder="Masukkan nama lengkap" />
               <FormInput title="Alamat" name="address" value={address} onChange={handleChangeUser} placeholder="Masukkan alamat" />
-              <FormInput title="Telepon/HP" name="phoneNumber" value={phoneNumber} onChange={handleChangeUser} placeholder="Masukkan telepon" />
+              <FormInput type='number' title="Telepon/HP" name="phoneNumber" value={phoneNumber} onChange={handleChangeUser} placeholder="Masukkan telepon" />
 
               <FormSelect title="OPD Organisasi" name="opdOrganization" value={opdOrganization} onChange={handleChangeUser}>
                 {opdOrganisasiOptions.map((item, index) => (
@@ -151,8 +151,8 @@ export default function AdminUbahUserModal({ isOpen, onClose, data }: UbahUserMo
               </FormSelect>
 
               <FormInput title="Pangkat Golongan" name="group" value={group} onChange={handleChangeUser} placeholder="Masukkan Pangkat Golongan" />
-              <FormInput title="NIK" name="nik" value={nik} onChange={handleChangeUser} placeholder="Masukkan NIK" />
-              <FormInput title="NIP" name="nip" value={nip} onChange={handleChangeUser} placeholder="Masukkan NIP" />
+              <FormInput type='number' title="NIK" name="nik" value={nik} onChange={handleChangeUser} placeholder="Masukkan NIK" />
+              <FormInput type='number' title="NIP" name="nip" value={nip} onChange={handleChangeUser} placeholder="Masukkan NIP" />
               <FormInput title="No. SK" name="skNumber" value={skNumber} onChange={handleChangeUser} placeholder="Masukkan No. SK" />
 
               <FormUploadFile title="Unggah SK" name="sk_file" value={skFile as any} onChange={handleFileChangeUser} />

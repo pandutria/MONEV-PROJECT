@@ -181,6 +181,7 @@ export default function useUserHooks() {
         setEmail(data?.email ?? '');
         setPassword('');
         setRoleId(data?.role_id?.toString() ?? '');
+        setIsActive(data?.is_active?.toString() ?? '')
         setFullname(data?.fullname ?? '');
         setNik(data?.nik ?? '');
         setNip(data?.nip ?? '');
@@ -198,8 +199,6 @@ export default function useUserHooks() {
         setCompotenceFile(data?.competence_file as any);
         setFilePhoto(data?.file_photo as any);
     };
-
-
 
     return {
         email,

@@ -109,8 +109,8 @@ export default function AdminTambahUserModal({ isOpen, onClose }: TambahUserModa
                 </FormSelect>
               )}
 
-              <FormInput title="Email" name="email" value={email} onChange={handleChangeUser} placeholder="Masukkan email" />
-              <FormInput title="Kata Sandi" name="password" value={password} onChange={handleChangeUser} placeholder="Masukkan kata sandi" />
+              <FormInput type='email' title="Email" name="email" value={email} onChange={handleChangeUser} placeholder="Masukkan email" />
+              <FormInput type='password' title="Kata Sandi" name="password" value={password} onChange={handleChangeUser} placeholder="Masukkan kata sandi" />
             </div>
           </div>
 
@@ -122,7 +122,7 @@ export default function AdminTambahUserModal({ isOpen, onClose }: TambahUserModa
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormInput title="Nama lengkap" name="fullname" value={fullname} onChange={handleChangeUser} placeholder="Masukkan nama lengkap" />
               <FormInput title="Alamat" name="address" value={address} onChange={handleChangeUser} placeholder="Masukkan alamat" />
-              <FormInput title="Telepon/HP" name="phoneNumber" value={phoneNumber} onChange={handleChangeUser} placeholder="Masukkan telepon" />
+              <FormInput type='number' title="Telepon/HP" name="phoneNumber" value={phoneNumber} onChange={handleChangeUser} placeholder="Masukkan telepon" />
 
               <FormSelect title="OPD Organisasi" name="opdOrganization" value={opdOrganization} onChange={handleChangeUser}>
                 {opdOrganisasiOptions.map((item, index) => (
@@ -131,8 +131,8 @@ export default function AdminTambahUserModal({ isOpen, onClose }: TambahUserModa
               </FormSelect>
 
               <FormInput title="Pangkat Golongan" name="group" value={group} onChange={handleChangeUser} placeholder="Masukkan Pangkat Golongan" />
-              <FormInput title="NIK" name="nik" value={nik} onChange={handleChangeUser} placeholder="Masukkan NIK" />
-              <FormInput title="NIP" name="nip" value={nip} onChange={handleChangeUser} placeholder="Masukkan NIP" />
+              <FormInput type='number' title="NIK" name="nik" value={nik} onChange={handleChangeUser} placeholder="Masukkan NIK" />
+              <FormInput type='number' title="NIP" name="nip" value={nip} onChange={handleChangeUser} placeholder="Masukkan NIP" />
               <FormInput title="No. SK" name="skNumber" value={skNumber} onChange={handleChangeUser} placeholder="Masukkan No. SK" />
 
               <FormUploadFile title="Unggah SK" name="sk_file" value={skFile as any} onChange={handleFileChangeUser} />

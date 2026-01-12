@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import TableContent from "../../ui/TableContent";
 import TableHeader from "../../ui/TableHeader";
 import { useEffect, useState } from 'react';
 import { X } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import LoadingSpinner from "../../ui/LoadingSpinner";
 
 export default function PPKRencanaAnggaran() {
     // const [tahun, setTahun] = useState('');
@@ -15,6 +17,7 @@ export default function PPKRencanaAnggaran() {
     const [selectRevisi, setSelectRevisi] = useState(null);
     const [showRevisi, setShowRevisi] = useState(false);
     const [selectPreview, setSelectPreview] = useState<any>(null);
+    const { user, loading } = useAuth();
     const navigate = useNavigate();
 
     const columns = [
@@ -122,10 +125,16 @@ export default function PPKRencanaAnggaran() {
         fetchPreview();
     }, [selectRevisi, selectPreview, navigate]);
 
-    console.log(selectRevisi)
+    if (loading) {
+        return <LoadingSpinner/>
+    }
+
+    if (!user || user.role.name != "ppk") {
+        return <Navigate to="/" replace/>
+    }
     return (
         <div>
-            <Navbar type="ppk" />
+            <Navbar/>
 
             {showRevisi && (
                 <div className="bg-black/20 w-full h-screen absolute flex justify-center items-center z-40">

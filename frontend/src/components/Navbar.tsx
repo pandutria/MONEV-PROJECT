@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Menu, X, ChevronDown, User, LogOut } from 'lucide-react';
 import logo from "/image/logo/logo-monalisa.png";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import useAuthHooks from '../hooks/AuthHooks';
+import { BASE_URL_FILE } from '../server/API';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -53,6 +53,7 @@ export default function Navbar() {
   if (loading) {
     return;
   }
+
   return (
     <nav className={`w-full px-4 md:px-8 shadow-lg fixed top-0 left-0 right-0 z-50 bg-white ${type == 'guest' ? 'py-3 md:py-6' : 'py-2 md:py-2'}`}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -314,10 +315,14 @@ export default function Navbar() {
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                      <span className="font-poppins-medium text-primary text-sm">
-                        {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
-                      </span>
+                    <div className={`w-10 h-10 rounded-full ${user?.file_photo ? '' : 'bg-primary/20'} flex items-center justify-center`}>
+                      {user?.file_photo ? (
+                        <img src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" />
+                      ) : (
+                        <span className="font-poppins-medium text-primary text-sm">
+                          {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                        </span>
+                      )}
                     </div>
                     <span className="font-poppins-medium text-black text-sm">{user?.fullname}</span>
                   </div>
@@ -433,10 +438,14 @@ export default function Navbar() {
 
             <div className="border-t border-gray-200 pt-2 mt-2">
               <div className="flex items-center gap-3 px-4 py-3">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <span className="font-poppins-medium text-primary text-sm">
-                    {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
-                  </span>
+                <div className={`w-10 h-10 rounded-full ${user?.file_photo ? '' : 'bg-primary/20'} flex items-center justify-center`}>
+                  {user?.file_photo ? (
+                    <img src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" />
+                  ) : (
+                    <span className="font-poppins-medium text-primary text-sm">
+                      {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                    </span>
+                  )}
                 </div>
                 <span className="font-poppins-medium text-black text-sm">{user?.fullname}</span>
               </div>
@@ -546,10 +555,14 @@ export default function Navbar() {
 
             <div className="border-t border-gray-200 pt-2 mt-2">
               <div className="flex items-center gap-3 px-4 py-3">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <span className="font-poppins-medium text-primary text-sm">
-                    {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
-                  </span>
+                <div className={`w-10 h-10 rounded-full ${user?.file_photo ? '' : 'bg-primary/20'} flex items-center justify-center`}>
+                  {user?.file_photo ? (
+                    <img src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" />
+                  ) : (
+                    <span className="font-poppins-medium text-primary text-sm">
+                      {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                    </span>
+                  )}
                 </div>
                 <span className="font-poppins-medium text-black text-sm">{user?.fullname}</span>
               </div>
@@ -659,10 +672,14 @@ export default function Navbar() {
 
             <div className="border-t border-gray-200 pt-2 mt-2">
               <div className="flex items-center gap-3 px-4 py-3">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <span className="font-poppins-medium text-primary text-sm">
-                    {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
-                  </span>
+                <div className={`w-10 h-10 rounded-full ${user?.file_photo ? '' : 'bg-primary/20'} flex items-center justify-center`}>
+                  {user?.file_photo ? (
+                    <img src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" />
+                  ) : (
+                    <span className="font-poppins-medium text-primary text-sm">
+                      {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                    </span>
+                  )}
                 </div>
                 <span className="font-poppins-medium text-black text-sm">{user?.fullname}</span>
               </div>
@@ -742,10 +759,14 @@ export default function Navbar() {
 
             <div className="border-t border-gray-200 pt-2 mt-2">
               <div className="flex items-center gap-3 px-4 py-3">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <span className="font-poppins-medium text-primary text-sm">
-                    {user?.fullname.split(' ').map((n: any) => n[0]).join('').slice(0, 2)}
-                  </span>
+                <div className={`w-10 h-10 rounded-full ${user?.file_photo ? '' : 'bg-primary/20'} flex items-center justify-center`}>
+                  {user?.file_photo ? (
+                    <img src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" />
+                  ) : (
+                    <span className="font-poppins-medium text-primary text-sm">
+                      {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                    </span>
+                  )}
                 </div>
                 <span className="font-poppins-medium text-black text-sm">{user?.fullname}</span>
               </div>
