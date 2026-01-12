@@ -29,7 +29,8 @@ export default function usePokjaGroupHooks() {
                     type: 'error',
                     title: "Gagal!",
                     text: "Harap mengisi kolom yang disediakan!",
-                })
+                });
+                return;
             }
 
             SwalLoading();
@@ -110,6 +111,7 @@ export default function usePokjaGroupHooks() {
             if (result.isConfirmed) {
                 for (let index = 0; index < ids.length; index++) {
                     const id = ids[index];
+                    SwalLoading();
                     response = await API.delete(`/pokja-group/delete/${id}`);
                 }
             }

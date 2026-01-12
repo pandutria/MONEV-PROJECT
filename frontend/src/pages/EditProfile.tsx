@@ -66,7 +66,7 @@ export default function EditProfile() {
       <div className="max-w-5xl mx-auto px-4 md:px-8">
         <BackButton/>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6 hover:shadow-md transition-shadow duration-300">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6 hover:shadow-md transition-shadow duration-300" data-aos="fade-up" data-aos-duration="1000">
           <div className="flex flex-col md:flex-row gap-8 items-start">
             <div className="flex flex-col items-center gap-4 w-full md:w-auto">
               <div className={`w-40 h-40 rounded-full ${user.file_photo ? 'border-white' : 'bg-linear-to-br from-orange-100 to-orange-50 border-orange-100'} flex items-center justify-center overflow-hidden border-4 shadow-lg`}>
@@ -115,7 +115,7 @@ export default function EditProfile() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6 hover:shadow-md transition-shadow duration-300">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6 hover:shadow-md transition-shadow duration-300" data-aos="fade-up" data-aos-duration="1000">
           <h3 className="font-poppins-semibold text-2xl text-gray-900 mb-6 pb-4 border-b-2 border-orange-200">
             Informasi Akun
           </h3>
@@ -124,7 +124,7 @@ export default function EditProfile() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow duration-300">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow duration-300" data-aos="fade-up" data-aos-duration="1000">
           <h3 className="font-poppins-semibold text-2xl text-gray-900 mb-6 pb-4 border-b-2 border-orange-200">
             Informasi Pribadi
           </h3>
