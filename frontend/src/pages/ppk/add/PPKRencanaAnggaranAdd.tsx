@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Upload, Download, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/Navbar';
 import { FormatCurrency } from '../../../utils/FormatCurrency';
 import * as XLSX from 'xlsx';
@@ -12,6 +11,11 @@ import ShowTableForm from '../../../ui/ShowTableForm';
 import FormInput from '../../../ui/FormInput';
 import SubmitButton from '../../../ui/SubmitButton';
 import FormGenerateExcel from '../../../ui/FormGenerateExcel';
+import useRABHooks from '../../../hooks/RABHooks';
+import useTenderInaprocHooks from '../../../hooks/TenderInaprocHooks';
+import { useAuth } from '../../../context/AuthContext';
+import LoadingSpinner from '../../../ui/LoadingSpinner';
+import { Navigate } from 'react-router-dom';
 
 interface RABItem {
   keterangan: string;
@@ -57,30 +61,13 @@ const parseRABExcel = (
 };
 
 export default function PPKRencanaAnggaranAdd() {
-  const navigate = useNavigate();
   const [dataFile, setDataFile] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState(false);
   const [showTender, setShowTender] = useState(false);
-  const [selectedTender, setSelectedTender] = useState<any | null>(null);
-  const [formData, setFormData] = useState({
-    kodeTender: '',
-    tahunAnggaran: '',
-    satuanKerja: '',
-    kodeRUP: '',
-    programKegiatan: '',
-    kegiatan: '',
-    lokasiPekerjaan: '',
-    tanggalMulai: '',
-    tanggalAkhir: '',
-    alasan: ''
-  });
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  const [selectedTender, setSelectedTender] = useState<TenderProps | null>(null);
+  const { handleRABPost } = useRABHooks();
+  const { user, loading } = useAuth();
+  const { tenderData } = useTenderInaprocHooks();
 
   const handleDeleteRow = (index: number) => {
     setDataFile(prev => prev.filter((_, i) => i !== index));
@@ -134,15 +121,6 @@ export default function PPKRencanaAnggaranAdd() {
         document.body.style.overflow = "auto"
         setShowTender(false)
       }
-
-      setFormData(prev => ({
-        ...prev,
-        kodeTender: selectedTender?.tender,
-        tahunAnggaran: selectedTender?.tahun,
-        satuanKerja: selectedTender?.satuan,
-        kodeRUP: selectedTender?.rup,
-        kegiatan: selectedTender?.paket
-      }));
     }
 
     renderShowtender();
@@ -150,11 +128,11 @@ export default function PPKRencanaAnggaranAdd() {
 
   const columns = [
     {
-      key: 'no',
+      key: 'id',
       label: 'No'
     },
     {
-      key: 'tahun',
+      key: 'fiscal_year',
       label: 'Tahun Anggaran'
     },
     {
@@ -179,26 +157,13 @@ export default function PPKRencanaAnggaranAdd() {
     },
   ];
 
-  const data = [
-    {
-      no: 1,
-      tahun: '2025',
-      satuan: 'DINAS PEKERJAAN UMUM DAN PENATAAN RUANG',
-      rup: '60986116',
-      tender: '10093144000',
-      paket: "Rekonstruksi/Peningkatan Jalan Wawongole - Teteona (Duriaasi)",
-      revisi: "3"
-    },
-    {
-      no: 2,
-      tahun: '2024',
-      satuan: 'DEWAN PERWAKILAN RAKYAT DAERAH (DPRD)',
-      rup: '61328060',
-      tender: '10094830000',
-      paket: "Pemasangan Vaving blok Kantor DPRD Kab. Konawe",
-      revisi: "0"
-    },
-  ];
+  if (loading) {
+    return <LoadingSpinner/>
+  }
+
+  if (!user || user.role.name != "ppk") {
+    return <Navigate to="/" replace/>
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -216,12 +181,11 @@ export default function PPKRencanaAnggaranAdd() {
             <div className="overflow-y-auto max-h-[70vh] w-full">
               <TableContent
                 columns={columns}
-                data={data}
+                data={tenderData}
                 isSelect={false}
                 showEdit={false}
                 showPreview={false}
                 showSelect={true}
-                idKey="no"
                 onEdit={(item) => console.log('Edit:', item)}
                 onPreview={(item) => console.log('Preview:', item)}
                 onSelectedDataChange={(item) => setSelectedTender(item)}
@@ -231,7 +195,7 @@ export default function PPKRencanaAnggaranAdd() {
         </div>
       )}
 
-      <div className="pt-24 pb-12 px-4 md:px-8">
+      <div className="pt-24 pb-12 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000">
         <div className="max-w-7xl mx-auto">
           <BackButton />
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -240,7 +204,7 @@ export default function PPKRencanaAnggaranAdd() {
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-poppins-regular">
-              <ShowTableForm tenderCode={formData.kodeTender} onClick={() => {
+              <ShowTableForm tenderCode={selectedTender?.tender_code} onClick={() => {
                 setShowTender(true);
                 setSelectedTender(null);
               }} />
@@ -248,78 +212,69 @@ export default function PPKRencanaAnggaranAdd() {
               <FormInput
                 title='Tahun Anggaran'
                 placeholder='Masukkan tahun anggaran (otomatis)'
-                value={formData.tahunAnggaran}
+                value={selectedTender?.fiscal_year as any}
                 disabled={true}
-                onChange={(e) => handleInputChange('tahunAnggaran', e.target.value)}
               />
 
               <FormInput
                 title='Satuan Kerja'
                 placeholder='Masukkan tahun satuan kerja (otomatis)'
-                value={formData.satuanKerja}
+                value={selectedTender?.satker_code}
                 disabled={true}
-                onChange={(e) => handleInputChange('satuanKerja', e.target.value)}
               />
 
               <FormInput
                 title='Kode RUP'
                 placeholder='Masukkan tahun kode RUP (otomatis)'
-                value={formData.kodeRUP}
+                value={selectedTender?.rup_code}
                 disabled={true}
-                onChange={(e) => handleInputChange('kodeRUP', e.target.value)}
               />
 
               <FormInput
                 title='Program Kegiatan'
                 placeholder='Masukkan program kegiatan (otomatis)'
-                value={formData.programKegiatan}
+                value={selectedTender?.rup_name}
                 disabled={true}
-                onChange={(e) => handleInputChange('programKegiatan', e.target.value)}
               />
 
               <FormInput
                 title='Kegiatan'
                 placeholder='Masukkan kegiatan (otomatis)'
-                value={formData.kegiatan}
+                value={selectedTender?.rup_description}
                 disabled={true}
-                onChange={(e) => handleInputChange('kegiatan', e.target.value)}
               />
 
               <FormInput
                 title='Lokasi Pekerjaan'
                 placeholder='Masukkan lokasi pekerjaan (otomatis)'
-                value={formData.lokasiPekerjaan}
+                value={selectedTender?.work_location as any}
                 disabled={true}
-                onChange={(e) => handleInputChange('lokasiPekerjaan', e.target.value)}
                 type='textarea'
               />
 
-              <FormInput
+              {/* <FormInput
                 title='Tanggal Awal'
                 placeholder='Masukkan tanggal awal (otomatis)'
-                value={formData.tanggalMulai}
+                value={selectedTender.tanggalMulai}
                 disabled={true}
                 type='date'
-                onChange={(e) => handleInputChange('tanggalAwal', e.target.value)}
               />
 
               <FormInput
                 title='Tanggal Akhir'
                 placeholder='Masukkan tanggal akhir (otomatis)'
-                value={formData.tanggalAkhir}
+                value={selectedTender.tanggalAkhir}
                 disabled={true}
                 type='date'
-                onChange={(e) => handleInputChange('tanggalAkhir', e.target.value)}
-              />
+              /> */}
 
-              <FormInput
+              {/* <FormInput
                 title='Alasan'
                 placeholder='Alasan'
-                value={formData.alasan}
+                value={selectedTender.alasan}
                 disabled={true}
                 type='textarea'
-                onChange={(e) => handleInputChange('alasan', e.target.value)}
-              />
+              /> */}
             </div>
 
             <SubmitButton text='Buat RAB' onClick={() => handleShowDetail()}/>

@@ -17,7 +17,7 @@ import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import SubmitButton from '../../../ui/SubmitButton';
 import TableHeader from '../../../ui/TableHeader';
 
-export default function PokjaLaporanPenjabatPengadaanAdd() {
+export default function PokjaLaporanKelompokAdd() {
     const [metodePengadaan, setMetodePengadaan] = useState<any>("");
     const { tenderData } = useTenderInaprocHooks();
     const [tenderDataFilter, setTenderDataFilter] = useState<TenderProps[]>([]);
@@ -25,10 +25,8 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
     const [selectedTender, setSelectedTender] = useState<TenderProps | any>(null);
     const { user, loading } = useAuth();
     const { listUser } = useUserHooks();
-    const [userPPK, setUserPPK] = useState<UserProps[]>([]);
     const [search, setSearch] = useState("");
     const {
-        selectedPPK,
         note,
         handleEntryPenjabatPengadaanPost,
         handleChangeEntryPenjabatPengadaan,
@@ -36,9 +34,30 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
     } = useDataEntryHooks();
 
     const metodePengadaanOptions = [
-        { id: 1, name: 'Pengadaan Langsung' },
-        { id: 2, name: 'E-Purchasing V5' },
-        { id: 3, name: 'E-Purchasing V6' }
+        {
+            id: 1,
+            name: "Kontes"
+        },
+        {
+            id: 2,
+            name: "Penunjukan Langsung"
+        },
+        {
+            id: 3,
+            name: "Sayembara"
+        },
+        {
+            id: 4,
+            name: "Seleksi"
+        },
+        {
+            id: 5,
+            name: "Tender"
+        },
+        {
+            id: 6,
+            name: "Tender Cepat"
+        },
     ];
 
     const tenderColumns = [
@@ -94,21 +113,9 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
             setTenderDataFilter(filter);
         }
 
-        const filteringUserPPK = () => {
-            const filteringData = listUser?.filter((item: UserProps) => {
-                const filter = item.role_id === 2;
-                return filter;
-            });
-
-            setUserPPK(filteringData);
-        }
-
         fetchTender();
-        filteringUserPPK();
         filteringDataTender();
     }, [selectedTender, showTender, listUser, search, tenderData]);
-
-    const isEPurchasing = String(metodePengadaan) === 'E-Purchasing V5' || String(metodePengadaan) === 'E-Purchasing V6';
 
     if (loading) {
         return <LoadingSpinner />
@@ -160,7 +167,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
                     <div className="bg-white rounded-lg shadow-md p-6">
                         <h1 className="font-poppins-bold text-2xl text-gray-800 mb-8">
-                            Tambah Laporan Penjabat Pengadaan
+                            Tambah Laporan Kelompok Kerja
                         </h1>
 
                         <div className="space-y-8">
@@ -202,28 +209,13 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                     </div>
 
                                     <FormInput title="Sumber Dana" name="" value={selectedTender?.funding_source} placeholder="Otomatis terisi" disabled={true} />
-
-                                    {!isEPurchasing && (
-                                        <FormInput title="Jenis Pengadaan" name="" value={selectedTender?.procurement_method?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    )}
+                                    <FormInput title="Jenis Pengadaan" name="" value={selectedTender?.procurement_method?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                 </div>
                             </div>
 
-                            {isEPurchasing && (
-                                <div>
-                                    <h2 className="font-poppins-semibold text-lg text-gray-800 mb-4 pb-2 border-b-2 border-primary/20">
-                                        2. REALISASI PAKET
-                                    </h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <FormInput title="Status Paket" name="" value={selectedTender?.package_status} placeholder="Otomatis terisi" disabled={true} />
-                                        <FormInput title="Status Pengiriman" name="" value={selectedTender?.delivery_status} placeholder="Otomatis terisi" disabled={true} />
-                                    </div>
-                                </div>
-                            )}
-
                             <div>
                                 <h2 className="font-poppins-semibold text-lg text-gray-800 mb-4 pb-2 border-b-2 border-primary/20">
-                                    {isEPurchasing ? '3' : '2'}. INFORMASI KEUANGAN
+                                    2. INFORMASI KEUANGAN
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <FormInput title="Nilai Pagu (Rp)" name="" value={selectedTender?.budget_value?.toString()} placeholder="Otomatis terisi" disabled={true} />
@@ -233,7 +225,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
                             <div>
                                 <h2 className="font-poppins-semibold text-lg text-gray-800 mb-4 pb-2 border-b-2 border-primary/20">
-                                    {isEPurchasing ? '4' : '3'}. DETAIL KONTRAK
+                                    3. DETAIL KONTRAK
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <FormInput title="Nomor Kontrak" name="" value={selectedTender?.contract_number?.toString()} placeholder="Otomatis terisi" disabled={true} />
@@ -247,11 +239,11 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
                             <div>
                                 <h2 className="font-poppins-semibold text-lg text-gray-800 mb-4 pb-2 border-b-2 border-primary/20">
-                                    {isEPurchasing ? '5' : '4'}. INFORMASI PEMENANG
+                                    4. INFORMASI PEMENANG
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <FormInput title="Pemenang" name="" value={selectedTender?.winner_name?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title={isEPurchasing ? 'Nilai Total' : 'Nilai Penawaran'} name="" value={selectedTender?.total_value?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Nilai Penawaran" name="" value={selectedTender?.total_value?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title="Nilai Negosiasi/Nilai SPK (Rp)" name="" value={selectedTender?.negotiation_value?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title="Nomor Telepon/HP" name="" value={selectedTender?.phone?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title="Email" name="" value={selectedTender?.email?.toString()} placeholder="Otomatis terisi" disabled={true} />
@@ -261,7 +253,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
                             <div>
                                 <h2 className="font-poppins-semibold text-lg text-gray-800 mb-4 pb-2 border-b-2 border-primary/20">
-                                    {isEPurchasing ? '6' : '5'}. LOKASI & ALAMAT
+                                    5. LOKASI & ALAMAT
                                 </h2>
                                 <div className="grid grid-cols-1 gap-6">
                                     <FormInput title="Alamat Pemenang" name="" value={selectedTender?.winner_address?.toString()} placeholder="Otomatis terisi" disabled={true} />
@@ -271,19 +263,11 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
                             <div>
                                 <h2 className="font-poppins-semibold text-lg text-gray-800 mb-4 pb-2 border-b-2 border-primary/20">
-                                    {isEPurchasing ? '7' : '6'}. LAMPIRAN DAN CATATAN
+                                    6. LAMPIRAN DAN CATATAN
                                 </h2>
                                 <div className="grid grid-cols-1 gap-6">
                                     <FormUploadFile title="Evidence/Bukti Laporan Hasil Pemilihan PP" name="file" onChange={handleChangeFileEntryPenjabatPengadaan} />
                                     <FormInput title="Catatan" type='textarea' name="note" value={note} onChange={handleChangeEntryPenjabatPengadaan} placeholder="Catatan" />
-
-                                    {!isEPurchasing && (
-                                        <FormSelect title="Ditujukan ke PPK" name="ppk" value={selectedPPK} onChange={handleChangeEntryPenjabatPengadaan}>
-                                            {userPPK.map((item, index) => (
-                                                <option key={index} value={item.id}>PPK - {item.fullname}</option>
-                                            ))}
-                                        </FormSelect>
-                                    )}
                                 </div>
                             </div>
 

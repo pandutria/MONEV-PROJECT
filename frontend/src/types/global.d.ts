@@ -90,6 +90,37 @@ declare global {
     selected_ppk_id: number | null;
     user_id: number;
     selected_ppk_id: number;
+    selected_ppk: UserProps;
+    user: UserProps;
   }
 
+  export interface RABProps {
+    id: number;
+    tender_id: number;
+    tender?: TenderPaketProps | null;
+    program?: string | null;
+    start_date?: string | null;
+    end_date?: string | null;
+
+    revision_count: number;
+    revision_text?: string | null;
+
+    created_by_id?: number | null;
+    created_by?: UserProps | null;
+
+    rab_details?: RabDetailProps[];
+  }
+
+  export interface RABDetailProps {
+    id: number;
+    rab_header_id: number;
+
+    rab_header?: RABProps | null;
+
+    description: string;
+    volume: number;
+    unit: string;
+    unit_price: number;
+    total: number;
+  }
 }

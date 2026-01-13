@@ -14,6 +14,7 @@ export default function useTenderInaprocHooks() {
                     rup_code: item.rup_code == "" ? "Tidak Ada" : item.rup_code,
                     satker_name: item.satker_name == "" ? "Tidak Ada" : item.satker_name,
                     rup_name: item.rup_name == "" ? "Tidak Ada" : item.rup_name,
+                    package_name: item.package_name == "" ? "Tidak Ada" : item.package_name,
                     funding_source: item.funding_source == "" ? "Tidak Ada" : item.funding_source,
                     fiscal_year: item.fiscal_year == 0 ? "-" : item.fiscal_year,
 

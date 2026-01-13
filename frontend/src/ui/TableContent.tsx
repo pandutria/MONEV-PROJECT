@@ -140,7 +140,7 @@ export default function TableContent({
                                     {columns.map((column) => (
                                         <td
                                             key={column.key}
-                                            className="px-6 py-4 font-poppins text-[12px] text-gray-700"
+                                            className=" py-4 font-poppins text-[12px] text-gray-700"
                                         >
                                             {column.key === 'id' ? index + 1 : item[column.key]}
                                         </td>

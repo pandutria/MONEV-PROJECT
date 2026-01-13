@@ -60,8 +60,8 @@ export default function TableHeaderReport({
                         >
                             <option value="">Pilih Tahun</option>
                             {tahunOptions.map((item, index) => (
-                                <option key={index} value={item.id || item}>
-                                    {item.tahun || item}
+                                <option key={index} value={item.text || item}>
+                                    {item.text || item}
                                 </option>
                             ))}
                         </select>
@@ -88,7 +88,7 @@ export default function TableHeaderReport({
                         >
                             <option value="">Pilih Metode Pengadaan</option>
                             {metodePengadaanOptions.map((item, index) => (
-                                <option key={index} value={item.id || item}>
+                                <option key={index} value={item.text || item}>
                                     {item.text || item}
                                 </option>
                             ))}
@@ -101,7 +101,7 @@ export default function TableHeaderReport({
                         >
                             <option value="">Pilih Sumber Dana</option>
                             {sumberDanaOptions.map((item, index) => (
-                                <option key={index} value={item.id || item}>
+                                <option key={index} value={item.text || item}>
                                     {item.text || item}
                                 </option>
                             ))}

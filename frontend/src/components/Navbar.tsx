@@ -317,7 +317,7 @@ export default function Navbar() {
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-full ${user?.file_photo ? '' : 'bg-primary/20'} flex items-center justify-center`}>
                       {user?.file_photo ? (
-                        <img src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" />
+                        <img className='rounded-full w-10 h-10 object-cover' src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" /> 
                       ) : (
                         <span className="font-poppins-medium text-primary text-sm">
                           {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
@@ -440,7 +440,7 @@ export default function Navbar() {
               <div className="flex items-center gap-3 px-4 py-3">
                 <div className={`w-10 h-10 rounded-full ${user?.file_photo ? '' : 'bg-primary/20'} flex items-center justify-center`}>
                   {user?.file_photo ? (
-                    <img src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" />
+                    <img className='rounded-full w-10 h-10 object-cover' src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" /> 
                   ) : (
                     <span className="font-poppins-medium text-primary text-sm">
                       {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
@@ -557,7 +557,7 @@ export default function Navbar() {
               <div className="flex items-center gap-3 px-4 py-3">
                 <div className={`w-10 h-10 rounded-full ${user?.file_photo ? '' : 'bg-primary/20'} flex items-center justify-center`}>
                   {user?.file_photo ? (
-                    <img src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" />
+                    <img className='rounded-full w-10 h-10 object-cover' src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" /> 
                   ) : (
                     <span className="font-poppins-medium text-primary text-sm">
                       {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
@@ -674,7 +674,7 @@ export default function Navbar() {
               <div className="flex items-center gap-3 px-4 py-3">
                 <div className={`w-10 h-10 rounded-full ${user?.file_photo ? '' : 'bg-primary/20'} flex items-center justify-center`}>
                   {user?.file_photo ? (
-                    <img src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" />
+                    <img className='rounded-full w-10 h-10 object-cover' src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" /> 
                   ) : (
                     <span className="font-poppins-medium text-primary text-sm">
                       {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
@@ -761,7 +761,7 @@ export default function Navbar() {
               <div className="flex items-center gap-3 px-4 py-3">
                 <div className={`w-10 h-10 rounded-full ${user?.file_photo ? '' : 'bg-primary/20'} flex items-center justify-center`}>
                   {user?.file_photo ? (
-                    <img src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" />
+                    <img className='rounded-full w-10 h-10 object-cover' src={`${BASE_URL_FILE}/${user.file_photo}`} alt="" /> 
                   ) : (
                     <span className="font-poppins-medium text-primary text-sm">
                       {user?.fullname.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}

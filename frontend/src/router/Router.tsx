@@ -19,7 +19,10 @@ import KepalaHasilKelompokKerja from "../pages/kepala/hasil/KepalaHasilKelompokK
 import AdminManajemenPengguna from "../pages/admin/AdminManajemenPengguna"
 import AdminKelompokKerja from "../pages/admin/AdminKelompokKerja"
 import EditProfile from "../pages/EditProfile"
-import PokjaLaporanPenjabatPengadaanUpdate from "../pages/pokja/edit/PokjaLaporanPenjabatPengadaanUpdate"
+import PokjaLaporanPenjabatPengadaanUpdateView from "../pages/pokja/edit/PokjaLaporanPenjabatPengadaanUpdateView"
+import PokjaLaporanKelompok from "../pages/pokja/PokjaLaporankelompok"
+import PokjaLaporanKelompokAdd from "../pages/pokja/add/PokjaLaporanKelompok"
+import PokjaLaporanKelompokUpdateView from "../pages/pokja/edit/PokjaLaporanKelompokUpdateView"
 
 export default function Router() {
   return (
@@ -46,7 +49,13 @@ export default function Router() {
         {/* Pokja */}
         <Route path="/pokja/data-entry-penjabat-pengadaan" element={<PokjaLaporanPenjabatPengadaan/>}/>
         <Route path="/pokja/data-entry-penjabat-pengadaan/tambah" element={<PokjaLaporanPenjabatPengadaanAdd/>}/>
-        <Route path="/pokja/data-entry-penjabat-pengadaan/ubah/:id" element={<PokjaLaporanPenjabatPengadaanUpdate/>}/>
+        <Route path="/pokja/data-entry-penjabat-pengadaan/ubah/:id" element={<PokjaLaporanPenjabatPengadaanUpdateView/>}/>
+        <Route path="/pokja/data-entry-penjabat-pengadaan/lihat/:id" element={<PokjaLaporanPenjabatPengadaanUpdateView/>}/>
+
+        <Route path="/pokja/data-entry-kelompok-kerja" element={<PokjaLaporanKelompok/>}/>
+        <Route path="/pokja/data-entry-kelompok-kerja/tambah" element={<PokjaLaporanKelompokAdd/>}/>
+        <Route path="/pokja/data-entry-kelompok-kerja/ubah/:id" element={<PokjaLaporanKelompokUpdateView/>}/>
+        <Route path="/pokja/data-entry-kelompok-kerja/lihat/:id" element={<PokjaLaporanKelompokUpdateView/>}/>
 
         <Route path="/pokja/penjabat-pengadaan" element={<PokjaHasilPenjabatPengadaan/>}/>
         <Route path="/pokja/kelompok-kerja" element={<PokjaHasilKelompokKerja/>}/>

@@ -6,6 +6,7 @@ import API from "../server/API";
 import { useNavigate } from "react-router-dom";
 import { SortDescById } from "../utils/SortDescById";
 import { FormatDate } from "../utils/FormatDate";
+import FormatRupiah from "../utils/FormatRupiah";
 
 export default function useDataEntryHooks() {
     const [dataEntryPengadaan, setDataEntryPengadaan] = useState<TenderProps[]>([]);
@@ -23,8 +24,23 @@ export default function useDataEntryHooks() {
                 const response = await API.get("/tender");
                 const mappingData = response.data.data.map((item: TenderProps) => ({
                     ...item,
-                    package_name: item.package_name == "" ? item.package_name : "Tidak Ada",
-                    order_date: item.order_date ? FormatDate(item.order_date) : "Tidak Ada"
+                    package_name: item.package_name ? item.package_name : "Tidak Ada",
+                    order_date: item.order_date ? FormatDate(item.order_date) : "Tidak Ada",
+                    opd: item.user.opd_organization ? item.user.opd_organization : "Tidak Ada",
+                    budget_value: item.budget_value ? item.budget_value : 0,
+                    winner_name: item.winner_name != "" ? item.winner_name : "Tidak Ada",
+                    bid_value: item.bid_value ? item.bid_value : 0,
+                    efisience: FormatRupiah(Number(item?.budget_value) - Number(item?.total_value)),
+                    presentation: (Number(item?.budget_value) > 0 ? (Number(item?.budget_value) - Number(item?.total_value) / Number(item?.budget_value)) * 100 : 0) + "%",
+                    vendor_id: item.vendor_id ? item.vendor_id : 0,
+                    pnw_value: 0,
+                    contract_number: item.contract_number != "" ? item.contract_number : "Tidak Ada",
+                    ppk_name: "intinya ppk dah",
+                    company_leader: item.company_leader != "" ? item.company_leader : "Tidak Ada",
+                    phone: item.phone != "" ? item.phone : "Tidak Ada",
+                    npwp: item.npwp != "" ? item.npwp : "Tidak Ada",
+                    winner_address: item.winner_address != "" ? item.winner_address : "Tidak Ada",
+                    work_location: item.work_location != "" ? item.work_location : "Tidak Ada",
                 }));
 
                 setDataEntryPengadaan(SortDescById(mappingData));
@@ -37,6 +53,8 @@ export default function useDataEntryHooks() {
             try {
                 const response = await API.get(`/tender/${selectedId}`);
                 setDataEntryPengadaanById(response.data.data)
+
+                setSelectedPPK(response.data.data.selected_ppk_id);
             } catch (error) {
                 console.error(error);
             }
@@ -58,11 +76,19 @@ export default function useDataEntryHooks() {
             }
 
             const formData = new FormData();
-            if (type) {
-                formData.append("package_status", String(data.package_status));
-                formData.append("delivery_status", String(data.delivery_status));
+            if (type == "Pengadaan Langsung" || type == "E-Purchasing V5" || type == "E-Purchasing V6") {
+                if (type == "Pengadaan Langsung") {
+                    formData.append("procurement_type", String(data.procurement_type));
+                    formData.append("selected_ppk_id", selectedPPK);
+                } else {
+                    formData.append("package_status", String(data.package_status));
+                    formData.append("delivery_status", String(data.delivery_status));
+                }
+
+                formData.append("type", "penjabat");
             } else {
                 formData.append("procurement_type", String(data.procurement_type));
+                formData.append("type", "kelompok");
             }
 
             formData.append("tender_code", data.tender_code);
@@ -89,14 +115,13 @@ export default function useDataEntryHooks() {
             formData.append("npwp", data.npwp ? data.npwp : "");
             formData.append("winner_address", data.winner_address ? data.winner_address : "");
             formData.append("work_location", data.work_location ? data.work_location : "");
-            formData.append("note", note);
-            formData.append("selected_ppk_id", selectedPPK);
+            formData.append("note", note);            
 
             if (evidenceFile) {
                 formData.append("evidence_file", evidenceFile);
             }
 
-            formData.append("rup_name", data.rup_name);
+            formData.append("package_name", data.package_name as any);
             formData.append("total_value", data.total_value ? data.total_value.toString() : "");
 
             SwalLoading();
@@ -114,7 +139,11 @@ export default function useDataEntryHooks() {
             });
 
             setTimeout(() => {
-                navigate("/pokja/data-entry-penjabat-pengadaan/");
+                if (type == "Pengadaan Langsung" || type == "E-Purchasing V5" || type == "E-Purchasing V6") {
+                    navigate("/pokja/data-entry-penjabat-pengadaan/");
+                } else {
+                    navigate("/pokja/data-entry-kelompok-kerja/");
+                }
             }, 2000);
         } catch (error) {
             if (error) {
@@ -129,7 +158,7 @@ export default function useDataEntryHooks() {
     }
 
     const handleEntryPenjabatPengadaanPut = async (data: TenderProps, type: string) => {
-        try {        
+        try {
             if (!data.tender_code || !type) {
                 SwalMessage({
                     title: "Gagal!",
@@ -141,11 +170,19 @@ export default function useDataEntryHooks() {
 
             const formData = new FormData();
             formData.append("_method", "PUT");
-            if (type) {
-                formData.append("package_status", String(data.package_status));
-                formData.append("delivery_status", String(data.delivery_status));
+            if (type == "Pengadaan Langsung" || type == "E-Purchasing V5" || type == "E-Purchasing V6") {
+                if (type == "Pengadaan Langsung") {
+                    formData.append("procurement_type", String(data.procurement_type));
+                    formData.append("selected_ppk_id", selectedPPK);
+                } else {
+                    formData.append("package_status", String(data.package_status));
+                    formData.append("delivery_status", String(data.delivery_status));
+                }
+
+                formData.append("type", "penjabat");
             } else {
                 formData.append("procurement_type", String(data.procurement_type));
+                formData.append("type", "kelompok");
             }
 
             formData.append("tender_code", data.tender_code);
@@ -173,13 +210,12 @@ export default function useDataEntryHooks() {
             formData.append("winner_address", data.winner_address ? data.winner_address : "");
             formData.append("work_location", data.work_location ? data.work_location : "");
             formData.append("note", note);
-            formData.append("selected_ppk_id", selectedPPK);
 
             if (evidenceFile) {
                 formData.append("evidence_file", evidenceFile);
             }
 
-            formData.append("rup_name", data.rup_name);
+            formData.append("package_name", data.package_name as any);
             formData.append("total_value", data.total_value ? data.total_value.toString() : "");
 
             SwalLoading();
@@ -197,7 +233,11 @@ export default function useDataEntryHooks() {
             });
 
             setTimeout(() => {
-                navigate("/pokja/data-entry-penjabat-pengadaan/");
+                if (type == "Pengadaan Langsung" || type == "E-Purchasing V5" || type == "E-Purchasing V6") {
+                    navigate("/pokja/data-entry-penjabat-pengadaan/");
+                } else {
+                    navigate("/pokja/data-entry-kelompok-kerja/");
+                }
             }, 2000);
         } catch (error) {
             if (error) {
@@ -284,6 +324,6 @@ export default function useDataEntryHooks() {
         setSelectedId,
         dataEntryPengadaanById,
         handleEntryPenjabatPengadaanPut,
-        handleDataEntryPengadaanDelete
+        handleDataEntryPengadaanDelete,
     }
 }
