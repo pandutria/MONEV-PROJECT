@@ -13,32 +13,35 @@ type InaProcMeta struct {
 }
 
 type FirstInaProcItem struct {
-	CountProduct     int     `json:"count_product"`
-	KodeTender       string  `json:"kode_penyedia"`
-	NamaSatker       string  `json:"nama_satker"`
+	CountProduct int    `json:"count_product"`
 
-	KodeSatker       string  `json:"kode_satker"`
-	KdSatker         string  `json:"kd_satker"`
-	SatkerId         int  `json:"satker_id"`
+	KodeTender   string `json:"kode_penyedia"`
+	KdPenyedia   int `json:"kd_penyedia"`
 
-	RupCode          string  `json:"rup_code"`
-	KodeKlpd         string  `json:"kode_klpd"`
-	Mak              string  `json:"mak"`
-	OrderDate        string  `json:"order_date"`
-	OrderId          string  `json:"order_id"`
-	RekanId          int     `json:"rekan_id"`
-	RupDesc          string  `json:"rup_desc"`
-	RupName          string  `json:"rup_name"`
-	Status           string  `json:"status"`
-	ShipmentStatus   string  `json:"shipment_status"`
-	ShippingFee      int     `json:"shipping_fee"`
-	TotalQty         int     `json:"total_qty"`
+	NamaSatker   string `json:"nama_satker"`
 
-	FiscalYear       int     `json:"fiscal_year"`
-	TahunAnggaran    int     `json:"tahun_anggaran"`
+	KodeSatker string `json:"kode_satker"`
+	KdSatker   string `json:"kd_satker"`
+	SatkerId   int    `json:"satker_id"`
 
-	Funding          string  `json:"funding_source"`
-	NamaSumberDana   string  `json:"nama_sumber_dana"`
+	RupCode        string `json:"rup_code"`
+	KodeKlpd       string `json:"kode_klpd"`
+	Mak            string `json:"mak"`
+	OrderDate      string `json:"order_date"`
+	OrderId        string `json:"order_id"`
+	RekanId        int    `json:"rekan_id"`
+	RupDesc        string `json:"rup_desc"`
+	RupName        string `json:"rup_name"`
+	Status         string `json:"status"`
+	ShipmentStatus string `json:"shipment_status"`
+	ShippingFee    int    `json:"shipping_fee"`
+	TotalQty       int    `json:"total_qty"`
+
+	FiscalYear    int `json:"fiscal_year"`
+	TahunAnggaran int `json:"tahun_anggaran"`
+
+	Funding        string `json:"funding_source"`
+	NamaSumberDana string `json:"nama_sumber_dana"`
 
 	Total            int     `json:"total"`
 	WinnerName       string  `json:"winner_name"`

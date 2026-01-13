@@ -11,6 +11,32 @@ import (
 	"github.com/optimus/backend/utils"
 )
 
+func normalizeSatker(r models.FirstInaProcItem) *string {
+	if r.KodeSatker != "" {
+		return &r.KodeSatker
+	}
+	if r.KdSatker != "" {
+		return &r.KdSatker
+	}
+
+	v := toString(r.SatkerId)
+	if v != "" {
+		return &v
+	}
+	return nil
+}
+
+func normalizeTender(r models.FirstInaProcItem) *string {
+	if r.KodeTender != "" {
+		return &r.KodeTender
+	}
+	x := toString(r.KdPenyedia)
+	if r.KdPenyedia != 0 {
+		return &x
+	}
+	return nil
+}
+
 func GetInaProcCache(c *gin.Context) {
 	var resp models.InaProcResponse
 
@@ -25,15 +51,10 @@ func GetInaProcCache(c *gin.Context) {
 	var result []models.TenderPaket
 	for _, r := range resp.Data {
 		result = append(result, models.TenderPaket{
-			CountProduct: &r.CountProduct,
-			SatkerCode: func() *string {
-				if r.KodeSatker != "" {
-					return &r.KodeSatker
-				}
-				return &r.KdSatker
-			}(),
+			CountProduct:    &r.CountProduct,
+			SatkerCode:      normalizeSatker(r),
 			SatkerName:      &r.NamaSatker,
-			TenderCode:      &r.KodeTender,
+			TenderCode:      normalizeTender(r),
 			RupCode:         &r.RupCode,
 			FiscalYear:      &r.FiscalYear,
 			FundingSource:   &r.Funding,
@@ -128,7 +149,20 @@ func toString(v interface{}) string {
 	switch val := v.(type) {
 	case string:
 		return val
-	case float64: // default number dari encoding/json
+	case int:
+		if val == 0 {
+			return ""
+		}
+		return strconv.Itoa(val)
+	case int64:
+		if val == 0 {
+			return ""
+		}
+		return strconv.FormatInt(val, 10)
+	case float64:
+		if val == 0 {
+			return ""
+		}
 		return strconv.Itoa(int(val))
 	default:
 		return ""
@@ -178,18 +212,21 @@ func PostInaProcCache(c *gin.Context) {
 			fiscalYear = r.FiscalYear
 		}
 
-		kodeSatker := r.KodeSatker
-		if kodeSatker == "" {
-			kodeSatker = r.KdSatker
-		}
-		if kodeSatker == "" {
-			kodeSatker = toString(r.SatkerId)
-		}
+		// kodeSatker := r.KodeSatker
+		// if kodeSatker == "" {
+		// 	kodeSatker = r.KdSatker
+		// }
+		// if kodeSatker == "" {
+		// 	kodeSatker = toString(r.SatkerId)
+		// }
 
 		item := models.FirstInaProcItem{
 			CountProduct:   r.CountProduct,
 			KodeTender:     r.KodeTender,
-			// KodeTender:     r.KodeTender,
+			KdPenyedia:     r.KdPenyedia,
+			KodeSatker:     r.KodeSatker,
+			SatkerId:       r.SatkerId,
+			KdSatker:       r.KdSatker,
 			NamaSatker:     r.NamaSatker,
 			RupCode:        r.RupCode,
 			KodeKlpd:       r.KodeKlpd,
