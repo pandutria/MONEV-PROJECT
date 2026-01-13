@@ -3,7 +3,7 @@ package dtos
 import "time"
 
 type CreateAndUpdateTenderRequest struct {
-	Type *string `form:"type"`
+	Type              *string `form:"type"`
 	ProcurementMethod *string `form:"procurement_method"`
 	TenderCode        *string `form:"tender_code"`
 	RupCode           *string `form:"rup_code"`
@@ -34,21 +34,21 @@ type CreateAndUpdateTenderRequest struct {
 	WinnerAddress *string `form:"winner_address"`
 	WorkLocation  *string `form:"work_location"`
 
-	Note *string `form:"note"`
-	SelectedPpkId *uint `form:"selected_ppk_id"`
+	Note          *string `form:"note"`
+	SelectedPpkId *uint   `form:"selected_ppk_id"`
 
-	KlpdCode *string `form:"klpd_code"`
-	AccountCode *string `form:"account_code"`
+	KlpdCode       *string `form:"klpd_code"`
+	AccountCode    *string `form:"account_code"`
 	RupDescription *string `form:"rup_description"`
-	RupName *string `form:"rup_name"`
-	OrderDate *time.Time `form:"order_date"`
-	OrderId *string `form:"order_id"`
-	VendorId *int `form:"vendor_id"`
-	InaProcStatus *string `form:"inaproc_status"`
-	TotalQuantity *int `form:"total_quantity"`
+	RupName        *string `form:"rup_name"`
+	OrderDate      *string `form:"order_date"`
+	OrderId        *string `form:"order_id"`
+	VendorId       *int    `form:"vendor_id"`
+	InaProcStatus  *string `form:"inaproc_status"`
+	TotalQuantity  *int    `form:"total_quantity"`
 
-	RealizationStatus *string  `form:"realization_status"` 
-	PackageStatus *string  `forn:"package_status"`     
-	DeliveryStatus *string  `form:"delivery_status"`   
-	TotalValue *float64 `form:"total_value"`
+	RealizationStatus *string  `form:"realization_status"`
+	PackageStatus     *string  `forn:"package_status"`
+	DeliveryStatus    *string  `form:"delivery_status"`
+	TotalValue        *float64 `form:"total_value"`
 }

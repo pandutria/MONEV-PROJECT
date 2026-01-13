@@ -55,7 +55,7 @@ func GetInaProcCache(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
-		"data": result,
+		"data":    result,
 	})
 }
 
@@ -117,7 +117,7 @@ func GetInaProcByTenderId(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
-		"data": result[0],
+		"data":    result[0],
 	})
 }
 
@@ -129,7 +129,7 @@ func PostInaProcCache(c *gin.Context) {
 	}
 
 	req, err := http.NewRequest("GET",
-		"https://data.inaproc.id/api/v1/ekatalog-archive/instansi-satker?kode_klpd=D291&tahun=2025", nil)
+		"https://data.inaproc.id/api/v1/tender/tender-ekontrak-kontrak?kode_klpd=D291&tahun=2025", nil)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -145,7 +145,7 @@ func PostInaProcCache(c *gin.Context) {
 	defer resp.Body.Close()
 
 	var apiResp struct {
-		Data []models.InaProcItem `json:"data"`
+		Data []models.FirstInaProcItem `json:"data"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&apiResp); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -157,9 +157,23 @@ func PostInaProcCache(c *gin.Context) {
 	_ = utils.ReadJSON("cache/inaproc.json", &cache)
 
 	for _, r := range apiResp.Data {
-		item := models.InaProcItem{
+		var fiscalYear int
+		if r.FiscalYear == 0 {
+			fiscalYear = r.TahunAnggaran
+		} else {
+			fiscalYear = r.FiscalYear
+		}
+
+		var kodeSatker string
+		if r.KodeSatker == "" {
+			kodeSatker = r.KdSatker
+		} else {
+			kodeSatker = r.KodeSatker
+		}
+
+		item := models.FirstInaProcItem{
 			CountProduct:   r.CountProduct,
-			KodeTender:     r.KodeTender,
+			KodeTender:     kodeSatker,
 			NamaSatker:     r.NamaSatker,
 			RupCode:        r.RupCode,
 			KodeKlpd:       r.KodeKlpd,
@@ -173,9 +187,14 @@ func PostInaProcCache(c *gin.Context) {
 			ShipmentStatus: r.ShipmentStatus,
 			ShippingFee:    r.ShippingFee,
 			TotalQty:       r.TotalQty,
-			FiscalYear:     r.FiscalYear,
+			FiscalYear:     fiscalYear,
 			Funding:        r.Funding,
 			Total:          r.Total,
+			Npwp:           r.Npwp,
+			PackageName:    r.PackageName,
+			PpkName:        r.PpkName,
+			PpkPosition:    r.PpkPosition,
+			ContractNumber: r.ContractNumber,
 		}
 
 		cache.Data = append(cache.Data, item)

@@ -110,6 +110,7 @@ func CreateTender(c *gin.Context) {
 		RealizationStatus: req.RealizationStatus,
 		DeliveryStatus: req.DeliveryStatus,
 		TotalValue: req.TotalValue,
+		OrderDate: req.OrderDate,
 		UserId: user.Id,
 		SelectedPpkId: req.SelectedPpkId,
 	}
