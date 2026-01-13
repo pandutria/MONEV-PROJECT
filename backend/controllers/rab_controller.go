@@ -23,7 +23,7 @@ func GetRabHeaderById(c *gin.Context) {
 	id := c.Param("id")
 
 	var header models.RabHeader
-	config.DB.Preload("Tender").Preload("CreatedBy.Role").First(&header, id)
+	config.DB.Preload("Tender").Preload("CreatedBy.Role").Preload("RabDetails").First(&header, id)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data": header,

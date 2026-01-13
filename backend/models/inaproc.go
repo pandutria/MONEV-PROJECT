@@ -25,6 +25,8 @@ type FirstInaProcItem struct {
 	SatkerId   int    `json:"satker_id"`
 
 	RupCode        string `json:"rup_code"`
+	KdRup        int `json:"kd_rup"`
+
 	KodeKlpd       string `json:"kode_klpd"`
 	Mak            string `json:"mak"`
 	OrderDate      string `json:"order_date"`
@@ -44,6 +46,8 @@ type FirstInaProcItem struct {
 	NamaSumberDana string `json:"nama_sumber_dana"`
 
 	Total            int     `json:"total"`
+	TotalHarga            int     `json:"total_harga"`
+
 	WinnerName       string  `json:"winner_name"`
 	BidValue         float64 `json:"bid_value"`
 	NegotiationValue float64 `json:"negotiation_value"`
