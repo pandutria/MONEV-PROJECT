@@ -55,6 +55,7 @@ func CreateRabHeader(c *gin.Context) {
 	header := models.RabHeader{
 		TenderId: req.TenderId,
 		Program: req.Program,
+		Activity: req.Activity,
 		StartDate: req.StartDate,
 		EndDate: req.EndDate,
 		CreatedById: &user.Id,

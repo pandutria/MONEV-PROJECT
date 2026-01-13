@@ -3,6 +3,7 @@ package dtos
 type CreateRabHeaderRequest struct {
 	TenderId  uint    `json:"tender_id" binding:"required"`
 	Program   *string `json:"program"`
+	Activity   *string `json:"acitivity"`
 	StartDate *string `json:"start_date"`
 	EndDate   *string `json:"end_date"`
 }
