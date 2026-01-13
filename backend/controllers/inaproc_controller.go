@@ -169,9 +169,15 @@ func PostInaProcCache(c *gin.Context) {
 		var kodeSatker string
 		if r.KodeSatker == "" {
 			kodeSatker = r.KdSatker
-		} else {
-			kodeSatker = r.KodeSatker
-		}
+		} 
+		
+		// if r.KdSatker == "" {
+
+		// }
+
+		// else {
+		// 	kodeSatker = r.KodeSatker
+		// }
 
 		item := models.FirstInaProcItem{
 			CountProduct:   r.CountProduct,
