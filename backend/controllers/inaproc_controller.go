@@ -188,7 +188,8 @@ func PostInaProcCache(c *gin.Context) {
 
 		item := models.FirstInaProcItem{
 			CountProduct:   r.CountProduct,
-			KodeTender:     kodeSatker,
+			KodeTender:     r.KodeTender,
+			// KodeTender:     r.KodeTender,
 			NamaSatker:     r.NamaSatker,
 			RupCode:        r.RupCode,
 			KodeKlpd:       r.KodeKlpd,
