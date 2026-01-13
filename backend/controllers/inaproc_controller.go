@@ -198,7 +198,6 @@ func PostInaProcCache(c *gin.Context) {
 		}
 
 		cache.Data = append(cache.Data, item)
-
 	}
 
 	if err := utils.WriteJSON("cache/inaproc.json", cache); err != nil {

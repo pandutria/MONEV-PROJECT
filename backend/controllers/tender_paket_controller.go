@@ -206,6 +206,7 @@ func UpdateTender(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Mengubah data gagal!",
+			"error": err.Error(),
 		})
 		return
 	}
