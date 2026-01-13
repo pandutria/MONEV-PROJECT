@@ -48,12 +48,25 @@ func normalizeRup(r models.FirstInaProcItem) *string {
 	return nil
 }
 
-func normalizePrice(r models.FirstInaProcItem) *int {
+func normalizeFunding(r models.FirstInaProcItem) *string {
+	if r.Funding != "" {
+		return &r.Funding
+	}
+
+	if r.NamaSumberDana != "" {
+		return &r.NamaSumberDana
+	}
+	return nil
+}
+
+func normalizePrice(r models.FirstInaProcItem) *float64 {
 	if r.Total != 0 {
-		return &r.Total
+		v := float64(r.Total)
+		return &v
 	}
 	if r.TotalHarga != 0 {
-		return &r.TotalHarga
+		v := float64(r.TotalHarga)
+		return &v
 	}
 	return nil
 }
@@ -76,9 +89,9 @@ func GetInaProcCache(c *gin.Context) {
 			SatkerCode:      normalizeSatker(r),
 			SatkerName:      &r.NamaSatker,
 			TenderCode:      normalizeTender(r),
-			RupCode:         &r.RupCode,
+			RupCode:         normalizeRup(r),
 			FiscalYear:      &r.FiscalYear,
-			FundingSource:   &r.Funding,
+			FundingSource:   normalizeFunding(r),
 			KlpdCode:        &r.KodeKlpd,
 			AccountCode:     &r.Mak,
 			RupName:         &r.RupName,
@@ -88,13 +101,12 @@ func GetInaProcCache(c *gin.Context) {
 			VendorId:        &r.RekanId,
 			TotalQuantity:   &r.TotalQty,
 			PackageStatus:   &r.Status,
+			PackageName:     &r.PackageName,
 			DeliveryStatus:  &r.ShipmentStatus,
 			ShippingFee:     &r.ShippingFee,
 			ContractInitial: &r.ContractInitial,
 			ContractFinal:   &r.ContractFinal,
-			TotalValue: func(v float64) *float64 {
-				return &v
-			}(float64(r.Total)),
+			TotalValue:      normalizePrice(r),
 		})
 	}
 
@@ -344,14 +356,17 @@ func PostInaProcCacheFromFile(c *gin.Context) {
 			ShippingFee:    r.ShippingFee,
 			TotalQty:       r.TotalQty,
 			FiscalYear:     fiscalYear,
-			Funding:        r.Funding,
 			TahunAnggaran:  r.TahunAnggaran,
+			Funding:        r.Funding,
+			NamaSumberDana: r.NamaSumberDana,
 			Total:          r.Total,
 			Npwp:           r.Npwp,
 			PackageName:    r.PackageName,
+
 			PpkName:        r.PpkName,
 			PpkPosition:    r.PpkPosition,
 			ContractNumber: r.ContractNumber,
+			TotalHarga:     r.TotalHarga,
 		}
 
 		cache.Data = append(cache.Data, item)
