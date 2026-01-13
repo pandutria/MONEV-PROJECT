@@ -37,6 +37,27 @@ func normalizeTender(r models.FirstInaProcItem) *string {
 	return nil
 }
 
+func normalizeRup(r models.FirstInaProcItem) *string {
+	if r.RupCode != "" {
+		return &r.KodeTender
+	}
+	x := toString(r.KdRup)
+	if r.KdRup != 0 {
+		return &x
+	}
+	return nil
+}
+
+func normalizePrice(r models.FirstInaProcItem) *int {
+	if r.Total != 0 {
+		return &r.Total
+	}
+	if r.TotalHarga != 0 {
+		return &r.TotalHarga
+	}
+	return nil
+}
+
 func GetInaProcCache(c *gin.Context) {
 	var resp models.InaProcResponse
 
@@ -260,6 +281,89 @@ func PostInaProcCache(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "inaproc cache updated",
+		"total":   len(cache.Data),
+	})
+}
+
+func loadInaProcFromFile(path string) ([]models.FirstInaProcItem, error) {
+	var resp struct {
+		Data []models.FirstInaProcItem `json:"data"`
+	}
+
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal(b, &resp); err != nil {
+		return nil, err
+	}
+
+	return resp.Data, nil
+}
+
+func PostInaProcCacheFromFile(c *gin.Context) {
+	data, err := loadInaProcFromFile("res.json")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "failed to load res.json",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	_ = os.MkdirAll("cache", os.ModePerm)
+	var cache models.InaProcResponse
+	_ = utils.ReadJSON("cache/inaproc.json", &cache)
+
+	for _, r := range data {
+		fiscalYear := r.FiscalYear
+		if fiscalYear == 0 {
+			fiscalYear = r.TahunAnggaran
+		}
+
+		item := models.FirstInaProcItem{
+			CountProduct:   r.CountProduct,
+			KodeTender:     r.KodeTender,
+			KdPenyedia:     r.KdPenyedia,
+			KodeSatker:     r.KodeSatker,
+			SatkerId:       r.SatkerId,
+			KdSatker:       r.KdSatker,
+			NamaSatker:     r.NamaSatker,
+			RupCode:        r.RupCode,
+			KdRup:          r.KdRup,
+			KodeKlpd:       r.KodeKlpd,
+			Mak:            r.Mak,
+			OrderDate:      r.OrderDate,
+			OrderId:        r.OrderId,
+			RekanId:        r.RekanId,
+			RupDesc:        r.RupDesc,
+			RupName:        r.RupName,
+			Status:         r.Status,
+			ShipmentStatus: r.ShipmentStatus,
+			ShippingFee:    r.ShippingFee,
+			TotalQty:       r.TotalQty,
+			FiscalYear:     fiscalYear,
+			Funding:        r.Funding,
+			TahunAnggaran:  r.TahunAnggaran,
+			Total:          r.Total,
+			Npwp:           r.Npwp,
+			PackageName:    r.PackageName,
+			PpkName:        r.PpkName,
+			PpkPosition:    r.PpkPosition,
+			ContractNumber: r.ContractNumber,
+		}
+
+		cache.Data = append(cache.Data, item)
+	}
+
+	if err := utils.WriteJSON("cache/inaproc.json", cache); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "inaproc cache updated from file",
 		"total":   len(cache.Data),
 	})
 }

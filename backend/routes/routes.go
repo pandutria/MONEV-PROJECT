@@ -70,7 +70,7 @@ func SetupRoutes(r *gin.Engine) {
 		// Inaproc
 		public.GET("/inaproc/cache", controllers.GetInaProcCache)
 		public.GET("/inaproc/cache/:tender_id", controllers.GetInaProcByTenderId)
-		public.POST("/inaproc/cache/add", controllers.PostInaProcCache)
+		public.POST("/inaproc/cache/add", controllers.PostInaProcCacheFromFile)
 	}
 
 	private := r.Group("/api")
