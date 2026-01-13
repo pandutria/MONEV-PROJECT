@@ -17,12 +17,14 @@ type CreateAndUpdateTenderRequest struct {
 	BudgetValue *int `form:"budget_value"`
 	HpsValue    *int `form:"hps_value"`
 
-	ContractNumber *string    `form:"contract_number"`
-	ContractDate   *time.Time `form:"contract_date"`
-	PpkName        *string    `form:"ppk_name"`
-	PpkPosition    *string    `form:"ppk_position"`
-	CompanyLeader  *string    `form:"company_leader"`
-	LeaderPosition *string    `form:"leader_position"`
+	ContractNumber  *string    `form:"contract_number"`
+	ContractDate    *time.Time `form:"contract_date"`
+	ContractInitial *string    `form:"contract_initial"`
+	ContractFinal   *string    `form:"contract_final"`
+	PpkName         *string    `form:"ppk_name"`
+	PpkPosition     *string    `form:"ppk_position"`
+	CompanyLeader   *string    `form:"company_leader"`
+	LeaderPosition  *string    `form:"leader_position"`
 
 	WinnerName       *string  `form:"winner_name"`
 	BidValue         *float64 `form:"bid_value"`

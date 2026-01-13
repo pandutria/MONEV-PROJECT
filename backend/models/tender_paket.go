@@ -19,12 +19,14 @@ type TenderPaket struct {
 	HpsValue    *int `json:"hps_value"`
 	ShippingFee *int `json:"shipping_fee"`
 
-	ContractNumber *string    `json:"contract_number"`
-	ContractDate   *time.Time `json:"contract_date"`
-	PpkName        *string    `json:"ppk_name"`
-	PpkPosition    *string    `json:"ppk_position"`
-	CompanyLeader  *string    `json:"company_leader"`
-	LeaderPosition *string    `json:"leader_position"`
+	ContractNumber  *string    `json:"contract_number"`
+	ContractDate    *time.Time `json:"contract_date"`
+	ContractInitial *string    `json:"contract_initial"`
+	ContractFinal   *string    `json:"contract_final"`
+	PpkName         *string    `json:"ppk_name"`
+	PpkPosition     *string    `json:"ppk_position"`
+	CompanyLeader   *string    `json:"company_leader"`
+	LeaderPosition  *string    `json:"leader_position"`
 
 	WinnerName       *string  `json:"winner_name"`
 	BidValue         *float64 `json:"bid_value"`

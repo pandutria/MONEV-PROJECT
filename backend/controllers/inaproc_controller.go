@@ -47,6 +47,8 @@ func GetInaProcCache(c *gin.Context) {
 			PackageStatus:  &r.Status,
 			DeliveryStatus: &r.ShipmentStatus,
 			ShippingFee:    &r.ShippingFee,
+			ContractInitial: &r.ContractInitial,
+			ContractFinal: &r.ContractFinal,
 			TotalValue: func(v float64) *float64 {
 				return &v
 			}(float64(r.Total)),

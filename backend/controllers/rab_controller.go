@@ -108,12 +108,32 @@ func DeleteRabHeader(c *gin.Context) {
 
 	var header models.RabHeader
 	config.DB.First(&header, id)
-	err := config.DB.Delete(&header).Error
+
+	var detail []models.RabDetail
+	err := config.DB.Where("rab_header_id = ?", id).Find(&detail).Error
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Menghapus data gagal!",
 		})
+		return
 	}
+
+	err = config.DB.Delete(&detail).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Menghapus data gagal!",
+		})
+		return
+	}
+
+	err = config.DB.Delete(&header).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Menghapus data gagal!",
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Menghapus data berhasil",
 		"data": &header,

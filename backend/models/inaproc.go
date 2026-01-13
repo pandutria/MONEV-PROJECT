@@ -44,6 +44,8 @@ type FirstInaProcItem struct {
 	PpkPosition      string  `json:"jabatan_ppk"`
 	ContractNumber   string  `json:"no_kontrak"`
 	TahunAnggaran    int     `json:"tahun_anggaran"`
+	ContractInitial  string  `json:"contract_initial"`
+	ContractFinal    string  `json:"contract_final"`
 }
 
 // type SecondInaProcItem struct {
