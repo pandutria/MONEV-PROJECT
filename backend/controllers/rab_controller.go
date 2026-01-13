@@ -66,6 +66,7 @@ func CreateRabHeader(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Membuat data gagal",
+			"error": err.Error(),
 		})
 		return
 	}
@@ -92,6 +93,7 @@ func UpdateRabHeader(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Memperbarui data gagal!",
+			"error": err.Error(),
 		})
 		return
 	}

@@ -19,8 +19,8 @@ type FirstInaProcItem struct {
 
 	KodeSatker       string  `json:"kode_satker"`
 	KdSatker         string  `json:"kd_satker"`
-	SatkerId         string  `json:"satker_id"`
-	
+	SatkerId         int  `json:"satker_id"`
+
 	RupCode          string  `json:"rup_code"`
 	KodeKlpd         string  `json:"kode_klpd"`
 	Mak              string  `json:"mak"`
