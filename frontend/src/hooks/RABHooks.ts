@@ -2,9 +2,14 @@ import { SwalMessage } from "../utils/SwalMessage";
 import API from "../server/API";
 import SwalLoading from "../utils/SwalLoading";
 import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 
 export default function useRABHooks() {
     const token = localStorage.getItem("token");
+    const [program, setProgram] = useState("");
+    const [activity, setActivity] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const navigate = useNavigate();
 
     const handleRABPost = async (dataRabHead: TenderProps, dataRabDetail: RABDetailProps[]) => {
@@ -21,9 +26,12 @@ export default function useRABHooks() {
 
             SwalLoading();
             const responseRabHeader = await API.post("/rab/create", {
-                tender_id: dataRabHead.tender_code,
-                program: dataRabHead.rup_name,
-                
+                tender_id: dataRabHead.id,
+                program: program,
+                activity: activity,
+                start_date: startDate,
+                end_date: endDate
+
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -63,10 +71,24 @@ export default function useRABHooks() {
                     type: "error"
                 })
             }
+            console.error(error)
         }
+    }
+
+    const handleChangeRAB = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (name == "program") return setProgram(value);
+        if (name == "activity") return setActivity(value);
+        if (name == "start") return setStartDate(value);
+        if (name == "end") return setEndDate(value);
     }
 
     return {
         handleRABPost,
+        handleChangeRAB,
+        program,
+        activity,
+        startDate,
+        endDate
     }
 }

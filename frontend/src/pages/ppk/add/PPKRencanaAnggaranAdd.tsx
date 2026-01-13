@@ -65,7 +65,14 @@ export default function PPKRencanaAnggaranAdd() {
   const [showDetail, setShowDetail] = useState(false);
   const [showTender, setShowTender] = useState(false);
   const [selectedTender, setSelectedTender] = useState<TenderProps | any>(null);
-  const { handleRABPost } = useRABHooks();
+  const { 
+    handleRABPost, 
+    handleChangeRAB,
+    program,
+    activity,
+    startDate,
+    endDate
+  } = useRABHooks();
   const { user, loading } = useAuth();
   const { tenderData } = useTenderInaprocHooks();
 
@@ -161,10 +168,6 @@ export default function PPKRencanaAnggaranAdd() {
       key: 'package_name',
       label: 'Nama Paket'
     },
-    {
-      key: 'revisi',
-      label: 'Revisi'
-    },
   ];
 
   if (loading) {
@@ -186,7 +189,7 @@ export default function PPKRencanaAnggaranAdd() {
               <X />
             </div>
             <h1 className="font-poppins-semibold text-center text-[26px] shrink-0 mb-6">
-              Data Tender Pekerja Konstruksi
+              Data Tender
             </h1>
             <div className="overflow-y-auto max-h-[70vh] w-full">
               <TableContent
@@ -241,40 +244,44 @@ export default function PPKRencanaAnggaranAdd() {
               />
 
               <FormInput
-                title='Program Kegiatan'
-                placeholder='Masukkan program kegiatan (otomatis)'
-                // value={selectedTender?.rup_name}
-                disabled={true}
-              />
-
-              <FormInput
-                title='Kegiatan'
-                placeholder='Masukkan kegiatan (otomatis)'
-                // value={selectedTender?.rup_description}
-                disabled={true}
-              />
-
-              <FormInput
                 title='Lokasi Pekerjaan'
                 placeholder='Masukkan lokasi pekerjaan (otomatis)'
-                // value={selectedTender?.work_location as any}
+                value={selectedTender?.work_location as any}
                 disabled={true}
                 type='textarea'
               />
 
               <FormInput
+                title='Program Kegiatan'
+                placeholder='Masukkan program kegiatan'
+                value={program}
+                name='program'
+                onChange={handleChangeRAB}
+              />
+
+              <FormInput
+                title='Kegiatan'
+                placeholder='Masukkan kegiatan'
+                value={activity}
+                name='activity'
+                onChange={handleChangeRAB}
+              />              
+
+              <FormInput
                 title='Tanggal Awal'
-                placeholder='Masukkan tanggal awal (otomatis)'
-                // value={selectedTender.tanggalMulai}
-                disabled={true}
+                placeholder='Masukkan tanggal awal'
+                value={startDate}
+                name='start'
+                onChange={handleChangeRAB}
                 type='date'
               />
 
               <FormInput
                 title='Tanggal Akhir'
-                placeholder='Masukkan tanggal akhir (otomatis)'
-                // value={selectedTender.tanggalAkhir}
-                disabled={true}
+                placeholder='Masukkan tanggal akhir'
+                value={endDate}
+                name='end'
+                onChange={handleChangeRAB}
                 type='date'
               />
 
