@@ -99,6 +99,32 @@ func DeleteSchedule(c *gin.Context) {
 	var schedule models.ScheduleHeader
 	config.DB.First(&schedule, id)
 
+	var items []models.ScheduleItem
+	config.DB.Where("schedule_header_id = ?", id).Find(&items)
+	var itemIDs []uint
+	for _, it := range items {
+		itemIDs = append(itemIDs, it.Id)
+	}
+
+	if len(itemIDs) > 0 {
+		if err := config.DB.
+			Where("schedule_item_id IN ?", itemIDs).
+			Delete(&models.ScheduleWeek{}).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Gagal menghapus schedule week",
+			})
+			return
+		}
+	}
+
+	if err := config.DB.Where("schedule_header_id = ?", id).
+		Delete(&models.ScheduleItem{}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Gagal menghapus schedule item",
+		})
+		return
+	}
+
 	err := config.DB.Delete(&schedule).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

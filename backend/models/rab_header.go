@@ -9,6 +9,7 @@ type RabHeader struct {
 	TenderId      uint         `gorm:"not null" json:"tender_id"`
 	Tender        *TenderPaket `gorm:"foreignKey:TenderId" json:"tender,omitempty"`
 	Program       *string      `json:"program"`
+	Activity      *string      `json:"activity"`
 	StartDate     *time.Time   `json:"start_date"`
 	EndDate       *time.Time   `json:"end_date"`
 	RevisionCount int          `json:"revision_count"`
