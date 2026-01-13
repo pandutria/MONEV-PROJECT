@@ -117,7 +117,8 @@ export default function PokjaLaporanPenjabatPengadaanUpdate() {
     }, [selectedTender, showTender, listUser, search, tenderData, id, setSelectedId]);
 
     const isEPurchasing = String(metodePengadaan) === 'E-Purchasing V5' || String(metodePengadaan) === 'E-Purchasing V6';
-    const finalTender = selectedTender ?? dataEntryPengadaanById;
+    const finalTender = selectedTender && Object.keys(selectedTender).length > 0 ? selectedTender : dataEntryPengadaanById;
+
 
     if (loading) {
         return <LoadingSpinner />

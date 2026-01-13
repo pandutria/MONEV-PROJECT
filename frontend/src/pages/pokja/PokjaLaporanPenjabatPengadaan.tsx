@@ -13,10 +13,11 @@ export default function PokjaLaporanPenjabatPengadaan() {
     const [search, setSearch] = useState('');
     const [selectEdit, setSelectEdit] = useState<TenderProps | null>(null);
     const [selectPreview, setSelectPreview] = useState<any>(null);
+    const [selectedRemove, setSelectedRemove] = useState<any[]>([]);
     const [dataTable, setDataTable] = useState<any[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { user, loading } = useAuth();
-    const { dataEntryPengadaan } = useDataEntryHooks();
+    const { dataEntryPengadaan, handleDataEntryPengadaanDelete } = useDataEntryHooks();
     const navigate = useNavigate();
 
     const columns = [
@@ -94,6 +95,7 @@ export default function PokjaLaporanPenjabatPengadaan() {
                 <TableHeader
                     title="Daftar Laporan Pejabat Pengadaan"
                     showHapus={true}
+                    onHapusClick={() => handleDataEntryPengadaanDelete(selectedRemove)}
                     onTambahClick={() => navigate("/pokja/data-entry-penjabat-pengadaan/tambah")}
                     type="pokja"
                     searchValue={search}
@@ -106,9 +108,9 @@ export default function PokjaLaporanPenjabatPengadaan() {
                         isSelect={true}
                         showEdit={true}
                         showPreview={true}
-                        idKey="no"
                         onEdit={(item) => setSelectEdit(item)}
                         onPreview={(item) => setSelectPreview(item)}
+                        onSelectedIdsChange={(item) => setSelectedRemove(item)}
                     />
                 </div>
             </div>

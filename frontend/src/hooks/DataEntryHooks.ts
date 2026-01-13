@@ -5,6 +5,7 @@ import SwalLoading from "../utils/SwalLoading";
 import API from "../server/API";
 import { useNavigate } from "react-router-dom";
 import { SortDescById } from "../utils/SortDescById";
+import { FormatDate } from "../utils/FormatDate";
 
 export default function useDataEntryHooks() {
     const [dataEntryPengadaan, setDataEntryPengadaan] = useState<TenderProps[]>([]);
@@ -17,13 +18,13 @@ export default function useDataEntryHooks() {
     const [selectedId, setSelectedId] = useState<any>(null);
 
     useEffect(() => {
-        const fetchDataEntryPengadaan = async() => {
+        const fetchDataEntryPengadaan = async () => {
             try {
                 const response = await API.get("/tender");
                 const mappingData = response.data.data.map((item: TenderProps) => ({
                     ...item,
                     package_name: item.package_name == "" ? item.package_name : "Tidak Ada",
-                    order_date: item.order_date ? item.order_date : "Tidak Ada"
+                    order_date: item.order_date ? FormatDate(item.order_date) : "Tidak Ada"
                 }));
 
                 setDataEntryPengadaan(SortDescById(mappingData));
@@ -32,7 +33,7 @@ export default function useDataEntryHooks() {
             }
         }
 
-        const fetchDataEntryPengadaanById = async() => {
+        const fetchDataEntryPengadaanById = async () => {
             try {
                 const response = await API.get(`/tender/${selectedId}`);
                 setDataEntryPengadaanById(response.data.data)
@@ -128,7 +129,7 @@ export default function useDataEntryHooks() {
     }
 
     const handleEntryPenjabatPengadaanPut = async (data: TenderProps, type: string) => {
-        try {
+        try {        
             if (!data.tender_code || !type) {
                 SwalMessage({
                     title: "Gagal!",
@@ -139,6 +140,7 @@ export default function useDataEntryHooks() {
             }
 
             const formData = new FormData();
+            formData.append("_method", "PUT");
             if (type) {
                 formData.append("package_status", String(data.package_status));
                 formData.append("delivery_status", String(data.delivery_status));
@@ -181,7 +183,7 @@ export default function useDataEntryHooks() {
             formData.append("total_value", data.total_value ? data.total_value.toString() : "");
 
             SwalLoading();
-            const response = await API.post(`/tender/update/${selectedId}`, formData, {
+            const response = await API.put(`/tender/update/${selectedId}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -223,6 +225,55 @@ export default function useDataEntryHooks() {
         }
     };
 
+    const handleDataEntryPengadaanDelete = async (ids: TenderProps[]) => {
+        try {
+            if (!ids) {
+                SwalMessage({
+                    title: "Gagal!",
+                    text: "Harap pilih minimal 1 data yang dihapus!",
+                    type: "error"
+                });
+            }
+
+            const result = await SwalMessage({
+                title: "Peringatan!",
+                text: "Apakah anda yakin untuk menghapus data ini?",
+                type: 'warning',
+                confirmText: "Iya",
+                cancelText: "Tidak",
+                showCancelButton: true,
+            });
+
+            let response;
+            if (result.isConfirmed) {
+                for (let index = 0; index < ids.length; index++) {
+                    const id = ids[index];
+                    SwalLoading();
+                    response = await API.delete(`/tender/delete/${id}`);
+                }
+            }
+
+            const message = response?.data.message;
+            SwalMessage({
+                title: "Berhasil!",
+                text: message,
+                type: "success"
+            });
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } catch (error) {
+            if (error) {
+                SwalMessage({
+                    title: "Gagal!",
+                    text: "Harap pilih minimal 1 data yang dihapus!",
+                    type: "error"
+                });
+            }
+        }
+    }
+
     return {
         note,
         selectedPPK,
@@ -232,6 +283,7 @@ export default function useDataEntryHooks() {
         dataEntryPengadaan,
         setSelectedId,
         dataEntryPengadaanById,
-        handleEntryPenjabatPengadaanPut
+        handleEntryPenjabatPengadaanPut,
+        handleDataEntryPengadaanDelete
     }
 }
