@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/optimus/backend/models"
@@ -31,24 +32,24 @@ func GetInaProcCache(c *gin.Context) {
 				}
 				return &r.KdSatker
 			}(),
-			SatkerName:     &r.NamaSatker,
-			TenderCode:     &r.KodeTender,
-			RupCode:        &r.RupCode,
-			FiscalYear:     &r.FiscalYear,
-			FundingSource:  &r.Funding,
-			KlpdCode:       &r.KodeKlpd,
-			AccountCode:    &r.Mak,
-			RupName:        &r.RupName,
-			RupDescription: &r.RupDesc,
-			OrderDate:      &r.OrderDate,
-			OrderId:        &r.OrderId,
-			VendorId:       &r.RekanId,
-			TotalQuantity:  &r.TotalQty,
-			PackageStatus:  &r.Status,
-			DeliveryStatus: &r.ShipmentStatus,
-			ShippingFee:    &r.ShippingFee,
+			SatkerName:      &r.NamaSatker,
+			TenderCode:      &r.KodeTender,
+			RupCode:         &r.RupCode,
+			FiscalYear:      &r.FiscalYear,
+			FundingSource:   &r.Funding,
+			KlpdCode:        &r.KodeKlpd,
+			AccountCode:     &r.Mak,
+			RupName:         &r.RupName,
+			RupDescription:  &r.RupDesc,
+			OrderDate:       &r.OrderDate,
+			OrderId:         &r.OrderId,
+			VendorId:        &r.RekanId,
+			TotalQuantity:   &r.TotalQty,
+			PackageStatus:   &r.Status,
+			DeliveryStatus:  &r.ShipmentStatus,
+			ShippingFee:     &r.ShippingFee,
 			ContractInitial: &r.ContractInitial,
-			ContractFinal: &r.ContractFinal,
+			ContractFinal:   &r.ContractFinal,
 			TotalValue: func(v float64) *float64 {
 				return &v
 			}(float64(r.Total)),
@@ -123,6 +124,17 @@ func GetInaProcByTenderId(c *gin.Context) {
 	})
 }
 
+func toString(v interface{}) string {
+	switch val := v.(type) {
+	case string:
+		return val
+	case float64: // default number dari encoding/json
+		return strconv.Itoa(int(val))
+	default:
+		return ""
+	}
+}
+
 func PostInaProcCache(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if token == "" {
@@ -131,7 +143,7 @@ func PostInaProcCache(c *gin.Context) {
 	}
 
 	req, err := http.NewRequest("GET",
-		"https://data.inaproc.id/api/v1/tender/tender-ekontrak-kontrak?kode_klpd=D291&tahun=2025", nil)
+		"https://data.inaproc.id/api/v1/ekatalog-archive/paket-e-purchasing?kode_klpd=D424&tahun=2025", nil)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -166,18 +178,13 @@ func PostInaProcCache(c *gin.Context) {
 			fiscalYear = r.FiscalYear
 		}
 
-		var kodeSatker string
-		if r.KodeSatker == "" {
+		kodeSatker := r.KodeSatker
+		if kodeSatker == "" {
 			kodeSatker = r.KdSatker
-		} 
-		
-		// if r.KdSatker == "" {
-
-		// }
-
-		// else {
-		// 	kodeSatker = r.KodeSatker
-		// }
+		}
+		if kodeSatker == "" {
+			kodeSatker = toString(r.SatkerId)
+		}
 
 		item := models.FirstInaProcItem{
 			CountProduct:   r.CountProduct,
