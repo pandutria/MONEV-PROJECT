@@ -12,25 +12,18 @@ import FormInput from '../../../ui/FormInput';
 import SubmitButton from '../../../ui/SubmitButton';
 import FormGenerateExcel from '../../../ui/FormGenerateExcel';
 import useRABHooks from '../../../hooks/RABHooks';
-import useTenderInaprocHooks from '../../../hooks/TenderInaprocHooks';
 import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate } from 'react-router-dom';
-
-interface RABItem {
-  keterangan: string;
-  satuan: string;
-  volume: number;
-  hargaSatuan: number;
-  jumlahHarga: number;
-}
+import useDataEntryHooks from '../../../hooks/DataEntryHooks';
+import TableHeader from '../../../ui/TableHeader';
 
 const parseRABExcel = (
   worksheet: XLSX.WorkSheet,
   startRow: number = 13,
   maxRow: number = 121
-): RABItem[] => {
-  const result: RABItem[] = [];
+): RABDetailProps[] => {
+  const result: RABDetailProps[] = [];
 
   const range = XLSX.utils.decode_range(worksheet['!ref'] as string);
   const endRow = Math.min(range.e.r + 1, maxRow);
@@ -49,12 +42,12 @@ const parseRABExcel = (
     if (String(c).toUpperCase().includes('TOTAL')) break;
 
     result.push({
-      keterangan: `${c} ${d} ${e}`.trim(),
-      satuan: String(getCell('F', row)),
+      description: `${c} ${d} ${e}`.trim(),
+      unit: String(getCell('F', row)),
       volume: Number(getCell('G', row)) || 0,
-      hargaSatuan: Number(getCell('H', row)) || 0,
-      jumlahHarga: Number(getCell('I', row)) || 0,
-    });
+      unit_price: Number(getCell('H', row)) || 0,
+      total: Number(getCell('I', row)) || 0,
+    } as any);
   }
 
   return result;
@@ -64,9 +57,11 @@ export default function PPKRencanaAnggaranAdd() {
   const [dataFile, setDataFile] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState(false);
   const [showTender, setShowTender] = useState(false);
+  const [search, setSearch] = useState("");
+  const [tenderDataFilter, setTenderDataFilter] = useState<TenderProps[]>([]);
   const [selectedTender, setSelectedTender] = useState<TenderProps | any>(null);
-  const { 
-    handleRABPost, 
+  const {
+    handleRABPost,
     handleChangeRAB,
     program,
     activity,
@@ -74,7 +69,7 @@ export default function PPKRencanaAnggaranAdd() {
     endDate
   } = useRABHooks();
   const { user, loading } = useAuth();
-  const { tenderData } = useTenderInaprocHooks();
+  const { dataEntryPengadaan } = useDataEntryHooks();
 
   const handleDeleteRow = (index: number) => {
     setDataFile(prev => prev.filter((_, i) => i !== index));
@@ -114,13 +109,13 @@ export default function PPKRencanaAnggaranAdd() {
 
   const handleShowDetail = () => {
     if (!selectedTender) {
-        SwalMessage({
-          type: "error",
-          title: "Gagal!",
-          text: "Pilih Tender terlebih dahulu!"
-        });
+      SwalMessage({
+        type: "error",
+        title: "Gagal!",
+        text: "Pilih Tender terlebih dahulu!"
+      });
 
-        return;
+      return;
     }
 
     setShowDetail(true);
@@ -140,8 +135,18 @@ export default function PPKRencanaAnggaranAdd() {
       }
     }
 
+    const filteringDataTender = () => {
+      const filter = dataEntryPengadaan?.filter((item: TenderProps) => {
+        const data = item?.tender_code?.toLowerCase().includes(search.toLowerCase());
+        return data;
+      });
+
+      setTenderDataFilter(filter);
+    }
+
+    filteringDataTender();
     renderShowtender();
-  }, [showTender, selectedTender]);
+  }, [showTender, selectedTender, search, dataEntryPengadaan]);
 
   const columns = [
     {
@@ -171,37 +176,44 @@ export default function PPKRencanaAnggaranAdd() {
   ];
 
   if (loading) {
-    return <LoadingSpinner/>
+    return <LoadingSpinner />
   }
 
   if (!user || user.role.name != "ppk") {
-    return <Navigate to="/" replace/>
+    return <Navigate to="/" replace />
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar/>
+      <Navbar />
 
       {showTender && (
-        <div className="absolute inset-0 flex justify-center items-center bg-black/20 z-20">
-          <div className="bg-white p-4 rounded-lg flex flex-col max-w-[90vw] max-h-[60vh] gap-4 relative">
+        <div className="absolute inset-0 h-screen flex justify-center items-center bg-black/20 z-20">
+          <div className="bg-white p-4 rounded-lg flex flex-col max-w-[90vw] max-h-[70vh] gap-4 relative">
             <div className="absolute top-4 right-4 cursor-pointer text-primary" onClick={() => setShowTender(false)}>
               <X />
             </div>
-            <h1 className="font-poppins-semibold text-center text-[26px] shrink-0 mb-6">
-              Data Tender
-            </h1>
+            <TableHeader
+              title="Data Tender"
+              type='pokja'
+              showHapus={false}
+              showTambah={false}
+              searchValue={search}
+              onSearchChange={(item) => setSearch(item)}
+            />
             <div className="overflow-y-auto max-h-[70vh] w-full">
               <TableContent
                 columns={columns}
-                data={tenderData}
+                data={tenderDataFilter}
                 isSelect={false}
                 showEdit={false}
                 showPreview={false}
                 showSelect={true}
-                onEdit={(item) => console.log('Edit:', item)}
-                onPreview={(item) => console.log('Preview:', item)}
-                onSelectedDataChange={(item) => setSelectedTender(item)}
+                idKey="id"
+                onSelectedDataChange={(item) => {
+                  setSelectedTender(item)
+                  setShowTender(false)
+                }}
               />
             </div>
           </div>
@@ -265,7 +277,7 @@ export default function PPKRencanaAnggaranAdd() {
                 value={activity}
                 name='activity'
                 onChange={handleChangeRAB}
-              />              
+              />
 
               <FormInput
                 title='Tanggal Awal'
@@ -294,11 +306,11 @@ export default function PPKRencanaAnggaranAdd() {
               />
             </div>
 
-            <SubmitButton text='Buat RAB' onClick={() => handleShowDetail()}/>
+            <SubmitButton text='Buat RAB' onClick={() => handleShowDetail()} />
           </div>
 
           {showDetail && (
-            <FormGenerateExcel handleSave={() => handleRABPost(selectedTender, dataFile)} title='RAB' handleFileChange={handleFileChange} handleDownloadTemplate={handleDownloadTemplate}/>        
+            <FormGenerateExcel handleSave={() => handleRABPost(selectedTender, dataFile)} title='RAB' handleFileChange={handleFileChange} handleDownloadTemplate={handleDownloadTemplate} />
           )}
 
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -337,25 +349,25 @@ export default function PPKRencanaAnggaranAdd() {
                       </td>
                     </tr>
                   ) : (
-                    dataFile.map((item: RABItem, index) => (
+                    dataFile.map((item: RABDetailProps, index) => (
                       <tr
                         key={index}
                         className="hover:bg-gray-50 transition-colors duration-150"
                       >
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {item.keterangan}
+                          {item.description}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {item.satuan}
+                          {item.unit}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
                           {item.volume}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {FormatCurrency(item.hargaSatuan)}
+                          {FormatCurrency(item.unit_price)}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {FormatCurrency(item.jumlahHarga)}
+                          {FormatCurrency(item.total)}
                         </td>
                         <td className="px-6 py-4">
                           <button

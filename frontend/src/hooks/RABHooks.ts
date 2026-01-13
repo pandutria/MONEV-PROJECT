@@ -71,7 +71,6 @@ export default function useRABHooks() {
                     type: "error"
                 })
             }
-            console.error(error)
         }
     }
 
