@@ -12,7 +12,7 @@ import (
 
 func GetAllRabHeader(c *gin.Context) {
 	var header []models.RabHeader
-	config.DB.Preload("CreatedBy.Role").Preload("RabDetails").Find(&header)
+	config.DB.Preload("Tender").Preload("CreatedBy.Role").Preload("RabDetails").Find(&header)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data": header,
