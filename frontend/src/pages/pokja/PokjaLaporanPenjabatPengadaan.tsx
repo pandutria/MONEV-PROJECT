@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Navigate, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
@@ -8,57 +7,46 @@ import { useEffect, useState } from 'react';
 import PokjaLaporanPenjabatPengadaanShow from "./show/PokjaLaporanPernjabatPengadaanShowModal";
 import { useAuth } from "../../context/AuthContext";
 import LoadingSpinner from "../../ui/LoadingSpinner";
+import useDataEntryHooks from "../../hooks/DataEntryHooks";
 
 export default function PokjaLaporanPenjabatPengadaan() {
     const [search, setSearch] = useState('');
-    const [selectRevisi, setSelectRevisi] = useState(null);
+    const [selectEdit, setSelectEdit] = useState<TenderProps | null>(null);
     const [selectPreview, setSelectPreview] = useState<any>(null);
     const [dataTable, setDataTable] = useState<any[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { user, loading } = useAuth();    
+    const { user, loading } = useAuth();
+    const { dataEntryPengadaan } = useDataEntryHooks();
     const navigate = useNavigate();
 
     const columns = [
         {
-            key: 'kodePaket',
-            label: 'Kode Paket'
+            key: 'id',
+            label: 'No'
         },
         {
-            key: 'rup',
+            key: 'tender_code',
+            label: 'Kode Tender'
+        },
+        {
+            key: 'rup_code',
             label: 'Kode RUP'
         },
         {
-            key: 'namaPaket',
+            key: 'package_name',
             label: 'Nama Paket'
         },
         {
-            key: 'tanggal',
+            key: 'order_date',
             label: 'Tanggal Masuk/Perubahan'
-        },
-    ];
-
-    const data = [
-        {
-            no: 1,
-            kodePaket: 'JHIUgdwb5',
-            rup: '60986116',
-            namaPaket: "Rekonstruksi/Peningkatan Jalan Wawongole - Teteona (Duriaasi)",
-            tanggal: "30 Desember 2024"
-        },
-        {
-            no: 2,
-            kodePaket: 'KJSOIDSD',
-            rup: '62123792',
-            namaPaket: "Perbaikan Jembatan",
-            tanggal: "23 Januari 2025"
         },
     ];
 
     useEffect(() => {
         const fetchEdit = () => {
-            if (selectRevisi) {
-                const no = selectPreview?.no;
-                navigate(`/ppk/rencana-anggaran/${no}`);
+            if (selectEdit) {
+                const id = selectEdit?.id;
+                navigate(`/pokja/data-entry-penjabat-pengadaan/ubah/${id}`);
             }
         }
 
@@ -68,9 +56,9 @@ export default function PokjaLaporanPenjabatPengadaan() {
             }
         }
 
-        const filteringData = () => {
-            const filter = data.filter((item) => {
-                const dataFilter = item.namaPaket.toLowerCase().includes(search.toLowerCase()) || search.toLowerCase().includes(item.namaPaket.toLowerCase());
+        const filteringDataEntryPengadaan = () => {
+            const filter = dataEntryPengadaan?.filter((item: TenderProps) => {
+                const dataFilter = search ? item?.tender_code?.toLowerCase().includes(search.toLowerCase()) : true;
                 return dataFilter;
             });
 
@@ -79,8 +67,8 @@ export default function PokjaLaporanPenjabatPengadaan() {
 
         fetchEdit();
         fetchPreview();
-        filteringData();
-    }, [selectRevisi, selectPreview, navigate, search]);
+        filteringDataEntryPengadaan();
+    }, [selectEdit, selectPreview, navigate, search, dataEntryPengadaan]);
 
     if (loading) {
         return <LoadingSpinner/>
@@ -109,7 +97,7 @@ export default function PokjaLaporanPenjabatPengadaan() {
                     onTambahClick={() => navigate("/pokja/data-entry-penjabat-pengadaan/tambah")}
                     type="pokja"
                     searchValue={search}
-                    onSearchChange={setSearch}
+                    onSearchChange={(item) => setSearch(item)}
                 />
                 <div className="p-6">
                     <TableContent
@@ -119,7 +107,7 @@ export default function PokjaLaporanPenjabatPengadaan() {
                         showEdit={true}
                         showPreview={true}
                         idKey="no"
-                        onEdit={(item) => setSelectRevisi(item)}
+                        onEdit={(item) => setSelectEdit(item)}
                         onPreview={(item) => setSelectPreview(item)}
                     />
                 </div>

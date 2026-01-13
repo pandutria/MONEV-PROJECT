@@ -89,6 +89,7 @@ declare global {
     count_product: number;
     selected_ppk_id: number | null;
     user_id: number;
+    selected_ppk_id: number;
   }
 
 }
