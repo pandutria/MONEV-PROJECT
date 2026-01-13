@@ -198,6 +198,7 @@ func UpdateTender(c *gin.Context) {
 	tender.RealizationStatus = req.RealizationStatus
 	tender.DeliveryStatus = req.DeliveryStatus
 	tender.TotalValue = req.TotalValue
+	tender.OrderDate = req.OrderDate
 	tender.SelectedPpkId = req.SelectedPpkId
 	tender.FiscalYear = req.FiscalYear
 
