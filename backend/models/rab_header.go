@@ -1,17 +1,13 @@
 package models
 
-import (
-	"time"
-)
-
 type RabHeader struct {
 	Id            uint         `gorm:"primaryKey" json:"id"`
 	TenderId      uint         `gorm:"not null" json:"tender_id"`
 	Tender        *TenderPaket `gorm:"foreignKey:TenderId" json:"tender,omitempty"`
 	Program       *string      `json:"program"`
 	Activity      *string      `json:"activity"`
-	StartDate     *time.Time   `json:"start_date"`
-	EndDate       *time.Time   `json:"end_date"`
+	StartDate     *string      `json:"start_date"`
+	EndDate       *string      `json:"end_date"`
 	RevisionCount int          `json:"revision_count"`
 	RevisionText  *string      `json:"revision_text"`
 	CreatedById   *uint        `json:"created_by_id"`

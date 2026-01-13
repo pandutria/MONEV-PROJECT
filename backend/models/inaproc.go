@@ -15,8 +15,12 @@ type InaProcMeta struct {
 type FirstInaProcItem struct {
 	CountProduct     int     `json:"count_product"`
 	KodeTender       string  `json:"kode_penyedia"`
-	KodeSatker       string  `json:"kode_satker"`
 	NamaSatker       string  `json:"nama_satker"`
+
+	KodeSatker       string  `json:"kode_satker"`
+	KdSatker         string  `json:"kd_satker"`
+	SatkerId         string  `json:"satker_id"`
+	
 	RupCode          string  `json:"rup_code"`
 	KodeKlpd         string  `json:"kode_klpd"`
 	Mak              string  `json:"mak"`
@@ -29,10 +33,14 @@ type FirstInaProcItem struct {
 	ShipmentStatus   string  `json:"shipment_status"`
 	ShippingFee      int     `json:"shipping_fee"`
 	TotalQty         int     `json:"total_qty"`
+
 	FiscalYear       int     `json:"fiscal_year"`
+	TahunAnggaran    int     `json:"tahun_anggaran"`
+
 	Funding          string  `json:"funding_source"`
+	NamaSumberDana   string  `json:"nama_sumber_dana"`
+
 	Total            int     `json:"total"`
-	KdSatker         string  `json:"kd_satker"`
 	WinnerName       string  `json:"winner_name"`
 	BidValue         float64 `json:"bid_value"`
 	NegotiationValue float64 `json:"negotiation_value"`
@@ -43,7 +51,6 @@ type FirstInaProcItem struct {
 	PpkName          string  `json:"nama_ppk"`
 	PpkPosition      string  `json:"jabatan_ppk"`
 	ContractNumber   string  `json:"no_kontrak"`
-	TahunAnggaran    int     `json:"tahun_anggaran"`
 	ContractInitial  string  `json:"contract_initial"`
 	ContractFinal    string  `json:"contract_final"`
 }
