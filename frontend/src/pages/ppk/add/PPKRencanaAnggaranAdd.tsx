@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Upload, Download, Trash2, X } from 'lucide-react';
+import { Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Navbar from '../../../components/Navbar';
 import { FormatCurrency } from '../../../utils/FormatCurrency';
@@ -64,7 +64,7 @@ export default function PPKRencanaAnggaranAdd() {
   const [dataFile, setDataFile] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState(false);
   const [showTender, setShowTender] = useState(false);
-  const [selectedTender, setSelectedTender] = useState<TenderProps | null>(null);
+  const [selectedTender, setSelectedTender] = useState<TenderProps | any>(null);
   const { handleRABPost } = useRABHooks();
   const { user, loading } = useAuth();
   const { tenderData } = useTenderInaprocHooks();
@@ -106,6 +106,16 @@ export default function PPKRencanaAnggaranAdd() {
   };
 
   const handleShowDetail = () => {
+    if (!selectedTender) {
+        SwalMessage({
+          type: "error",
+          title: "Gagal!",
+          text: "Pilih Tender terlebih dahulu!"
+        });
+
+        return;
+    }
+
     setShowDetail(true);
   }
 
@@ -136,19 +146,19 @@ export default function PPKRencanaAnggaranAdd() {
       label: 'Tahun Anggaran'
     },
     {
-      key: 'satuan',
+      key: 'satker_name',
       label: 'Satuan Kerja'
     },
     {
-      key: 'rup',
+      key: 'rup_code',
       label: 'Kode RUP'
     },
     {
-      key: 'tender',
+      key: 'tender_code',
       label: 'kode Tender'
     },
     {
-      key: 'paket',
+      key: 'package_name',
       label: 'Nama Paket'
     },
     {
@@ -219,7 +229,7 @@ export default function PPKRencanaAnggaranAdd() {
               <FormInput
                 title='Satuan Kerja'
                 placeholder='Masukkan tahun satuan kerja (otomatis)'
-                value={selectedTender?.satker_code}
+                value={selectedTender?.satker_name}
                 disabled={true}
               />
 
@@ -233,29 +243,29 @@ export default function PPKRencanaAnggaranAdd() {
               <FormInput
                 title='Program Kegiatan'
                 placeholder='Masukkan program kegiatan (otomatis)'
-                value={selectedTender?.rup_name}
+                // value={selectedTender?.rup_name}
                 disabled={true}
               />
 
               <FormInput
                 title='Kegiatan'
                 placeholder='Masukkan kegiatan (otomatis)'
-                value={selectedTender?.rup_description}
+                // value={selectedTender?.rup_description}
                 disabled={true}
               />
 
               <FormInput
                 title='Lokasi Pekerjaan'
                 placeholder='Masukkan lokasi pekerjaan (otomatis)'
-                value={selectedTender?.work_location as any}
+                // value={selectedTender?.work_location as any}
                 disabled={true}
                 type='textarea'
               />
 
-              {/* <FormInput
+              <FormInput
                 title='Tanggal Awal'
                 placeholder='Masukkan tanggal awal (otomatis)'
-                value={selectedTender.tanggalMulai}
+                // value={selectedTender.tanggalMulai}
                 disabled={true}
                 type='date'
               />
@@ -263,25 +273,25 @@ export default function PPKRencanaAnggaranAdd() {
               <FormInput
                 title='Tanggal Akhir'
                 placeholder='Masukkan tanggal akhir (otomatis)'
-                value={selectedTender.tanggalAkhir}
+                // value={selectedTender.tanggalAkhir}
                 disabled={true}
                 type='date'
-              /> */}
+              />
 
-              {/* <FormInput
+              <FormInput
                 title='Alasan'
                 placeholder='Alasan'
-                value={selectedTender.alasan}
+                // value={selectedTender.alasan}
                 disabled={true}
                 type='textarea'
-              /> */}
+              />
             </div>
 
             <SubmitButton text='Buat RAB' onClick={() => handleShowDetail()}/>
           </div>
 
           {showDetail && (
-            <FormGenerateExcel title='RAB' handleFileChange={handleFileChange} handleDownloadTemplate={handleDownloadTemplate}/>        
+            <FormGenerateExcel handleSave={() => handleRABPost(selectedTender, dataFile)} title='RAB' handleFileChange={handleFileChange} handleDownloadTemplate={handleDownloadTemplate}/>        
           )}
 
           <div className="bg-white rounded-lg shadow-md overflow-hidden">

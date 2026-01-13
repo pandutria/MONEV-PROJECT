@@ -1,25 +1,60 @@
 import { SwalMessage } from "../utils/SwalMessage";
 import API from "../server/API";
 import SwalLoading from "../utils/SwalLoading";
+import { useNavigate } from "react-router-dom";
 
 export default function useRABHooks() {
     const token = localStorage.getItem("token");
+    const navigate = useNavigate();
 
-    const handleRABPost = async (data: RABProps) => {
+    const handleRABPost = async (dataRabHead: TenderProps, dataRabDetail: RABDetailProps[]) => {
         try {
+            if (!dataRabHead || !dataRabDetail) {
+                SwalMessage({
+                    type: "error",
+                    title: "Gagal!",
+                    text: "Harap isi field yang telah disediakan!"
+                });
+
+                return;
+            }
+
             SwalLoading();
-            const response = await API.post("/rab/create", data, {
+            const responseRabHeader = await API.post("/rab/create", {
+                tender_id: dataRabHead.tender_code,
+                program: dataRabHead.rup_name,
+                
+            }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
 
-            const message = response.data.message;
+            const rabHeaderId = responseRabHeader.data.data.id;
+            let responseRabDetail;
+
+            for (let index = 0; index < dataRabDetail.length; index++) {
+                const data = dataRabDetail[index];
+                responseRabDetail = await API.post("/rab/detail/create", {
+                    rab_header_id: rabHeaderId,
+                    description: data.description,
+                    volume: data.volume,
+                    unit: data.unit,
+                    unit_price: data.unit_price,
+                    total: data.total
+                });
+            }
+
+            const message = responseRabDetail?.data.message;
             SwalMessage({
+                type: "success",
                 title: "Berhasil!",
-                text: message,
-                type: "success"
-            })
+                text: message
+            });
+
+            setTimeout(() => {
+                navigate("/ppk/rencana-anggaran/");
+            }, 2000);
         } catch (error) {
             if (error) {
                 SwalMessage({

@@ -5,9 +5,10 @@ interface formGenerateExcelProps {
     title: string;
     handleDownloadTemplate: () => void;
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleSave?: () => void;
 }
 
-export default function FormGenerateExcel({ title, handleFileChange, handleDownloadTemplate }: formGenerateExcelProps) {
+export default function FormGenerateExcel({ title, handleFileChange, handleDownloadTemplate, handleSave }: formGenerateExcelProps) {
     return (
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h2 className="font-poppins-bold text-xl text-gray-800 mb-6">
@@ -48,7 +49,7 @@ export default function FormGenerateExcel({ title, handleFileChange, handleDownl
                 </div>
                 <div className="flex lg:justify-end justify-start items-end">
                     <button
-                        onClick={() => console.log('Simpan')}
+                        onClick={handleSave}
                         className="px-8 py-2.5 text-[12px] cursor-pointer border-2 border-primary hover:bg-transparent hover:text-primary bg-primary h-fit w-fit text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                     >
                         Simpan
