@@ -51,21 +51,24 @@ type FirstInaProcItem struct {
 	Total      int `json:"total"`
 	TotalHarga int `json:"total_harga"`
 
-	WinnerName       string  `json:"winner_name"`
-	BidValue         float64 `json:"bid_value"`
-	NegotiationValue float64 `json:"negotiation_value"`
-	Phone            string  `json:"phone"`
-	Email            string  `json:"email"`
-	Npwp             string  `json:"npwp_penyedia"`
-	PackageName      string  `json:"nama_paket"`
-	PpkName          string  `json:"nama_ppk"`
-	PpkPosition      string  `json:"jabatan_ppk"`
-	ContractNumber   string  `json:"no_kontrak"`
-	ContractInitial  string  `json:"contract_initial"`
-	ContractFinal    string  `json:"contract_final"`
-	TglKontrakAwal   string  `json:"tgl_kontrak_akhir"`
-	TglKontrakAkhir  string  `json:"tgl_kontrak_awal"`
-	KotaKontrak  string  `json:"kota_kontrak"`
+	WinnerName           string  `json:"winner_name"`
+	BidValue             float64 `json:"bid_value"`
+	NegotiationValue     float64 `json:"negotiation_value"`
+	Phone                string  `json:"phone"`
+	Email                string  `json:"email"`
+	Npwp                 string  `json:"npwp_penyedia"`
+	PackageName          string  `json:"nama_paket"`
+	PpkName              string  `json:"nama_ppk"`
+	PpkPosition          string  `json:"jabatan_ppk"`
+	ContractNumber       string  `json:"no_kontrak"`
+	ContractInitial      string  `json:"contract_initial"`
+	ContractFinal        string  `json:"contract_final"`
+	TglKontrakAwal       string  `json:"tgl_kontrak_akhir"`
+	TglKontrakAkhir      string  `json:"tgl_kontrak_awal"`
+	TglPelaksanakanAwal  string  `json:"tgl_awal_pelaksanaan_kontrak"`
+	TglPelaksanakanAkhir string  `json:"tgl_akhir_pelaksanaan_kontrak"`
+	KotaKontrak          string  `json:"kota_kontrak"`
+	Pagu                 int     `json:"pagu"`
 }
 
 // type SecondInaProcItem struct {

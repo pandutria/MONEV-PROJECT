@@ -4,8 +4,8 @@ import "time"
 
 type CreateScheduleRequest struct {
 	RabId     uint       `json:"rab_id" binding:"required"`
-	StartDate *time.Time `json:"start_date" binding:"required"`
-	EndDate   *time.Time `json:"end_date" binding:"required"`
+	StartDate *time.Time `json:"start_date"`
+	EndDate   *time.Time `json:"end_date"`
 }
 
 type UpdateScheduleRequest struct {

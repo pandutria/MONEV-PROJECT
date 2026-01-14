@@ -85,6 +85,10 @@ func normalizeContractInitial(r models.FirstInaProcItem) *string {
 	if r.TglKontrakAwal != "" {
 		return &r.TglKontrakAwal
 	}
+
+	if r.TglPelaksanakanAwal != "" {
+		return &r.TglPelaksanakanAwal
+	}
 	return nil
 }
 
@@ -95,6 +99,10 @@ func normalizeContractFinal(r models.FirstInaProcItem) *string {
 
 	if r.TglKontrakAkhir != "" {
 		return &r.TglKontrakAkhir
+	}
+
+	if r.TglPelaksanakanAkhir != "" {
+		return &r.TglPelaksanakanAkhir
 	}
 	return nil
 }
@@ -135,6 +143,7 @@ func GetInaProcCache(c *gin.Context) {
 			PpkName:         &r.PpkName,
 			PpkPosition:     &r.PpkPosition,
 			KlpdCode:        &r.KodeKlpd,
+			BudgetValue:     &r.Pagu,
 			AccountCode:     &r.Mak,
 			RupName:         &r.RupName,
 			RupDescription:  &r.RupDesc,
@@ -147,6 +156,7 @@ func GetInaProcCache(c *gin.Context) {
 			DeliveryStatus:  &r.ShipmentStatus,
 			ShippingFee:     &r.ShippingFee,
 			ContractNumber:  &r.ContractNumber,
+			Npwp:            &r.Npwp,
 			ContractInitial: normalizeContractInitial(r),
 			ContractFinal:   normalizeContractFinal(r),
 			TotalValue:      normalizePrice(r),
@@ -358,7 +368,7 @@ func loadInaProcFromFile(path string) ([]models.FirstInaProcItem, error) {
 }
 
 func PostInaProcCacheFromFile(c *gin.Context) {
-	data, err := loadInaProcFromFile("res2.json")
+	data, err := loadInaProcFromFile("res3.json")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "failed to load res.json",
@@ -384,12 +394,17 @@ func PostInaProcCacheFromFile(c *gin.Context) {
 			KdTender:   r.KdTender,
 			KdPenyedia: r.KdPenyedia,
 
+			Pagu: r.Pagu,
+
 			KodeSatker:     r.KodeSatker,
 			SatkerId:       r.SatkerId,
 			KdSatker:       r.KdSatker,
+			
 			NamaSatker:     r.NamaSatker,
+
 			RupCode:        r.RupCode,
 			KdRup:          r.KdRup,
+
 			KodeKlpd:       r.KodeKlpd,
 			Mak:            r.Mak,
 			OrderDate:      r.OrderDate,
@@ -416,6 +431,8 @@ func PostInaProcCacheFromFile(c *gin.Context) {
 
 			TglKontrakAwal:  r.TglKontrakAwal,
 			TglKontrakAkhir: r.TglKontrakAkhir,
+			TglPelaksanakanAwal: r.TglPelaksanakanAwal,
+			TglPelaksanakanAkhir: r.TglPelaksanakanAkhir,
 
 			KotaKontrak: r.KotaKontrak,
 		}
