@@ -148,7 +148,7 @@ func GetAllRabDetail(c *gin.Context) {
 
 	var detail []models.RabDetail
 
-	if headerId != nil {
+	if headerId != "" {
 		config.DB.Where("rab_header_id = ?", headerId).Find(&detail)
 	} else {
 		config.DB.Find(&detail)
