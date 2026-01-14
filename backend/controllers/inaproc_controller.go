@@ -27,6 +27,10 @@ func normalizeSatker(r models.FirstInaProcItem) *string {
 }
 
 func normalizeTender(r models.FirstInaProcItem) *string {
+	kdTender := toString(r.KdTender)
+	if r.KdTender != 0 {
+		return &kdTender
+	}
 	if r.KodeTender != "" {
 		return &r.KodeTender
 	}
@@ -36,6 +40,20 @@ func normalizeTender(r models.FirstInaProcItem) *string {
 	}
 	return nil
 }
+
+// func normalizeSatkerName(r models.FirstInaProcItem) *string {
+// 	if r.NamaSatker != 0 {
+// 		return &r.KdSatker
+// 	}
+// 	if r.KodeTender != "" {
+// 		return &r.KodeTender
+// 	}
+// 	x := toString(r.KdPenyedia)
+// 	if r.KdPenyedia != 0 {
+// 		return &x
+// 	}
+// 	return nil
+// }
 
 func normalizeRup(r models.FirstInaProcItem) *string {
 	if r.RupCode != "" {
@@ -55,6 +73,28 @@ func normalizeFunding(r models.FirstInaProcItem) *string {
 
 	if r.NamaSumberDana != "" {
 		return &r.NamaSumberDana
+	}
+	return nil
+}
+
+func normalizeContractInitial(r models.FirstInaProcItem) *string {
+	if r.ContractInitial != "" {
+		return &r.ContractInitial
+	}
+
+	if r.TglKontrakAwal != "" {
+		return &r.TglKontrakAwal
+	}
+	return nil
+}
+
+func normalizeContractFinal(r models.FirstInaProcItem) *string {
+	if r.ContractFinal != "" {
+		return &r.ContractFinal
+	}
+
+	if r.TglKontrakAkhir != "" {
+		return &r.TglKontrakAkhir
 	}
 	return nil
 }
@@ -92,6 +132,8 @@ func GetInaProcCache(c *gin.Context) {
 			RupCode:         normalizeRup(r),
 			FiscalYear:      &r.FiscalYear,
 			FundingSource:   normalizeFunding(r),
+			PpkName:         &r.PpkName,
+			PpkPosition:     &r.PpkPosition,
 			KlpdCode:        &r.KodeKlpd,
 			AccountCode:     &r.Mak,
 			RupName:         &r.RupName,
@@ -104,8 +146,9 @@ func GetInaProcCache(c *gin.Context) {
 			PackageName:     &r.PackageName,
 			DeliveryStatus:  &r.ShipmentStatus,
 			ShippingFee:     &r.ShippingFee,
-			ContractInitial: &r.ContractInitial,
-			ContractFinal:   &r.ContractFinal,
+			ContractNumber:  &r.ContractNumber,
+			ContractInitial: normalizeContractInitial(r),
+			ContractFinal:   normalizeContractFinal(r),
 			TotalValue:      normalizePrice(r),
 		})
 	}
@@ -315,7 +358,7 @@ func loadInaProcFromFile(path string) ([]models.FirstInaProcItem, error) {
 }
 
 func PostInaProcCacheFromFile(c *gin.Context) {
-	data, err := loadInaProcFromFile("res.json")
+	data, err := loadInaProcFromFile("res2.json")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "failed to load res.json",
@@ -335,9 +378,12 @@ func PostInaProcCacheFromFile(c *gin.Context) {
 		}
 
 		item := models.FirstInaProcItem{
-			CountProduct:   r.CountProduct,
-			KodeTender:     r.KodeTender,
-			KdPenyedia:     r.KdPenyedia,
+			CountProduct: r.CountProduct,
+
+			KodeTender: r.KodeTender,
+			KdTender:   r.KdTender,
+			KdPenyedia: r.KdPenyedia,
+
 			KodeSatker:     r.KodeSatker,
 			SatkerId:       r.SatkerId,
 			KdSatker:       r.KdSatker,
@@ -367,6 +413,11 @@ func PostInaProcCacheFromFile(c *gin.Context) {
 			PpkPosition:    r.PpkPosition,
 			ContractNumber: r.ContractNumber,
 			TotalHarga:     r.TotalHarga,
+
+			TglKontrakAwal:  r.TglKontrakAwal,
+			TglKontrakAkhir: r.TglKontrakAkhir,
+
+			KotaKontrak: r.KotaKontrak,
 		}
 
 		cache.Data = append(cache.Data, item)
