@@ -11,7 +11,7 @@ import (
 
 func GetAllScheduleHeader(c *gin.Context) {
 	var header []models.ScheduleHeader
-	config.DB.Preload("CreatedBy.Role").Preload("Rab.RabDetails").Preload("Rab.Tender").Preload("ScheduleDetails").Find(&header)
+	config.DB.Preload("CreatedBy.Role").Preload("Rab.RabDetails").Preload("Rab.Tender").Preload("Items.Weeks").Find(&header)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Get data success",
 		"data": header,
@@ -21,7 +21,7 @@ func GetAllScheduleHeader(c *gin.Context) {
 func GetScheduleById(c *gin.Context) {
 	id := c.Param("id")
 	var header models.ScheduleHeader
-	config.DB.Preload("CreatedBy.Role").Preload("Rab.RabDetails").Preload("Rab.Tender").Preload("ScheduleDetails").First(&header, id)
+	config.DB.Preload("CreatedBy.Role").Preload("Rab.RabDetails").Preload("Rab.Tender").Preload("Items.Weeks").First(&header, id)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Get data success",
 		"data": header,
