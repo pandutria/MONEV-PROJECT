@@ -45,6 +45,7 @@ func SetupRoutes(r *gin.Engine) {
 		public.DELETE("/rab/detail/delete/:id", controllers.DeleteRabDetail)
 
 		public.GET("/schedule", controllers.GetAllScheduleHeader)
+		public.GET("/schedule/:id", controllers.GetScheduleById)
 		public.PUT("/schedule/update/:id", controllers.UpdateSchedule)
 		public.DELETE("/schedule/delete/:id", controllers.DeleteSchedule)
 
