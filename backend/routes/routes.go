@@ -53,7 +53,7 @@ func SetupRoutes(r *gin.Engine) {
 		public.POST("/schedule/item/create", controllers.CreateScheduleItem)
 		public.DELETE("/schedule/item/delete/:id", controllers.DeleteScheduleItem)
 
-		public.GET("/schedule/week", controllers.GetWeekScheduleByScheduleItem)
+		public.GET("/schedule/week", controllers.GetAllWeek)
 		public.POST("/schedule/week/create", controllers.CreateWeekSchedule)
 
 		public.GET("/realisasi", controllers.GetAllRealisasi)

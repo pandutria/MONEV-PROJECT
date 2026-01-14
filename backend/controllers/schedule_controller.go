@@ -220,11 +220,10 @@ func DeleteScheduleItem(c *gin.Context) {
 	})
 }
 
-func GetWeekScheduleByScheduleItem(c *gin.Context) {
-	id := c.Query("itemId")
-
+func GetAllWeek(c *gin.Context) {
 	var week []models.ScheduleWeek
-	err := config.DB.Where("schedule_item_id = ?", id).Order("week_number ASC").Find(&week).Error
+
+	err := config.DB.Order("week_number ASC").Find(&week).Error
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"message": "Mengambil data gagal!",

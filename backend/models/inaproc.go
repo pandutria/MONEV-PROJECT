@@ -18,6 +18,7 @@ type FirstInaProcItem struct {
 	KodeTender string `json:"kode_penyedia"`
 	KdPenyedia int    `json:"kd_penyedia"`
 	KdTender   int    `json:"kd_tender"`
+	KdNontender   int    `json:"kd_nontender"`
 
 	NamaSatker string `json:"nama_satker"`
 

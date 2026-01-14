@@ -38,6 +38,10 @@ func normalizeTender(r models.FirstInaProcItem) *string {
 	if r.KdPenyedia != 0 {
 		return &x
 	}
+	kdNontender := toString(r.KdNontender)
+	if r.KdNontender != 0 {
+		return &kdNontender
+	}
 	return nil
 }
 
@@ -157,6 +161,7 @@ func GetInaProcCache(c *gin.Context) {
 			ShippingFee:     &r.ShippingFee,
 			ContractNumber:  &r.ContractNumber,
 			Npwp:            &r.Npwp,
+			WorkLocation:    &r.KotaKontrak,
 			ContractInitial: normalizeContractInitial(r),
 			ContractFinal:   normalizeContractFinal(r),
 			TotalValue:      normalizePrice(r),
@@ -306,15 +311,25 @@ func PostInaProcCache(c *gin.Context) {
 		// 	kodeSatker = toString(r.SatkerId)
 		// }
 
-		item := models.FirstInaProcItem{
-			CountProduct:   r.CountProduct,
-			KodeTender:     r.KodeTender,
-			KdPenyedia:     r.KdPenyedia,
-			KodeSatker:     r.KodeSatker,
-			SatkerId:       r.SatkerId,
-			KdSatker:       r.KdSatker,
-			NamaSatker:     r.NamaSatker,
-			RupCode:        r.RupCode,
+			item := models.FirstInaProcItem{
+			CountProduct: r.CountProduct,
+
+			KodeTender: r.KodeTender,
+			KdTender:   r.KdTender,
+			KdPenyedia: r.KdPenyedia,
+			KdNontender: r.KdNontender,
+
+			Pagu: r.Pagu,
+
+			KodeSatker: r.KodeSatker,
+			SatkerId:   r.SatkerId,
+			KdSatker:   r.KdSatker,
+
+			NamaSatker: r.NamaSatker,
+
+			RupCode: r.RupCode,
+			KdRup:   r.KdRup,
+
 			KodeKlpd:       r.KodeKlpd,
 			Mak:            r.Mak,
 			OrderDate:      r.OrderDate,
@@ -327,14 +342,26 @@ func PostInaProcCache(c *gin.Context) {
 			ShippingFee:    r.ShippingFee,
 			TotalQty:       r.TotalQty,
 			FiscalYear:     fiscalYear,
+			TahunAnggaran:  r.TahunAnggaran,
 			Funding:        r.Funding,
+			NamaSumberDana: r.NamaSumberDana,
 			Total:          r.Total,
 			Npwp:           r.Npwp,
 			PackageName:    r.PackageName,
+
 			PpkName:        r.PpkName,
 			PpkPosition:    r.PpkPosition,
 			ContractNumber: r.ContractNumber,
+			TotalHarga:     r.TotalHarga,
+
+			TglKontrakAwal:       r.TglKontrakAwal,
+			TglKontrakAkhir:      r.TglKontrakAkhir,
+			TglPelaksanakanAwal:  r.TglPelaksanakanAwal,
+			TglPelaksanakanAkhir: r.TglPelaksanakanAkhir,
+
+			KotaKontrak: r.KotaKontrak,
 		}
+
 
 		cache.Data = append(cache.Data, item)
 	}
@@ -368,7 +395,7 @@ func loadInaProcFromFile(path string) ([]models.FirstInaProcItem, error) {
 }
 
 func PostInaProcCacheFromFile(c *gin.Context) {
-	data, err := loadInaProcFromFile("res3.json")
+	data, err := loadInaProcFromFile("res4.json")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "failed to load res.json",
@@ -393,17 +420,18 @@ func PostInaProcCacheFromFile(c *gin.Context) {
 			KodeTender: r.KodeTender,
 			KdTender:   r.KdTender,
 			KdPenyedia: r.KdPenyedia,
+			KdNontender: r.KdNontender,
 
 			Pagu: r.Pagu,
 
-			KodeSatker:     r.KodeSatker,
-			SatkerId:       r.SatkerId,
-			KdSatker:       r.KdSatker,
-			
-			NamaSatker:     r.NamaSatker,
+			KodeSatker: r.KodeSatker,
+			SatkerId:   r.SatkerId,
+			KdSatker:   r.KdSatker,
 
-			RupCode:        r.RupCode,
-			KdRup:          r.KdRup,
+			NamaSatker: r.NamaSatker,
+
+			RupCode: r.RupCode,
+			KdRup:   r.KdRup,
 
 			KodeKlpd:       r.KodeKlpd,
 			Mak:            r.Mak,
@@ -429,9 +457,9 @@ func PostInaProcCacheFromFile(c *gin.Context) {
 			ContractNumber: r.ContractNumber,
 			TotalHarga:     r.TotalHarga,
 
-			TglKontrakAwal:  r.TglKontrakAwal,
-			TglKontrakAkhir: r.TglKontrakAkhir,
-			TglPelaksanakanAwal: r.TglPelaksanakanAwal,
+			TglKontrakAwal:       r.TglKontrakAwal,
+			TglKontrakAkhir:      r.TglKontrakAkhir,
+			TglPelaksanakanAwal:  r.TglPelaksanakanAwal,
 			TglPelaksanakanAkhir: r.TglPelaksanakanAkhir,
 
 			KotaKontrak: r.KotaKontrak,
