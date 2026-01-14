@@ -20,7 +20,7 @@ func GetAllScheduleHeader(c *gin.Context) {
 
 func GetScheduleById(c *gin.Context) {
 	id := c.Param("id")
-	var header []models.ScheduleHeader
+	var header models.ScheduleHeader
 	config.DB.Preload("CreatedBy.Role").Preload("Rab.RabDetails").Preload("Rab.Tender").Preload("ScheduleDetails").First(&header, id)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Get data success",
