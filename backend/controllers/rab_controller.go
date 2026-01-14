@@ -147,7 +147,13 @@ func GetAllRabDetail(c *gin.Context) {
 	headerId := c.Query("headerId")
 
 	var detail []models.RabDetail
-	config.DB.Where("rab_header_id = ?", headerId).Find(&detail)
+
+	if headerId != nil {
+		config.DB.Where("rab_header_id = ?", headerId).Find(&detail)
+	} else {
+		config.DB.Find(&detail)
+	}
+	
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data": detail,

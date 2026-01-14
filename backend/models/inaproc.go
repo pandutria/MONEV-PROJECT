@@ -35,7 +35,9 @@ type FirstInaProcItem struct {
 	RupDesc        string `json:"rup_desc"`
 	RupName        string `json:"rup_name"`
 	Status         string `json:"status"`
+
 	ShipmentStatus string `json:"shipment_status"`
+	
 	ShippingFee    int    `json:"shipping_fee"`
 	TotalQty       int    `json:"total_qty"`
 
