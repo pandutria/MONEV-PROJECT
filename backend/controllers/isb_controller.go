@@ -121,10 +121,26 @@ func GetAllTenderTahapIsb(c *gin.Context) {
 	return
 }
 
-func GetAllPaketPurchasing(c *gin.Context) {
-	var data []models.PaketPurchasing
-	config.DB.Find(&data)
+// func GetAllPaketPurchasing(c *gin.Context) {
+// 	var data []models.PaketPurchasing
+// 	config.DB.Find(&data)
 
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "Mengambil data berhasil",
+// 		"data":    data,
+// 	})
+// 	return
+// }
+
+func GetAllPaketPurchasing(c *gin.Context) {
+	kd_paket := c.Query("kd_paket")
+	var data []models.PaketPurchasing
+
+	if kd_paket != "" {
+		config.DB.Where("kd_paket = ?", kd_paket).Find(&data)
+	} else {
+		config.DB.Find(&data)
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data":    data,
