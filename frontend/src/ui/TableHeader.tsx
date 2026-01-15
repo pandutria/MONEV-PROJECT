@@ -53,7 +53,7 @@ export default function TableHeader({
                             >
                                 <option value="">Pilih Tahun</option>
                                 {tahunOptions.map((item, index) => (
-                                    <option key={index} value={item.id}>
+                                    <option key={index} value={item.tahun}>
                                         {item.tahun}
                                     </option>
                                 ))}
@@ -65,7 +65,7 @@ export default function TableHeader({
                             >
                                 <option value="">Pilih Satuan Kerja</option>
                                 {satuanKerjaOptions.map((item, index) => (
-                                    <option key={index} value={item.id}>
+                                    <option key={index} value={item.text}>
                                         {item.text}
                                     </option>
                                 ))}

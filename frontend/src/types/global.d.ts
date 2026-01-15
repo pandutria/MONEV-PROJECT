@@ -97,8 +97,9 @@ declare global {
   export interface RABProps {
     id: number;
     tender_id: number;
-    tender?: TenderPaketProps | null;
+    tender?: TenderProps;
     program?: string | null;
+    activity?: string | null;
     start_date?: string | null;
     end_date?: string | null;
 
@@ -123,4 +124,50 @@ declare global {
     unit_price: number;
     total: number;
   }
+
+  interface ScheduleProps {
+    id: number;
+    rab_id: number;
+    rab?: RabHeaderProps | null;
+
+    start_date?: string | null;
+    end_date?: string | null;
+    revision_count: number;
+    revision_text?: string | null;
+
+    schedule_details?: ScheduleItemProps;
+
+    created_by_id: number;
+    created_by?: UserProps | null;
+    created_at: string;
+    updated_at: string;
+  }
+
+  interface ScheduleItemProps {
+    id: number;
+
+    schedule_header_id: number;
+    schedule_header?: ScheduleHeaderProps | null;
+
+    number?: string | null;
+    description?: string | null;
+    total_price?: number | null;
+    weight?: number | null;
+
+    created_at: string;
+    updated_at: string;
+
+    schedule_weeks?: ScheduleWeekProps[];
+  }
+
+  interface ScheduleWeekProps {
+    id: number;
+
+    schedule_item_id: number;
+    schedule_item?: ScheduleItemProps[] | null;
+
+    week_number: number;
+    value: number;
+  }
+
 }

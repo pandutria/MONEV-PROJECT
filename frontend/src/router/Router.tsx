@@ -3,10 +3,8 @@ import Login from "../pages/auth/Login"
 import Dashboard from "../pages/Dashboard"
 import PPKRencanaAnggaran from "../pages/ppk/PPKRencanaAnggaran"
 import PPKRencanaAnggaranAdd from "../pages/ppk/add/PPKRencanaAnggaranAdd"
-import PPKRencanaAnggaranShow from "../pages/ppk/show/PPKRencanaAnggaranShow"
 import PPKJadwalPelaksanaan from "../pages/ppk/PPKJadwalPelaksanaan"
 import PPKJadwalPelaksanaanAdd from "../pages/ppk/add/PPKJadwalPelaksanaanAdd"
-import PPKJadwalPelaksanaanShow from "../pages/ppk/show/PPKJadwalPelaksanaanShow"
 import PPKRealisasiPekerjaan from "../pages/ppk/PPKRealisasiPekerjaan"
 import PokjaLaporanPenjabatPengadaan from "../pages/pokja/PokjaLaporanPenjabatPengadaan"
 import PokjaLaporanPenjabatPengadaanAdd from "../pages/pokja/add/PokjaLaporanPenjabatPengadaanAdd"  
@@ -23,6 +21,8 @@ import PokjaLaporanPenjabatPengadaanUpdateView from "../pages/pokja/edit/PokjaLa
 import PokjaLaporanKelompok from "../pages/pokja/PokjaLaporankelompok"
 import PokjaLaporanKelompokAdd from "../pages/pokja/add/PokjaLaporanKelompok"
 import PokjaLaporanKelompokUpdateView from "../pages/pokja/edit/PokjaLaporanKelompokUpdateView"
+import PPKRencanaAnggaranUpdateView from "../pages/ppk/edit/PPKRencanaAnggaranUpdateView"
+import PPKJadwalPelaksanaanUpdateView from "../pages/ppk/edit/PPKJadwalPelaksanaanUpdateView"
 
 export default function Router() {
   return (
@@ -38,11 +38,13 @@ export default function Router() {
         {/* PPK */}
         <Route path="/ppk/rencana-anggaran" element={<PPKRencanaAnggaran/>}/>
         <Route path="/ppk/rencana-anggaran/tambah" element={<PPKRencanaAnggaranAdd/>}/>
-        <Route path="/ppk/rencana-anggaran/:id" element={<PPKRencanaAnggaranShow/>}/>
+        <Route path="/ppk/rencana-anggaran/ubah/:id" element={<PPKRencanaAnggaranUpdateView/>}/>
+        <Route path="/ppk/rencana-anggaran/lihat/:id" element={<PPKRencanaAnggaranUpdateView/>}/>
 
         <Route path="/ppk/jadwal-pelaksanaan" element={<PPKJadwalPelaksanaan/>}/>
         <Route path="/ppk/jadwal-pelaksanaan/tambah" element={<PPKJadwalPelaksanaanAdd/>}/>
-        <Route path="/ppk/jadwal-pelaksanaan/:id" element={<PPKJadwalPelaksanaanShow/>}/>
+        <Route path="/ppk/jadwal-pelaksanaan/lihat/:id" element={<PPKJadwalPelaksanaanUpdateView/>}/>
+        <Route path="/ppk/jadwal-pelaksanaan/ubah/:id" element={<PPKJadwalPelaksanaanUpdateView/>}/>
 
         <Route path="/ppk/realisasi-pekerjaan" element={<PPKRealisasiPekerjaan/>}/>
 

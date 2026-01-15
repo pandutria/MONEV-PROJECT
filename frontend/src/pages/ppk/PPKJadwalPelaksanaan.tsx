@@ -1,97 +1,73 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import TableContent from "../../ui/TableContent";
 import TableHeader from "../../ui/TableHeader";
 import { useEffect, useState } from 'react';
 import { X } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import LoadingSpinner from "../../ui/LoadingSpinner";
+import FormInput from "../../ui/FormInput";
+import { SwalMessage } from "../../utils/SwalMessage";
+import useScheduleHooks from "../../hooks/ScheduleHooks";
 
 export default function PPKJadwalPelaksanaan() {
-    // const [tahun, setTahun] = useState('');
-    // const [satuanKerja, setSatuanKerja] = useState('');
-    // const [search, setSearch] = useState('');
-    const [selectedItems, setSelectedItems] = useState([]);
-    const [selectedIds, setSelectedIds] = useState<number[]>([]);
-    const [selectRevisi, setSelectRevisi] = useState(null);
+    const [tahun, setTahun] = useState('');
+    const [satuanKerja, setSatuanKerja] = useState('');
+    const [search, setSearch] = useState('');
+    const [selectRevisi, setSelectRevisi] = useState<RABProps | null>(null);
     const [showRevisi, setShowRevisi] = useState(false);
     const [selectPreview, setSelectPreview] = useState<any>(null);
+    const { user, loading } = useAuth();
+    const { schedule, tahunData, satkerData } = useScheduleHooks();
+    const [scheduleDataFilter, setScheduleDataFilter] = useState<TenderProps[]>([]);
+    const [reason, setReason] = useState("");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const filteringDataRab = () => {
+            const dataFilter = schedule?.filter((item: TenderProps | any) => {
+                const tahunFilter = tahun ? item?.fiscal_year.toString().includes(tahun) : true;
+                const searchFilter = search ? item?.tender_code.toLowerCase().includes(search.toLowerCase()) : true;
+                const satuanKerjaFilter = satuanKerja ? item.satker_name.toLowerCase().includes(satuanKerja.toLowerCase()) : true;
+
+                return tahunFilter && searchFilter && satuanKerjaFilter;
+            });
+
+            setScheduleDataFilter(dataFilter as any);
+        }
+
+        filteringDataRab();
+    }, [search, satuanKerja, tahun, schedule]);
 
     const columns = [
         {
-            key: 'no',
+            key: 'id',
             label: 'No'
         },
         {
-            key: 'tahun',
+            key: 'fiscal_year',
             label: 'Tahun Anggaran'
         },
         {
-            key: 'satuan',
+            key: 'satker_name',
             label: 'Satuan Kerja'
         },
         {
-            key: 'rup',
+            key: 'rup_code',
             label: 'Kode RUP'
         },
         {
-            key: 'tender',
+            key: 'tender_code',
             label: 'kode Tender'
         },
         {
-            key: 'paket',
+            key: 'package_name',
             label: 'Nama Paket'
         },
         {
             key: 'revisi',
             label: 'Revisi'
-        },
-    ];
-
-    const data = [
-        {
-            no: 1,
-            tahun: '2025',
-            satuan: 'DINAS PEKERJAAN UMUM DAN PENATAAN RUANG',
-            rup: '60986116',
-            tender: '10093144000',
-            paket: "Rekonstruksi/Peningkatan Jalan Wawongole - Teteona (Duriaasi)",
-            revisi: "3"
-        },
-        {
-            no: 2,
-            tahun: '2024',
-            satuan: 'DEWAN PERWAKILAN RAKYAT DAERAH (DPRD)',
-            rup: '61328060',
-            tender: '10094830000',
-            paket: "Pemasangan Vaving blok Kantor DPRD Kab. Konawe",
-            revisi: "0"
-        },
-    ];
-
-    const tahunData = [
-        {
-            id: 1,
-            tahun: '2025'
-        },
-        {
-            id: 2,
-            tahun: '2028'
-        },
-    ]
-
-    const satuanKerjaData = [
-        {
-            id: 1,
-            text: "Semua Satuan Kerja"
-        },
-        {
-            id: 2,
-            text: "Satuan Kerja 1"
-        },
-        {
-            id: 3,
-            text: "Satuan Kerja 2"
         },
     ];
 
@@ -113,19 +89,30 @@ export default function PPKJadwalPelaksanaan() {
 
         const fetchPreview = () => {
             if (selectPreview) {
-                const no = selectPreview?.no;
-                navigate(`/ppk/jadwal-pelaksanaan/${no}`);
+                const id = selectPreview?.id;
+                navigate(`/ppk/jadwal-pelaksanaan/lihat/${id}`, {
+                    state: {
+                        reason: reason
+                    }
+                });
             }
         }
 
         fetchEdit();
         fetchPreview();
-    }, [selectRevisi, selectPreview, navigate]);
+    }, [selectRevisi, selectPreview, navigate, reason]);
 
-    console.log(selectRevisi)
+    if (loading) {
+        return <LoadingSpinner/>
+    }
+
+    if (!user || user.role.name != "ppk") {
+        return <Navigate to="/" replace/>
+    }
+
     return (
         <div>
-            <Navbar type="ppk" />
+            <Navbar/>
 
             {showRevisi && (
                 <div className="bg-black/20 w-full h-screen absolute flex justify-center items-center z-40">
@@ -135,40 +122,54 @@ export default function PPKJadwalPelaksanaan() {
                         </div>
                         <p className="font-poppins-medium text-[20px]">Komfirmasi Perubahan</p>
                         <div className="w-full">
-                          <label className="block font-poppins-medium text-sm text-gray-700 mb-2">
-                            Alasan Perubahan
-                          </label>
-                          <input
-                            type="text"                            
-                            className="w-full text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg font-poppins focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-                            placeholder="Revisi..."
-                          />
+                            <FormInput title="Alasan" placeholder="Alasan Kamu..." onChange={(e) => setReason(e.target.value)} value={reason}/>
                         </div>
-                        <button className="px-6 w-full py-2 bg-primary hover:bg-transparent hover:text-primary border-2 border-primary cursor-pointer text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">Kirim</button>
+                        <button 
+                            onClick={() => {
+                                if (reason) {
+                                    navigate(`/ppk/jadwal-pelaksanaan/ubah/${selectRevisi?.id}`, {
+                                        state: {
+                                            reason: reason
+                                        }
+                                    })
+                                } else {
+                                    SwalMessage({
+                                        type: "error",
+                                        title: "Gagal!",
+                                        text: "Harap isi alasan terlebih dahulu!"
+                                    });
+                                }
+                            }} 
+                            className="px-6 w-full py-2 bg-primary hover:bg-transparent hover:text-primary border-2 border-primary cursor-pointer text-white font-poppins-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
+                            Kirim
+                        </button>
                     </div>
                 </div>
             )}
 
             <div className="lg:pt-32 pt-28" data-aos="fade-up" data-aos-duration="1000">
                 <TableHeader 
-                    title="Jadwal Pelaksanaan" 
+                    title="Daftar Jadwal Pelaksanaan" 
                     tahunOptions={tahunData} 
-                    satuanKerjaOptions={satuanKerjaData} 
+                    satuanKerjaOptions={satkerData} 
+                    searchValue={search}
+                    onSearchChange={setSearch}
+                    selectedTahun={tahun}
+                    onTahunChange={setTahun}
+                    selectedSatuanKerja={satuanKerja}
+                    onSatuanKerjaChange={setSatuanKerja}
                     showHapus={false}
-                    onTambahClick={() => navigate("/ppk/jadwal-pelaksanaan/tambah")}
+                    onTambahClick={() => navigate("/ppk/rencana-anggaran/tambah")}
                 />
                 <div className="p-6">
                     <TableContent
                         columns={columns}
-                        data={data}
+                        data={scheduleDataFilter}
                         isSelect={false}
                         showEdit={true}
-                        showPreview={true}
-                        idKey="no"
+                        showPreview={true}                    
                         onEdit={(item) => setSelectRevisi(item)}
-                        onPreview={(item) => setSelectPreview(item)}
-                        onSelectedChange={(selected) => setSelectedItems(selected as any)}
-                        onSelectedIdsChange={(ids) => setSelectedIds(ids)}
+                        onPreview={(item) => setSelectPreview(item)} 
                     />
                 </div>
             </div>

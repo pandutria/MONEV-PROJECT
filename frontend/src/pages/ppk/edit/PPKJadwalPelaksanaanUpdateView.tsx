@@ -1,28 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Trash2, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Navbar from '../../../components/Navbar';
-import * as XLSX from 'xlsx';
-import { SwalMessage } from '../../../utils/SwalMessage';
 import TableContent from '../../../ui/TableContent';
 import BackButton from '../../../ui/BackButton';
 import ShowTableForm from '../../../ui/ShowTableForm';
 import FormInput from '../../../ui/FormInput';
 import SubmitButton from '../../../ui/SubmitButton';
-import FormGenerateExcel from '../../../ui/FormGenerateExcel';
 import useRABHooks from '../../../hooks/RABHooks';
 import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../ui/LoadingSpinner';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import TableHeader from '../../../ui/TableHeader';
 import useScheduleHooks from '../../../hooks/ScheduleHooks';
-
-interface JadwalItem {
-  description: string;
-  total_price: string;
-  weight: number;
-  minggu: number[];
-}
 
 interface TenderProps {
   id: number;
@@ -40,149 +30,22 @@ interface TenderProps {
   revision_text: string;
 }
 
-const WEEK_START_COL = 'P';
-
-const formatLoopExcel = (index: number): string => {
-  let col = '';
-  while (index >= 0) {
-    col = String.fromCharCode((index % 26) + 65) + col;
-    index = Math.floor(index / 26) - 1;
-  }
-  return col;
-};
-
-const getTotalMingguFromExcel = (
-  worksheet: XLSX.WorkSheet,
-  startRow: number = 5,
-  maxWeek: number = 20
-): number => {
-  const startColIndex = XLSX.utils.decode_col(WEEK_START_COL);
-  let total = 0;
-
-  for (let i = 0; i < maxWeek; i++) {
-    const col = formatLoopExcel(startColIndex + i);
-    const cell = worksheet[`${col}${startRow}`];
-
-    if (cell && cell.v !== '' && cell.v !== null) {
-      total = i + 1;
-    }
-  }
-
-  return total;
-};
-
-const parseRABExcel = (
-  worksheet: XLSX.WorkSheet,
-  totalMinggu: number,
-  startRow: number = 5,
-  maxRow: number = 83
-): JadwalItem[] => {
-  const result: JadwalItem[] = [];
-
-  const range = XLSX.utils.decode_range(worksheet['!ref'] as string);
-  const endRow = Math.min(range.e.r + 1, maxRow);
-
-  const getCell = (col: string, row: number) => {
-    const cell = worksheet[`${col}${row}`];
-    return cell ? cell.v : '';
-  };
-
-  const startColIndex = XLSX.utils.decode_col(WEEK_START_COL);
-
-  for (let row = startRow; row <= endRow; row++) {
-    const b = getCell('B', row);
-    const c = getCell('C', row);
-    const d = getCell('D', row);
-    const e = getCell('E', row);
-    const f = getCell('F', row);
-    const g = getCell('G', row);
-
-    if (!b && !c && !d && !e && !f && !g) continue;
-    if (String(c).toUpperCase().includes('TOTAL')) break;
-
-    const minggu: number[] = [];
-
-    for (let i = 0; i < totalMinggu; i++) {
-      const col = formatLoopExcel(startColIndex + i);
-      minggu.push(Number(getCell(col, row)) || 0);
-    }
-
-    result.push({
-      description: `${b} ${c} ${d} ${e} ${f} ${g}`.trim(),
-      total_price: String(getCell('M', row)),
-      weight: Number(getCell('O', row)) || 0,
-      minggu
-    });
-  }
-
-  return result;
-};
-
-export default function PPKJadwalPelaksanaanAdd() {
-  const [dataFile, setDataFile] = useState<JadwalItem[]>([]);
-  const [showDetail, setShowDetail] = useState(false);
+export default function PPKJadwalPelaksanaanUpdateView() {
   const [showTender, setShowTender] = useState(false);
   const [search, setSearch] = useState("");
   const [tenderDataFilter, setTenderDataFilter] = useState<TenderProps[]>([]);
   const [selectedRab, setSelectedRab] = useState<TenderProps | null>(null);
-  const [totalMinggu, setTotalMinggu] = useState<number>(1);
   const { rabData } = useRABHooks();
-  const { handleSchedulePost } = useScheduleHooks();
+  const {
+    setSelectedId,
+    scheduleDataById,
+    handleSchedulePut
+  } = useScheduleHooks();
   const { user, loading } = useAuth();
-
-  const handleDeleteRow = (index: number) => {
-    setDataFile(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const handleDownloadTemplate = () => {
-    const link = document.createElement('a');
-    link.href = '../../../../public/download/template-jadwal.xlsx';
-    link.download = 'template-rab.xlsx';
-    link.click();
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = (evt) => {
-      const data = evt.target?.result;
-      const workbook = XLSX.read(data, { type: 'binary' });
-
-      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-
-      const total = getTotalMingguFromExcel(worksheet);
-      setTotalMinggu(total);
-
-      const parsedData = parseRABExcel(worksheet, total);
-
-      SwalMessage({
-        title: "Berhasil!",
-        text: "Data berhasil diimpor",
-        type: "success"
-      });
-
-      setDataFile(parsedData);
-    };
-
-    reader.readAsBinaryString(file);
-  };
-
-  const handleShowDetail = () => {
-    if (!selectedRab) {
-      SwalMessage({
-        type: "error",
-        title: "Gagal!",
-        text: "Pilih Tender terlebih dahulu!"
-      });
-
-      return;
-    }
-
-    setShowDetail(true);
-  }
+  const location = useLocation();
+  const [isDisabled, setIsDisabled] = useState(false);
+  const { id } = useParams();
+  const { reason } = location.state;
 
   useEffect(() => {
     if (showTender && !selectedRab) {
@@ -194,7 +57,23 @@ export default function PPKJadwalPelaksanaanAdd() {
     } else {
       document.body.style.overflow = "auto"
     }
-  }, [showTender, selectedRab]);
+
+    const fetchSelected = async () => {
+      if (!isDisabled && location.pathname.startsWith("/ppk/jadwal-pelaksanaan/lihat")) {
+        setIsDisabled(true);
+      }
+
+      if (id) {
+        setSelectedId(id)
+      }
+
+      if (!selectedRab) {
+        setSelectedRab(scheduleDataById?.rab)
+      }
+    }
+
+    fetchSelected();
+  }, [showTender, selectedRab, location, isDisabled, id, setSelectedId, scheduleDataById]);
 
   useEffect(() => {
     const filteringDataTender = () => {
@@ -236,7 +115,7 @@ export default function PPKJadwalPelaksanaanAdd() {
     },
   ];
 
-  if (loading) {
+  if (loading || !scheduleDataById) {
     return <LoadingSpinner />
   }
 
@@ -290,36 +169,38 @@ export default function PPKJadwalPelaksanaanAdd() {
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-poppins-regular">
-              <ShowTableForm tenderCode={selectedRab?.tender_code} onClick={() => {
-                setShowTender(true);
-                setSelectedRab(null);
+              <ShowTableForm tenderCode={selectedRab?.tender_code ? selectedRab?.tender_code : scheduleDataById?.rab?.tender?.tender_code} onClick={() => {
+                if (!isDisabled) {
+                  setShowTender(true);
+                  setSelectedRab(null);
+                }
               }} />
 
               <FormInput
                 title='Tahun Anggaran'
                 placeholder='Masukkan tahun anggaran (otomatis)'
-                value={selectedRab?.fiscal_year as any}
+                value={selectedRab?.fiscal_year ? selectedRab?.fiscal_year : scheduleDataById?.rab?.tender?.fiscal_year as any}
                 disabled={true}
               />
 
               <FormInput
                 title='Satuan Kerja'
                 placeholder='Masukkan tahun satuan kerja (otomatis)'
-                value={selectedRab?.satker_name}
+                value={selectedRab?.satker_name ? selectedRab?.satker_name : scheduleDataById?.rab?.tender?.satker_name as any}
                 disabled={true}
               />
 
               <FormInput
                 title='Kode RUP'
                 placeholder='Masukkan tahun kode RUP (otomatis)'
-                value={selectedRab?.rup_code}
+                value={selectedRab?.rup_code ? selectedRab?.rup_code : scheduleDataById?.rab?.tender?.rup_code as any}
                 disabled={true}
               />
 
               <FormInput
                 title='Lokasi Pekerjaan'
                 placeholder='Masukkan lokasi pekerjaan (otomatis)'
-                value={selectedRab?.work_location as any}
+                value={selectedRab?.work_location ? selectedRab?.work_location : scheduleDataById?.rab?.tender?.work_location as any}
                 disabled={true}
                 type='textarea'
               />
@@ -327,7 +208,7 @@ export default function PPKJadwalPelaksanaanAdd() {
               <FormInput
                 title='Program Kegiatan'
                 placeholder='Masukkan program kegiatan'
-                value={selectedRab?.program}
+                value={selectedRab?.program ? selectedRab?.program : scheduleDataById?.rab?.program as any}
                 name='program'
                 disabled={true}
               />
@@ -335,7 +216,7 @@ export default function PPKJadwalPelaksanaanAdd() {
               <FormInput
                 title='Kegiatan'
                 placeholder='Masukkan kegiatan'
-                value={selectedRab?.activity}
+                value={selectedRab?.activity ? selectedRab?.activity : scheduleDataById?.rab?.activity as any}
                 name='activity'
                 disabled={true}
               />
@@ -343,7 +224,7 @@ export default function PPKJadwalPelaksanaanAdd() {
               <FormInput
                 title='Tanggal Awal'
                 placeholder='Masukkan tanggal awal'
-                value={selectedRab?.start_date}
+                value={selectedRab?.start_date ? selectedRab?.start_date : scheduleDataById?.rab?.start_date as any}
                 name='start'
                 disabled={true}
                 type='date'
@@ -352,7 +233,7 @@ export default function PPKJadwalPelaksanaanAdd() {
               <FormInput
                 title='Tanggal Akhir'
                 placeholder='Masukkan tanggal akhir'
-                value={selectedRab?.end_date}
+                value={selectedRab?.end_date ? selectedRab?.end_date : scheduleDataById?.rab?.end_date as any}
                 name='end'
                 disabled={true}
                 type='date'
@@ -361,18 +242,16 @@ export default function PPKJadwalPelaksanaanAdd() {
               <FormInput
                 title={`Alasan (Revisi ke- ${selectedRab?.revision_count ?? ""})`}
                 placeholder='Alasan'
-                value={selectedRab?.revision_text}
+                value={selectedRab?.revision_text ? selectedRab?.revision_text : scheduleDataById?.revision_text as any}
                 disabled={true}
                 type='textarea'
               />
               <p className='font-poppins-medium text-gray-600 text-[14px]'></p>
             </div>
-            <SubmitButton text='Buat Jadwal' onClick={() => handleShowDetail()} />
+            {!isDisabled && (
+              <SubmitButton text='Ubah Jadwal' onClick={() => handleSchedulePut(selectedRab as any, reason)} />
+            )}
           </div>
-
-          {showDetail && (
-            <FormGenerateExcel handleSave={() => handleSchedulePost(selectedRab as any, dataFile as any)} title='jadwal Pelaksanaan' handleFileChange={handleFileChange} handleDownloadTemplate={handleDownloadTemplate} />
-          )}
 
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
@@ -388,16 +267,13 @@ export default function PPKJadwalPelaksanaanAdd() {
                     <th className="px-6 py-4 text-center font-poppins-semibold text-gray-800 text-sm">
                       Bobot (%)
                     </th>
-                    <th colSpan={totalMinggu} className="px-6 py-4 text-center font-poppins-semibold text-gray-800 text-sm bg-primary/5">
+                    <th colSpan={((scheduleDataById?.schedule_details as any)?.[0]?.schedule_weeks?.length ?? 0)} className="px-6 py-4 text-center font-poppins-semibold text-gray-800 text-sm bg-primary/5">
                       Minggu Pelaksanaan
-                    </th>
-                    <th className="px-6 py-4 text-center font-poppins-semibold text-gray-800 text-sm">
-                      Aksi
                     </th>
                   </tr>
                   <tr className="bg-primary/5 border-b border-gray-200">
                     <th colSpan={3}></th>
-                    {Array.from({ length: totalMinggu }).map((_, i) => (
+                    {Array.from({ length: ((scheduleDataById?.schedule_details as any)?.[0]?.schedule_weeks?.length ?? 0) }).map((_, i) => (
                       <th
                         key={i}
                         className="px-4 py-3 text-center font-poppins-medium text-xs text-gray-700 border-l border-gray-200 hover:bg-primary/10 transition-colors duration-200"
@@ -409,14 +285,13 @@ export default function PPKJadwalPelaksanaanAdd() {
                         </div>
                       </th>
                     ))}
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {dataFile.length === 0 ? (
+                  {(scheduleDataById?.schedule_details as any)?.length === 0 ? (
                     <tr>
                       <td
-                        colSpan={totalMinggu + 5}
+                        colSpan={((scheduleDataById?.schedule_details as any)?.[0]?.schedule_weeks?.length ?? 0) + 3}
                         className="px-6 py-12 text-center"
                       >
                         <div className="flex flex-col items-center gap-3">
@@ -426,14 +301,14 @@ export default function PPKJadwalPelaksanaanAdd() {
                             </svg>
                           </div>
                           <p className="font-poppins-medium text-gray-500">Tidak ada data</p>
-                          <p className="font-poppins-regular text-gray-400 text-sm">Upload file Excel untuk menampilkan jadwal pelaksanaan</p>
+                          <p className="font-poppins-regular text-gray-400 text-sm">Jadwal pelaksanaan belum tersedia</p>
                         </div>
                       </td>
                     </tr>
                   ) : (
-                    dataFile.map((item: JadwalItem, index) => (
+                    (scheduleDataById?.schedule_details as any)?.map((item: any, index: any) => (
                       <tr
-                        key={index}
+                        key={item.id || index}
                         className="hover:bg-primary/2 transition-all duration-200 border-b border-gray-100"
                       >
                         <td className="px-6 py-4 font-poppins-medium text-sm text-gray-800 max-w-xs">
@@ -443,7 +318,7 @@ export default function PPKJadwalPelaksanaanAdd() {
                         </td>
                         <td className="px-6 py-4 font-poppins-regular text-sm text-center">
                           <span className="inline-flex items-center justify-center px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-poppins-medium text-xs ring-1 ring-blue-200">
-                            {item.total_price}
+                            {item.number}
                           </span>
                         </td>
                         <td className="px-6 py-4 font-poppins-regular text-sm text-center">
@@ -451,31 +326,19 @@ export default function PPKJadwalPelaksanaanAdd() {
                             {item.weight}%
                           </span>
                         </td>
-                        {item.minggu.map((val, i) => (
+                        {item.schedule_weeks?.map((val: any, i: any) => (
                           <td
                             key={i}
                             className="px-4 py-4 text-center border-l border-gray-200 font-poppins-semibold text-sm bg-primary/2 hover:bg-primary/5 transition-all duration-200"
                           >
                             <div className={`flex items-center justify-center h-8 rounded font-poppins-bold text-sm transition-all duration-200 ${val > 0
-                                ? 'bg-green-100 text-green-700 ring-1 ring-green-200'
-                                : 'text-gray-400'
+                              ? 'bg-green-100 text-green-700 ring-1 ring-green-200'
+                              : 'text-gray-400'
                               }`}>
                               {val > 0 ? val : '-'}
                             </div>
                           </td>
                         ))}
-                        <td className="px-6 py-4 text-center">
-                          <div className="flex items-center justify-center gap-2">
-                            <button
-                              onClick={() => handleDeleteRow(index)}
-                              className="inline-flex items-center gap-2 px-3 py-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all duration-200 hover:shadow-md active:scale-95 ring-1 ring-red-200"
-                              title="Hapus baris"
-                              aria-label="Hapus baris"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </td>
                       </tr>
                     ))
                   )}
@@ -483,24 +346,24 @@ export default function PPKJadwalPelaksanaanAdd() {
               </table>
             </div>
 
-            {dataFile.length > 0 && (
+            {(scheduleDataById?.schedule_details as any)?.length > 0 && (
               <div className="bg-linear-to-r from-primary/5 to-primary/2 px-6 py-4 border-t-2 border-primary/20 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div className="flex gap-8">
                   <div>
                     <p className="font-poppins-regular text-gray-600 text-sm">Total Baris</p>
-                    <p className="font-poppins-bold text-primary text-lg">{dataFile.length}</p>
+                    <p className="font-poppins-bold text-primary text-lg">{(scheduleDataById?.schedule_details as any)?.length}</p>
                   </div>
                   <div>
                     <p className="font-poppins-regular text-gray-600 text-sm">Total Bobot</p>
                     <p className="font-poppins-bold text-primary text-lg">
-                      {dataFile.reduce((sum, item) => sum + item.weight, 0)}%
+                      {(scheduleDataById?.schedule_details as any)?.reduce((sum: any, item: any) => sum + item.weight, 0)}%
                     </p>
                   </div>
                 </div>
                 <div className="bg-white px-6 py-3 rounded-lg border-2 border-primary/20 shadow-sm">
                   <p className="font-poppins-regular text-gray-600 text-xs mb-1">Target Bobot</p>
                   <p className="font-poppins-bold text-primary text-lg">
-                    {dataFile.reduce((sum, item) => sum + item.weight, 0)}/100%
+                    {(scheduleDataById?.schedule_details as any)?.reduce((sum: any, item: any) => sum + item.weight, 0)}/100%
                   </p>
                 </div>
               </div>
