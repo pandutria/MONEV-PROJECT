@@ -146,7 +146,7 @@ export default function PPKJadwalPelaksanaan() {
                     </div>
                 </div>
             )}
-
+ 
             <div className="lg:pt-32 pt-28" data-aos="fade-up" data-aos-duration="1000">
                 <TableHeader 
                     title="Daftar Jadwal Pelaksanaan" 
