@@ -88,6 +88,7 @@ func SetupRoutes(r *gin.Engine) {
 		public.GET("/tender_selesai_isbs", controllers.GetAllTenderSelesaiIsb)
 		public.GET("/tender_tahap_isbs", controllers.GetAllTenderTahapIsb)
 		public.GET("/paket_purchasing", controllers.GetAllPaketPurchasing)
+		public.GET("/paket_purchasing", controllers.GetAllPaketPurchasing)
 		public.GET("/rup_paket_penyedia", controllers.GetAllRupPaketPenyedia)
 		public.GET("/rup_paket_swakelola", controllers.GetAllRupPaketSwakelola)
 		public.GET("/rup_penyedia_terumumkan", controllers.GetAllRupPenyediaTerumumkan)
