@@ -35,6 +35,11 @@ func SetupRoutes(r *gin.Engine) {
 		public.PUT("/tender/update/:id", controllers.UpdateTender)
 		public.DELETE("/tender/delete/:id", controllers.DeleteTender)
 
+		public.GET("/dataentry", controllers.GetAllDataEntry)
+		public.GET("/dataentry/:id", controllers.GetDataEntryById)
+		public.PUT("/dataentry/update/:id", controllers.UpdateDataEntry)
+		public.DELETE("/dataentry/delete/:id", controllers.DeleteDataEntry)
+
 		public.GET("/rab", controllers.GetAllRabHeader)
 		public.GET("/rab/:id", controllers.GetRabHeaderById)
 		public.PUT("/rab/update/:id", controllers.UpdateRabHeader)
@@ -93,6 +98,7 @@ func SetupRoutes(r *gin.Engine) {
 	{
 		private.GET("/auth/me", controllers.Me)
 		private.POST("/tender/create", controllers.CreateTender)
+		private.POST("/dataentry/create", controllers.CreateDataEntry)
 		private.POST("/rab/create", controllers.CreateRabHeader)
 		private.POST("/schedule/create", controllers.CreateScheduleHeader)
 		private.POST("/realisasi/create", controllers.CreateRealisasi)
