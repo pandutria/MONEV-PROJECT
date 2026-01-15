@@ -202,6 +202,7 @@ func DeleteScheduleItem(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Menghapus data gagal!",
+			"error": err.Error(),
 		})
 		return
 	}
@@ -210,6 +211,7 @@ func DeleteScheduleItem(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Menghapus data gagal!",
+			"error": err.Error(),
 		})
 		return
 	}

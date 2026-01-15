@@ -29,6 +29,19 @@ func main() {
 		&models.RealisasiHeader{},
 		&models.RealisasiItem{},
 		&models.RealisasiWeek{},
+		&models.NonTenderKontractIsb{},
+		&models.NonTenderIsb{},
+		&models.NonTenderSelesaiIsb{},
+		&models.NonTenderTahapIsb{},
+		&models.PencatatanNonTenderIsb{},
+		&models.TenderIsb{},
+		&models.TenderKontrakIsb{},
+		&models.TenderSelesaiIsb{},
+		&models.TenderTahapIsb{},
+		&models.PaketPurchasing{},
+		&models.RupPaketPenyedia{},
+		&models.RupPaketSwakelola{},
+		&models.RupPenyediaTerumumkan{},
 	)
 
 	r.Use(cors.New(cors.Config{

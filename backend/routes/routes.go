@@ -72,6 +72,20 @@ func SetupRoutes(r *gin.Engine) {
 		public.GET("/inaproc/cache", controllers.GetInaProcCache)
 		public.GET("/inaproc/cache/:tender_id", controllers.GetInaProcByTenderId)
 		public.POST("/inaproc/cache/add", controllers.PostInaProcCacheFromFile)
+
+		public.GET("/non_tender_kontract_isbs", controllers.GetAllNonTenderKontractIsb)
+		public.GET("/non_tender_isbs", controllers.GetAllNonTenderIsb)
+		public.GET("/non_tender_selesai_isbs", controllers.GetAllNonTenderSelesaiIsb)
+		public.GET("/non_tender_tahap_isbs", controllers.GetAllNonTenderTahapIsb)
+		public.GET("/pencatatan_non_tender_isbs", controllers.GetAllPencatatanNonTenderIsb)
+		public.GET("/tender_isbs", controllers.GetAllTenderIsb)
+		public.GET("/tender_kontrak_isbs", controllers.GetAllTenderKontrakIsb)
+		public.GET("/tender_selesai_isbs", controllers.GetAllTenderSelesaiIsb)
+		public.GET("/tender_tahap_isbs", controllers.GetAllTenderTahapIsb)
+		public.GET("/paket_purchasing", controllers.GetAllPaketPurchasing)
+		public.GET("/rup_paket_penyedia", controllers.GetAllRupPaketPenyedia)
+		public.GET("/rup_paket_swakelola", controllers.GetAllRupPaketSwakelola)
+		public.GET("/rup_penyedia_terumumkan", controllers.GetAllRupPenyediaTerumumkan)
 	}
 
 	private := r.Group("/api")
