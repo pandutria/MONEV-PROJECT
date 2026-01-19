@@ -16,7 +16,7 @@ export default function PokjaHasilPenjabatPengadaan() {
     const [sumberDana, setSumberDana] = useState('');
     const tableRef = useRef<HTMLDivElement>(null);
     const { dataEntryPengadaan } = useDataEntryHooks();
-    const [dataEntryFilter, setDataEntryFilter] = useState<TenderProps[]>([]);
+    const [dataEntryFilter, setDataEntryFilter] = useState<DataEntryProps[]>([]);
     const { user, loading } = useAuth();
 
     const tahunOptions = [
@@ -47,7 +47,7 @@ export default function PokjaHasilPenjabatPengadaan() {
             label: 'OPD'
         },
         {
-            key: 'package_name',
+            key: 'nama_paket',
             label: 'Nama Paket'
         },
         {

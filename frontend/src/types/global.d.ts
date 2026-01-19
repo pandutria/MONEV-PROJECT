@@ -43,7 +43,7 @@ declare global {
     name: string;
   }
 
-  export interface TenderProps {
+  export interface DataEntryProps {
     id: number;
     type: string | null;
     procurement_method: string | null;
@@ -59,6 +59,7 @@ declare global {
     hps_value: number | null;
     shipping_fee: number;
     contract_number: string | null;
+    contact_initial: string | null;
     contract_date: string | null;
     ppk_name: string | null;
     ppk_position: string | null;

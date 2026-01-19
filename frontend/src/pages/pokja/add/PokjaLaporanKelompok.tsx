@@ -12,17 +12,17 @@ import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate } from 'react-router-dom';
 import useUserHooks from '../../../hooks/UserHooks';
-import useTenderInaprocHooks from '../../../hooks/TenderInaprocHooks';
 import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import SubmitButton from '../../../ui/SubmitButton';
 import TableHeader from '../../../ui/TableHeader';
+import useNewTenderInaprocHooks from '../../../hooks/NewTenderInaprocHooks';
 
 export default function PokjaLaporanKelompokAdd() {
     const [metodePengadaan, setMetodePengadaan] = useState<any>("");
-    const { tenderData } = useTenderInaprocHooks();
-    const [tenderDataFilter, setTenderDataFilter] = useState<TenderProps[]>([]);
+    const { newTenderInaprocHooks } = useNewTenderInaprocHooks();
+    const [tenderDataFilter, setTenderDataFilter] = useState<NewTenderProps[]>([]);
     const [showTender, setShowTender] = useState<any>('');
-    const [selectedTender, setSelectedTender] = useState<TenderProps | any>(null);
+    const [selectedTender, setSelectedTender] = useState<NewTenderProps | any>(null);
     const { user, loading } = useAuth();
     const { listUser } = useUserHooks();
     const [search, setSearch] = useState("");
@@ -66,27 +66,27 @@ export default function PokjaLaporanKelompokAdd() {
             label: "No"
         },
         {
-            key: "tender_code",
+            key: "kd_tender",
             label: "Kode Tender"
         },
         {
-            key: "rup_code",
+            key: "kd_rup",
             label: "Kode RUP"
         },
         {
-            key: "fiscal_year",
+            key: "tahun_anggaran",
             label: "Tahun Anggaran"
         },
         {
-            key: "satker_name",
+            key: "nama_satker",
             label: "Satuan Kerja"
         },
         {
-            key: "package_name",
+            key: "nama_paket",
             label: "Nama Paket"
         },
         {
-            key: "funding_source",
+            key: "sumber_dana",
             label: "Sumber Dana"
         },
     ]
@@ -105,8 +105,8 @@ export default function PokjaLaporanKelompokAdd() {
         }
 
         const filteringDataTender = () => {
-            const filter = tenderData?.filter((item: TenderProps) => {
-                const data = item?.tender_code?.toLowerCase().includes(search.toLowerCase());
+            const filter = newTenderInaprocHooks?.filter((item: NewTenderProps) => {
+                const data = item?.kd_tender?.toString()?.toLowerCase().includes(search.toLowerCase());
                 return data;
             });
 
@@ -115,7 +115,7 @@ export default function PokjaLaporanKelompokAdd() {
 
         fetchTender();
         filteringDataTender();
-    }, [selectedTender, showTender, listUser, search, tenderData]);
+    }, [selectedTender, showTender, listUser, search, newTenderInaprocHooks]);
 
     if (loading) {
         return <LoadingSpinner />
@@ -188,29 +188,29 @@ export default function PokjaLaporanKelompokAdd() {
                                     </div>
 
                                     <div className="md:col-span-2">
-                                        <ShowTableForm tenderCode={selectedTender ? selectedTender?.tender_code : "Kode tender / No Tender"} onClick={() => {
+                                        <ShowTableForm tenderCode={selectedTender ? selectedTender?.kd_tender : "Kode tender / No Tender"} onClick={() => {
                                             setShowTender(true);
                                             setSelectedTender(null);
                                         }} />
                                     </div>
 
-                                    <FormInput title="Kode RUP" name="" value={selectedTender?.rup_code} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Tahun Anggaran" name="" value={selectedTender?.fiscal_year.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Kode RUP" name="" value={selectedTender?.kd_rup} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Tahun Anggaran" name="" value={selectedTender?.tahun_anggaran.toString()} placeholder="Otomatis terisi" disabled={true} />
 
                                     <div className="md:col-span-2">
-                                        <FormInput title="Satuan Kerja" name="" value={selectedTender?.satker_name} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Satuan Kerja" name="" value={selectedTender?.nama_satker} placeholder="Otomatis terisi" disabled={true} />
                                     </div>
 
                                     <div className="md:col-span-2">
-                                        <FormInput title="Nama Paket" name="" value={selectedTender?.package_name} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Nama Paket" name="" value={selectedTender?.nama_paket} placeholder="Otomatis terisi" disabled={true} />
                                     </div>
 
                                     <div className="md:col-span-2">
-                                        <FormInput title="Tanggal Masuk" name="" value={selectedTender?.order_date} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Tanggal Masuk" name="" value={selectedTender?.tgl_buat_paket} placeholder="Otomatis terisi" disabled={true} />
                                     </div>
 
-                                    <FormInput title="Sumber Dana" name="" value={selectedTender?.funding_source} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Jenis Pengadaan" name="" value={selectedTender?.procurement_method?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Sumber Dana" name="" value={selectedTender?.sumber_dana} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Jenis Pengadaan" name="" value={selectedTender?.jenis_pengadaan?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                 </div>
                             </div>
 
@@ -219,8 +219,8 @@ export default function PokjaLaporanKelompokAdd() {
                                     2. INFORMASI KEUANGAN
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <FormInput title="Nilai Pagu (Rp)" name="" value={selectedTender?.budget_value?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Nilai HPS (Rp)" name="" value={selectedTender?.hps_value?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Nilai Pagu (Rp)" name="" value={selectedTender?.pagu?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Nilai HPS (Rp)" name="" value={selectedTender?.hps?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                 </div>
                             </div>
 
@@ -229,12 +229,12 @@ export default function PokjaLaporanKelompokAdd() {
                                     3. DETAIL KONTRAK
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <FormInput title="Nomor Kontrak" name="" value={selectedTender?.contract_number?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Tanggal Kontrak" name="" value={selectedTender?.contract_date?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Nama PPK" name="" value={selectedTender?.ppk_name?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Jabatan PPK" name="" value={selectedTender?.ppk_position?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Nama Pimpinan Perusahaan" name="" value={selectedTender?.company_leader?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Jabatan Pimpinan" name="" value={selectedTender?.leader_position?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Nomor Kontrak" name="" value={selectedTender?.no_kontrak?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Tanggal Kontrak" name="" value={selectedTender?.tgl_kontrak?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Nama PPK" name="" value={selectedTender?.nama_ppk?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Jabatan PPK" name="" value={selectedTender?.jabatan_ppk?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Nama Pimpinan Perusahaan" name="" value={selectedTender?.wakil_sah_penyedia?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Jabatan Pimpinan" name="" value={selectedTender?.jabatan_wakil_penyedia?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                 </div>
                             </div>
 
@@ -243,12 +243,12 @@ export default function PokjaLaporanKelompokAdd() {
                                     4. INFORMASI PEMENANG
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <FormInput title="Pemenang" name="" value={selectedTender?.winner_name?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Nilai Penawaran" name="" value={selectedTender?.total_value?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Nilai Negosiasi/Nilai SPK (Rp)" name="" value={selectedTender?.negotiation_value?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Pemenang" name="" value={selectedTender?.nama_penyedia?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Nilai Penawaran" name="" value={selectedTender?.nilai_penawaran?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Nilai Negosiasi/Nilai SPK (Rp)" name="" value={selectedTender?.nilai_negosiasi?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title="Nomor Telepon/HP" name="" value={selectedTender?.phone?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title="Email" name="" value={selectedTender?.email?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="NPWP" name="" value={selectedTender?.npwp?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="NPWP" name="" value={selectedTender?.npwp_penyedia?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                 </div>
                             </div>
 
@@ -258,7 +258,7 @@ export default function PokjaLaporanKelompokAdd() {
                                 </h2>
                                 <div className="grid grid-cols-1 gap-6">
                                     <FormInput title="Alamat Pemenang" name="" value={selectedTender?.winner_address?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Lokasi Pekerjaan" name="" value={selectedTender?.work_location?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Lokasi Pekerjaan" name="" value={selectedTender?.lokasi_pekerjaan?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                 </div>
                             </div>
 

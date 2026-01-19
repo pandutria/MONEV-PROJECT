@@ -10,7 +10,7 @@ import useDataEntryHooks from "../../hooks/DataEntryHooks";
 
 export default function PokjaLaporanPenjabatPengadaan() {
     const [search, setSearch] = useState('');
-    const [selectEdit, setSelectEdit] = useState<TenderProps | null>(null);
+    const [selectEdit, setSelectEdit] = useState<DataEntryProps | null>(null);
     const [selectPreview, setSelectPreview] = useState<any>(null);
     const [selectedRemove, setSelectedRemove] = useState<any[]>([]);
     const [dataTable, setDataTable] = useState<any[]>([]);
@@ -57,7 +57,7 @@ export default function PokjaLaporanPenjabatPengadaan() {
         }
 
         const filteringDataEntryPengadaan = () => {
-            const filter = dataEntryPengadaan?.filter((item: TenderProps) => {
+            const filter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
                 const filterType = item?.type?.includes("penjabat");
                 const dataFilter = search ? item?.tender_code?.toLowerCase().includes(search.toLowerCase()) : true;
                 return dataFilter && filterType;

@@ -10,7 +10,7 @@ import useDataEntryHooks from "../../hooks/DataEntryHooks";
 
 export default function PokjaLaporanKelompok() {
     const [search, setSearch] = useState('');
-    const [selectEdit, setSelectEdit] = useState<TenderProps | null>(null);
+    const [selectEdit, setSelectEdit] = useState<DataEntryProps | null>(null);
     const [selectPreview, setSelectPreview] = useState<any>(null);
     const [selectedRemove, setSelectedRemove] = useState<any[]>([]);
     const [dataTable, setDataTable] = useState<any[]>([]);
@@ -36,7 +36,7 @@ export default function PokjaLaporanKelompok() {
             label: 'Nama Paket'
         },
         {
-            key: 'order_date',
+            key: 'contract_initial',
             label: 'Tanggal Masuk/Perubahan'
         },
     ];    
