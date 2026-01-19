@@ -1,11 +1,11 @@
 package dtos
 
-import "time"
-
 type CreateScheduleRequest struct {
-	RabId     uint       `json:"rab_id" binding:"required"`
-	StartDate *time.Time `json:"start_date"`
-	EndDate   *time.Time `json:"end_date"`
+	RabId uint `json:"rab_id" binding:"required"`
+	ScheduleGroupId *uint `json:"schedule_group_id"`
+	StartDate *string `json:"start_date"`
+	EndDate   *string `json:"end_date"`
+	RevisionText *string `json:"revision_text"`
 }
 
 type UpdateScheduleRequest struct {
