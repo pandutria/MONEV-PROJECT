@@ -6,7 +6,6 @@ import API from "../server/API";
 import { useNavigate } from "react-router-dom";
 import { SortDescById } from "../utils/SortDescById";
 import { FormatDate } from "../utils/FormatDate";
-import FormatRupiah from "../utils/FormatRupiah";
 
 export default function useDataEntryHooks() {
     const [dataEntryPengadaan, setDataEntryPengadaan] = useState<TenderProps[]>([]);
@@ -21,26 +20,10 @@ export default function useDataEntryHooks() {
     useEffect(() => {
         const fetchDataEntryPengadaan = async () => {
             try {
-                const response = await API.get("/tender");
-                const mappingData = response.data.data.map((item: TenderProps) => ({
+                const response = await API.get("/dataentry");
+                const mappingData = response.data.data.map((item: any) => ({
                     ...item,
-                    package_name: item.package_name ? item.package_name : "Tidak Ada",
-                    order_date: item.order_date ? FormatDate(item.order_date) : "Tidak Ada",
-                    opd: item.user.opd_organization ? item.user.opd_organization : "Tidak Ada",
-                    budget_value: item.budget_value ? item.budget_value : 0,
-                    winner_name: item.winner_name != "" ? item.winner_name : "Tidak Ada",
-                    bid_value: item.bid_value ? item.bid_value : 0,
-                    efisience: FormatRupiah(Number(item?.budget_value) - Number(item?.total_value)),
-                    presentation: (Number(item?.budget_value) > 0 ? (Number(item?.budget_value) - Number(item?.total_value) / Number(item?.budget_value)) * 100 : 0) + "%",
-                    vendor_id: item.vendor_id ? item.vendor_id : 0,
-                    pnw_value: 0,
-                    contract_number: item.contract_number != "" ? item.contract_number : "Tidak Ada",
-                    ppk_name: "intinya ppk dah",
-                    company_leader: item.company_leader != "" ? item.company_leader : "Tidak Ada",
-                    phone: item.phone != "" ? item.phone : "Tidak Ada",
-                    npwp: item.npwp != "" ? item.npwp : "Tidak Ada",
-                    winner_address: item.winner_address != "" ? item.winner_address : "Tidak Ada",
-                    work_location: item.work_location != "" ? item.work_location : "Tidak Ada",
+                    contract_initial: FormatDate(item.contract_initial),
                 }));
 
                 setDataEntryPengadaan(SortDescById(mappingData));
@@ -51,7 +34,8 @@ export default function useDataEntryHooks() {
 
         const fetchDataEntryPengadaanById = async () => {
             try {
-                const response = await API.get(`/tender/${selectedId}`);
+                if (!selectedId) return;
+                const response = await API.get(`/dataentry/${selectedId}`);
                 setDataEntryPengadaanById(response.data.data)
 
                 setSelectedPPK(response.data.data.selected_ppk_id);
@@ -64,9 +48,9 @@ export default function useDataEntryHooks() {
         fetchDataEntryPengadaanById();
     }, [selectedId]);
 
-    const handleEntryPenjabatPengadaanPost = async (data: TenderProps, type: string) => {
+    const handleEntryPenjabatPengadaanPost = async (data: NewTenderProps, type: string) => {
         try {
-            if (!data.tender_code || !type) {
+            if (!data.kd_tender || !type) {
                 SwalMessage({
                     title: "Gagal!",
                     text: "Kode Tender wajib diisi!",
@@ -78,54 +62,51 @@ export default function useDataEntryHooks() {
             const formData = new FormData();
             if (type == "Pengadaan Langsung" || type == "E-Purchasing V5" || type == "E-Purchasing V6") {
                 if (type == "Pengadaan Langsung") {
-                    formData.append("procurement_type", String(data.procurement_type));
+                    formData.append("procurement_type", String(data.jenis_pengadaan));
                     formData.append("selected_ppk_id", selectedPPK);
                 } else {
-                    formData.append("package_status", String(data.package_status));
-                    formData.append("delivery_status", String(data.delivery_status));
+                    formData.append("package_status", null as any);
+                    formData.append("delivery_status", null as any);
                 }
 
                 formData.append("type", "penjabat");
             } else {
-                formData.append("procurement_type", String(data.procurement_type));
+                formData.append("procurement_type", String(data.jenis_pengadaan));
                 formData.append("type", "kelompok");
             }
 
-            formData.append("tender_code", data.tender_code);
-            formData.append("rup_code", data.rup_code);
-            formData.append("fiscal_year", String(data.fiscal_year));
-            formData.append("satker_name", data.satker_name);
-            formData.append("order_date", data.order_date.toString());
-            formData.append("funding_source", data.funding_source);
-            formData.append("procurement_method", type?.toString());
+            formData.append("tender_code", data.kd_tender as any);
+            formData.append("rup_code", data.kd_rup as any);
+            formData.append("fiscal_year", String(data.tahun_anggaran));
+            formData.append("satker_name", data.nama_satker as any);
+            formData.append("contract_initial", String(data?.tgl_buat_paket) as any);
+            formData.append("funding_source", data.sumber_dana as any);
 
-            formData.append("budget_value", data.budget_value ? data.budget_value.toString() : "");
-            formData.append("hps_value", data.hps_value ? data.hps_value.toString() : "");
+            formData.append("budget_value", data.pagu ? String(data.pagu) : null as any);
+            formData.append("hps_value", data.hps ? String(data.hps) : null as any);
 
-            formData.append("contract_number", data.contract_number ? data.contract_number : "");
-            formData.append("contract_date", data.contract_date ? data.contract_date : "");
-            formData.append("ppk_name", data.ppk_name ? data.ppk_name : "");
-            formData.append("ppk_position", data.ppk_position ? data.ppk_position : "");
-            formData.append("company_leader", data.company_leader ? data.company_leader : "");
-            formData.append("leader_position", data.leader_position ? data.leader_position : "");
-            formData.append("winner_name", data.winner_name ? data.winner_name : "");
-            formData.append("negotiation_value", data.negotiation_value ? data.negotiation_value.toString() : "");
-            formData.append("phone", data.phone ? data.phone : "");
-            formData.append("email", data.email ? data.email : "");
-            formData.append("npwp", data.npwp ? data.npwp : "");
-            formData.append("winner_address", data.winner_address ? data.winner_address : "");
-            formData.append("work_location", data.work_location ? data.work_location : "");
-            formData.append("note", note);            
+            formData.append("contract_number", data.no_kontrak ? data.no_kontrak.toString() : null as any);
+            formData.append("contract_date", data.tgl_kontrak ? data.tgl_kontrak.toString() : null as any);
+            formData.append("ppk_name", data.nama_ppk ? data.nama_ppk : null as any);
+            formData.append("ppk_position", data.jabatan_ppk ? data.jabatan_ppk : null as any);
+            formData.append("company_leader", data.wakil_sah_penyedia ? data.wakil_sah_penyedia : null as any);
+            formData.append("leader_position", data.jabatan_wakil_penyedia ? data.jabatan_wakil_penyedia : null as any);
+            formData.append("winner_name", data.nama_penyedia ? data.nama_penyedia : null as any);
+            formData.append("negotiation_value", data.nilai_negosiasi ? data.nilai_negosiasi.toString() : null as any);
+            formData.append("phone", null as any);
+            formData.append("email", null as any);
+            formData.append("npwp", data.npwp_penyedia ? data.npwp_penyedia : null as any);
+            formData.append("winner_address", null as any);
+            formData.append("work_location", data.lokasi_pekerjaan ? data.lokasi_pekerjaan : null as any);
+            formData.append("procurement_type", type);
+            formData.append("note", note);   
 
-            if (evidenceFile) {
+            if (evidenceFile) { 
                 formData.append("evidence_file", evidenceFile);
             }
 
-            formData.append("package_name", data.package_name as any);
-            formData.append("total_value", data.total_value ? data.total_value.toString() : "");
-
             SwalLoading();
-            const response = await API.post("/tender/create", formData, {
+            const response = await API.post("/dataentry/create", formData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -157,9 +138,9 @@ export default function useDataEntryHooks() {
         }
     }
 
-    const handleEntryPenjabatPengadaanPut = async (data: TenderProps, type: string) => {
+    const handleEntryPenjabatPengadaanPut = async (data: NewTenderProps, type: string) => {
         try {
-            if (!data.tender_code || !type) {
+            if (!data.kd_tender || !type) {
                 SwalMessage({
                     title: "Gagal!",
                     text: "Kode Tender wajib diisi!",
@@ -172,51 +153,47 @@ export default function useDataEntryHooks() {
             formData.append("_method", "PUT");
             if (type == "Pengadaan Langsung" || type == "E-Purchasing V5" || type == "E-Purchasing V6") {
                 if (type == "Pengadaan Langsung") {
-                    formData.append("procurement_type", String(data.procurement_type));
+                    formData.append("procurement_type", String(data.jenis_pengadaan));
                     formData.append("selected_ppk_id", selectedPPK);
                 } else {
-                    formData.append("package_status", String(data.package_status));
-                    formData.append("delivery_status", String(data.delivery_status));
+                    formData.append("package_status", null as any);
+                    formData.append("delivery_status", null as any);
                 }
 
                 formData.append("type", "penjabat");
             } else {
-                formData.append("procurement_type", String(data.procurement_type));
+                formData.append("procurement_type", String(data.jenis_pengadaan));
                 formData.append("type", "kelompok");
             }
 
-            formData.append("tender_code", data.tender_code);
-            formData.append("rup_code", data.rup_code);
-            formData.append("fiscal_year", String(data.fiscal_year));
-            formData.append("satker_name", data.satker_name);
-            formData.append("order_date", data.order_date.toString());
-            formData.append("funding_source", data.funding_source);
-            formData.append("procurement_method", type?.toString());
+            formData.append("tender_code", data.kd_tender as any);
+            formData.append("rup_code", data.kd_rup as any);
+            formData.append("fiscal_year", String(data.tahun_anggaran));
+            formData.append("satker_name", data.nama_satker as any);
+            formData.append("contract_initial", String(data?.tgl_buat_paket) as any);
+            formData.append("funding_source", data.sumber_dana as any);
 
-            formData.append("budget_value", data.budget_value ? data.budget_value.toString() : "");
-            formData.append("hps_value", data.hps_value ? data.hps_value.toString() : "");
+            formData.append("budget_value", data.pagu ? String(data.pagu) : null as any);
+            formData.append("hps_value", data.hps ? String(data.hps) : null as any);
 
-            formData.append("contract_number", data.contract_number ? data.contract_number : "");
-            formData.append("contract_date", data.contract_date ? data.contract_date : "");
-            formData.append("ppk_name", data.ppk_name ? data.ppk_name : "");
-            formData.append("ppk_position", data.ppk_position ? data.ppk_position : "");
-            formData.append("company_leader", data.company_leader ? data.company_leader : "");
-            formData.append("leader_position", data.leader_position ? data.leader_position : "");
-            formData.append("winner_name", data.winner_name ? data.winner_name : "");
-            formData.append("negotiation_value", data.negotiation_value ? data.negotiation_value.toString() : "");
-            formData.append("phone", data.phone ? data.phone : "");
-            formData.append("email", data.email ? data.email : "");
-            formData.append("npwp", data.npwp ? data.npwp : "");
-            formData.append("winner_address", data.winner_address ? data.winner_address : "");
-            formData.append("work_location", data.work_location ? data.work_location : "");
-            formData.append("note", note);
+            formData.append("contract_number", data.no_kontrak ? data.no_kontrak.toString() : null as any);
+            formData.append("contract_date", data.tgl_kontrak ? data.tgl_kontrak.toString() : null as any);
+            formData.append("ppk_name", data.nama_ppk ? data.nama_ppk : null as any);
+            formData.append("ppk_position", data.jabatan_ppk ? data.jabatan_ppk : null as any);
+            formData.append("company_leader", data.wakil_sah_penyedia ? data.wakil_sah_penyedia : null as any);
+            formData.append("leader_position", data.jabatan_wakil_penyedia ? data.jabatan_wakil_penyedia : null as any);
+            formData.append("winner_name", data.nama_penyedia ? data.nama_penyedia : null as any);
+            formData.append("negotiation_value", data.nilai_negosiasi ? data.nilai_negosiasi.toString() : null as any);
+            formData.append("phone", null as any);
+            formData.append("email", null as any);
+            formData.append("npwp", data.npwp_penyedia ? data.npwp_penyedia : null as any);
+            formData.append("winner_address", null as any);
+            formData.append("work_location", data.lokasi_pekerjaan ? data.lokasi_pekerjaan : null as any);
+            formData.append("note", note);   
 
             if (evidenceFile) {
                 formData.append("evidence_file", evidenceFile);
             }
-
-            formData.append("package_name", data.package_name as any);
-            formData.append("total_value", data.total_value ? data.total_value.toString() : "");
 
             SwalLoading();
             const response = await API.put(`/tender/update/${selectedId}`, formData, {
@@ -267,12 +244,13 @@ export default function useDataEntryHooks() {
 
     const handleDataEntryPengadaanDelete = async (ids: TenderProps[]) => {
         try {
-            if (!ids) {
+            if (ids.length === 0) {
                 SwalMessage({
                     title: "Gagal!",
                     text: "Harap pilih minimal 1 data yang dihapus!",
                     type: "error"
                 });
+                return;
             }
 
             const result = await SwalMessage({
@@ -289,20 +267,20 @@ export default function useDataEntryHooks() {
                 for (let index = 0; index < ids.length; index++) {
                     const id = ids[index];
                     SwalLoading();
-                    response = await API.delete(`/tender/delete/${id}`);
+                    response = await API.delete(`/dataentry/delete/${id}`);
                 }
+
+                const message = response?.data.message;
+                SwalMessage({
+                    title: "Berhasil!",
+                    text: message,
+                    type: "success"
+                });
+    
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
             }
-
-            const message = response?.data.message;
-            SwalMessage({
-                title: "Berhasil!",
-                text: message,
-                type: "success"
-            });
-
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
         } catch (error) {
             if (error) {
                 SwalMessage({

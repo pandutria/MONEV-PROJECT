@@ -124,6 +124,7 @@ export default function PokjaLaporanKelompokAdd() {
     if (!user || user.role.name != "pokja") {
         return <Navigate to="/" replace />
     }
+
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
@@ -187,7 +188,7 @@ export default function PokjaLaporanKelompokAdd() {
                                     </div>
 
                                     <div className="md:col-span-2">
-                                        <ShowTableForm tenderCode={selectedTender ? selectedTender.tender_code : "Kode tender / No Tender"} onClick={() => {
+                                        <ShowTableForm tenderCode={selectedTender ? selectedTender?.tender_code : "Kode tender / No Tender"} onClick={() => {
                                             setShowTender(true);
                                             setSelectedTender(null);
                                         }} />

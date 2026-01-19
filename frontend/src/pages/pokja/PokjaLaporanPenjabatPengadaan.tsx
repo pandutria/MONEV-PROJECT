@@ -36,7 +36,7 @@ export default function PokjaLaporanPenjabatPengadaan() {
             label: 'Nama Paket'
         },
         {
-            key: 'order_date',
+            key: 'contract_initial',
             label: 'Tanggal Masuk/Perubahan'
         },
     ];
@@ -87,9 +87,9 @@ export default function PokjaLaporanPenjabatPengadaan() {
                 <TableHeader
                     title="Daftar Laporan Pejabat Pengadaan"
                     showHapus={true}
+                    type="pokja"
                     onHapusClick={() => handleDataEntryPengadaanDelete(selectedRemove)}
                     onTambahClick={() => navigate("/pokja/data-entry-penjabat-pengadaan/tambah")}
-                    type="pokja"
                     searchValue={search}
                     onSearchChange={(item) => setSearch(item)}
                 />

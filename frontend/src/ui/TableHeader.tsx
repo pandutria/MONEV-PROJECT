@@ -72,7 +72,7 @@ export default function TableHeader({
                             </select>
                         </div>
                     )}
-                    <div className="relative w-full">
+                    <div className="relative lg:w-100 w-full">
                         <input
                             type="text"
                             value={searchValue}
@@ -97,7 +97,7 @@ export default function TableHeader({
                 {showHapus && (
                     <button
                         onClick={onHapusClick}
-                        className="flex items-center justify-center text-xs sm:text-[12px] gap-2 bg-primary border-2 border-primary hover:bg-transparent text-white hover:text-primary font-poppins-medium px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg transition-colors duration-200 cursor-pointer shadow-sm hover:shadow-md"
+                        className="flex items-center w-40 justify-center text-xs sm:text-[12px] gap-2 bg-primary border-2 border-primary hover:bg-transparent text-white hover:text-primary font-poppins-medium px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg transition-colors duration-200 cursor-pointer shadow-sm hover:shadow-md"
                     >
                         <Trash className="h-4 w-4 sm:h-5 sm:w-5" />
                         <span>Hapus Terpilih</span>

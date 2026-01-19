@@ -12,18 +12,18 @@ import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 import useUserHooks from '../../../hooks/UserHooks';
-import useTenderInaprocHooks from '../../../hooks/TenderInaprocHooks';
 import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import SubmitButton from '../../../ui/SubmitButton';
 import TableHeader from '../../../ui/TableHeader';
+import useNewTenderInaprocHooks from '../../../hooks/NewTenderInaprocHooks';
 
 export default function PokjaLaporanPenjabatPengadaanUpdateView() {
     const { id } = useParams();
     const [metodePengadaan, setMetodePengadaan] = useState<any>("");
-    const { tenderData } = useTenderInaprocHooks();
-    const [tenderDataFilter, setTenderDataFilter] = useState<TenderProps[]>([]);
+    const { newTenderInaprocHooks } = useNewTenderInaprocHooks();
+    const [tenderDataFilter, setTenderDataFilter] = useState<NewTenderProps[]>([]);
     const [showTender, setShowTender] = useState<any>('');
-    const [selectedTender, setSelectedTender] = useState<TenderProps | any>(null);
+    const [selectedTender, setSelectedTender] = useState<NewTenderProps | any>(null);
     const { user, loading } = useAuth();
     const { listUser } = useUserHooks();
     const [userPPK, setUserPPK] = useState<UserProps[]>([]);
@@ -52,27 +52,27 @@ export default function PokjaLaporanPenjabatPengadaanUpdateView() {
             label: "No"
         },
         {
-            key: "tender_code",
+            key: "kd_tender",
             label: "Kode Tender"
         },
         {
-            key: "rup_code",
+            key: "kd_rup",
             label: "Kode RUP"
         },
         {
-            key: "fiscal_year",
+            key: "tahun_anggaran",
             label: "Tahun Anggaran"
         },
         {
-            key: "satker_name",
+            key: "nama_satker",
             label: "Satuan Kerja"
         },
         {
-            key: "package_name",
+            key: "nama_paket",
             label: "Nama Paket"
         },
         {
-            key: "funding_source",
+            key: "sumber_dana",
             label: "Sumber Dana"
         },
     ]
@@ -101,12 +101,12 @@ export default function PokjaLaporanPenjabatPengadaanUpdateView() {
         }
 
         const filteringDataTender = () => {
-            const filter = tenderData?.filter((item: TenderProps) => {
-                const data = item?.tender_code?.toLowerCase().includes(search.toLowerCase());
+            const filter = newTenderInaprocHooks?.filter((item: NewTenderProps) => {
+                const data = item?.kd_tender?.toString()?.toLowerCase().includes(search.toLowerCase());
                 return data;
             });
 
-            setTenderDataFilter(filter);
+            setTenderDataFilter(filter );
         }
 
         const filteringUserPPK = () => {
@@ -122,12 +122,12 @@ export default function PokjaLaporanPenjabatPengadaanUpdateView() {
         filteringUserPPK();
         filteringDataTender();
         fetchtenderId();
-    }, [selectedTender, showTender, listUser, search, tenderData, id, setSelectedId, location]);
+    }, [selectedTender, showTender, listUser, search, newTenderInaprocHooks, id, setSelectedId, location]);
 
     const isEPurchasing = String(metodePengadaan ? metodePengadaan : dataEntryPengadaanById?.procurement_method?.toString()) === 'E-Purchasing V5' || String(metodePengadaan ? metodePengadaan : dataEntryPengadaanById?.procurement_method?.toString()) === 'E-Purchasing V6';
     const finalTender = selectedTender && Object.keys(selectedTender).length > 0 ? selectedTender : dataEntryPengadaanById;
 
-    if (loading) {
+    if (loading || newTenderInaprocHooks.length === 0) {
         return <LoadingSpinner />
     }
 
@@ -177,7 +177,7 @@ export default function PokjaLaporanPenjabatPengadaanUpdateView() {
 
                     <div className="bg-white rounded-lg shadow-md p-6">
                         <h1 className="font-poppins-bold text-2xl text-gray-800 mb-8">
-                            Ubah Laporan Penjabat Pengadaan
+                            {isDisabled ? "Lihat" : "Ubah"} Laporan Penjabat Pengadaan
                         </h1>
 
                         <div className="space-y-8">
