@@ -110,7 +110,7 @@ export default function TableContent({
                     <thead>
                         <tr className="bg-linear-to-r from-primary/20 to-primary/10 border-b-2 border-primary/30">
                             {isSelect && (
-                                <th className="px-6 py-4 text-center">
+                                <th className="px-2 sm:px-6 py-3 sm:py-4 text-center">
                                     <div className="flex items-center justify-center">
                                         <input
                                             type="checkbox"
@@ -124,13 +124,13 @@ export default function TableContent({
                             {columns.map((column) => (
                                 <th
                                     key={column.key}
-                                    className="px-8 py-4 text-center font-poppins-semibold text-sm text-gray-800 uppercase tracking-wider"
+                                    className="px-2 sm:px-8 py-3 sm:py-4 text-center font-poppins-semibold text-xs sm:text-sm text-gray-800 uppercase tracking-wider"
                                 >
                                     {column.label}
                                 </th>
                             ))}
                             {(showEdit || showPreview || showSelect) && (
-                                <th className="px-6 py-4 text-center font-poppins-semibold text-sm text-gray-800 uppercase tracking-wider">
+                                <th className="px-2 sm:px-6 py-3 sm:py-4 text-center font-poppins-semibold text-xs sm:text-sm text-gray-800 uppercase tracking-wider">
                                     Aksi
                                 </th>
                             )}
@@ -141,7 +141,7 @@ export default function TableContent({
                             <tr>
                                 <td
                                     colSpan={columns.length + (isSelect ? 1 : 0) + (showEdit || showPreview || showSelect ? 1 : 0)}
-                                    className="px-8 py-12 text-center"
+                                    className="px-4 sm:px-8 py-8 sm:py-12 text-center"
                                 >
                                     <div className="flex flex-col items-center gap-3">
                                         <div className="text-gray-300">
@@ -149,8 +149,8 @@ export default function TableContent({
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                             </svg>
                                         </div>
-                                        <p className="font-poppins-medium text-gray-500">Tidak ada data</p>
-                                        <p className="font-poppins-regular text-gray-400 text-sm">Data akan muncul di sini</p>
+                                        <p className="font-poppins-medium text-gray-500 text-sm sm:text-base">Tidak ada data</p>
+                                        <p className="font-poppins-regular text-gray-400 text-xs sm:text-sm">Data akan muncul di sini</p>
                                     </div>
                                 </td>
                             </tr>
@@ -161,7 +161,7 @@ export default function TableContent({
                                     className="hover:bg-primary/2 transition-all duration-200 border-b border-gray-100"
                                 >
                                     {isSelect && (
-                                        <td className="px-6 py-4 text-center">
+                                        <td className="px-2 sm:px-6 py-3 sm:py-4 text-center">
                                             <div className="flex items-center justify-center">
                                                 <input
                                                     type="checkbox"
@@ -175,42 +175,42 @@ export default function TableContent({
                                     {columns.map((column) => (
                                         <td
                                             key={column.key}
-                                            className="px-8 py-4 font-poppins-regular text-sm text-gray-800 text-center"
+                                            className="px-2 sm:px-8 py-3 sm:py-4 font-poppins-regular text-xs sm:text-sm text-gray-800 text-center"
                                         >
                                             {column.key === 'id' ? startIndex + index + 1 : item[column.key]}
                                         </td>
                                     ))}
                                     {(showEdit || showPreview || showSelect) && (
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center justify-center gap-3">
+                                        <td className="px-2 sm:px-6 py-2 sm:py-4">
+                                            <div className="flex items-center justify-center gap-1 sm:gap-3 flex-wrap">
                                                 {showEdit && (
                                                     <button
                                                         onClick={() => onEdit?.(item)}
-                                                        className="inline-flex items-center gap-2 px-4 py-2 text-primary bg-primary/10 hover:bg-primary/20 rounded-lg transition-all duration-200 cursor-pointer font-poppins-medium text-xs active:scale-95 hover:shadow-md"
+                                                        className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 text-primary bg-primary/10 hover:bg-primary/20 rounded-lg transition-all duration-200 cursor-pointer font-poppins-medium text-xs active:scale-95 hover:shadow-md"
                                                         title="Ubah"
                                                     >
-                                                        <Edit2 className="h-4 w-4" />
-                                                        <span>Ubah</span>
+                                                        <Edit2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                                                        <span className="hidden sm:inline">Ubah</span>
                                                     </button>
                                                 )}
                                                 {showPreview && (
                                                     <button
                                                         onClick={() => onPreview?.(item)}
-                                                        className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-200 cursor-pointer font-poppins-medium text-xs active:scale-95 hover:shadow-md"
+                                                        className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-200 cursor-pointer font-poppins-medium text-xs active:scale-95 hover:shadow-md"
                                                         title="Lihat"
                                                     >
-                                                        <Eye className="h-4 w-4" />
-                                                        <span>Lihat</span>
+                                                        <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                                                        <span className="hidden sm:inline">Lihat</span>
                                                     </button>
                                                 )}
                                                 {showSelect && (
                                                     <button
                                                         onClick={() => onSelectedDataChange?.(item)}
-                                                        className="inline-flex items-center gap-2 px-4 py-2 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-all duration-200 cursor-pointer font-poppins-medium text-xs active:scale-95 hover:shadow-md"
+                                                        className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-all duration-200 cursor-pointer font-poppins-medium text-xs active:scale-95 hover:shadow-md"
                                                         title="Pilih"
                                                     >
-                                                        <CheckCircle className="h-4 w-4" />
-                                                        <span>Pilih</span>
+                                                        <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                                                        <span className="hidden sm:inline">Pilih</span>
                                                     </button>
                                                 )}
                                             </div>
@@ -224,13 +224,13 @@ export default function TableContent({
             </div>
 
             {data.length > 0 && (
-                <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <span className="font-poppins-regular text-sm text-gray-600">Data per halaman:</span>
+                <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-gray-200 flex flex-col gap-3 sm:gap-0 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <span className="font-poppins-regular text-xs sm:text-sm text-gray-600 whitespace-nowrap">Data per halaman:</span>
                         <select
                             value={pageSize}
                             onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                            className="px-3 py-2 border border-gray-300 rounded-lg font-poppins-regular text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                            className="px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-lg font-poppins-regular text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                         >
                             <option value={15}>15</option>
                             <option value={30}>30</option>
@@ -239,11 +239,11 @@ export default function TableContent({
                         </select>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <span className="font-poppins-regular text-sm text-gray-600">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+                        <span className="font-poppins-regular text-xs sm:text-sm text-gray-600">
                             Halaman {currentPage} dari {totalPages}
                         </span>
-                        <span className="font-poppins-regular text-sm text-gray-500">
+                        <span className="font-poppins-regular text-xs sm:text-sm text-gray-500">
                             ({startIndex + 1}-{Math.min(endIndex, data.length)} dari {data.length})
                         </span>
                     </div>
@@ -252,18 +252,18 @@ export default function TableContent({
                         <button
                             onClick={handlePrevPage}
                             disabled={currentPage === 1}
-                            className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg font-poppins-medium text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                            className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-lg font-poppins-medium text-xs sm:text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                         >
-                            <ChevronLeft className="h-4 w-4" />
-                            Sebelumnya
+                            <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <span className="hidden sm:inline">Sebelumnya</span>
                         </button>
                         <button
                             onClick={handleNextPage}
                             disabled={currentPage === totalPages}
-                            className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg font-poppins-medium text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                            className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-lg font-poppins-medium text-xs sm:text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                         >
-                            Selanjutnya
-                            <ChevronRight className="h-4 w-4" />
+                            <span className="hidden sm:inline">Selanjutnya</span>
+                            <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
                         </button>
                     </div>
                 </div>

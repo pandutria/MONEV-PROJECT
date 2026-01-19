@@ -170,4 +170,110 @@ declare global {
     value: number;
   }
 
+  // New Tender Interface Props
+  interface NewTenderProps {
+    tahun_anggaran: number;
+    list_tahun_anggaran?: string;
+
+    kd_klpd: string;
+    nama_klpd?: string;
+    jenis_klpd?: string;
+
+    kd_satker: string;
+    kd_satker_str?: string;
+    nama_satker?: string;
+    alamat_satker?: string;
+
+    kd_lpse?: number;
+    nama_lpse?: string;
+
+    kd_tender?: number;
+    kd_pkt_dce?: number;
+    kd_rup?: string;
+    kd_paket?: number;
+    kd_rup_paket?: string;
+
+    nama_paket?: string;
+    lingkup_pekerjaan?: string;
+
+    pagu?: number;
+    hps?: number;
+    nilai_penawaran?: number;
+    nilai_terkoreksi?: number;
+    nilai_negosiasi?: number;
+    nilai_kontrak?: number;
+    nilai_pdn_kontrak?: number;
+    nilai_umk_kontrak?: number;
+
+    sumber_dana?: string;
+    kualifikasi_paket?: string;
+    jenis_pengadaan?: string;
+    mtd_pemilihan?: string;
+    mtd_evaluasi?: string;
+    mtd_kualifikasi?: string;
+    kontrak_pembayaran?: string;
+
+    status_tender?: string;
+    tanggal_status?: string;
+
+    versi_tender?: string;
+    ket_ditutup?: string;
+    ket_diulang?: string;
+
+    tgl_buat_paket?: string;
+    tgl_kolektif_kolegial?: string;
+    tgl_pengumuman_tender?: string;
+
+    max_lls_auditupdate?: string | null;
+
+    nip_ppk?: string;
+    nama_ppk?: string;
+    jabatan_ppk?: string;
+    no_sk_ppk?: string;
+
+    nip_pokja?: string;
+    nama_pokja?: string;
+
+    kd_penyedia?: number;
+    nama_penyedia?: string;
+    npwp_penyedia?: string;
+    npwp_16_penyedia?: string | null;
+    bentuk_usaha_penyedia?: string;
+    tipe_penyedia?: string;
+    anggota_kso?: string;
+    wakil_sah_penyedia?: string;
+    jabatan_wakil_penyedia?: string;
+    nama_rek_bank?: string;
+    no_rek_bank?: string;
+    nama_pemilik_rek_bank?: string;
+
+    no_sppbj?: string;
+    no_kontrak?: string;
+    tgl_kontrak?: string;
+    tgl_kontrak_awal?: string;
+    tgl_kontrak_akhir?: string;
+    kota_kontrak?: string;
+
+    jenis_kontrak?: string;
+    informasi_lainnya?: string;
+    status_kontrak?: string;
+    tgl_penetapan_status_kontrak?: string;
+    alasan_penetapan_status_kontrak?: string;
+    apakah_addendum?: string;
+    versi_addendum?: number;
+    alasan_addendum?: string;
+    alasan_ubah_nilai_kontrak?: string;
+    alasan_nilai_kontrak_10_persen?: string | null;
+
+    kd_tahapan?: number;
+    nama_tahapan?: string;
+    kd_akt?: number;
+    nama_akt?: string;
+    tgl_awal?: string;
+    tgl_akhir?: string;
+
+    lokasi_pekerjaan?: string;
+    url_lpse?: string;
+    event_date?: string | null;
+  }
 }

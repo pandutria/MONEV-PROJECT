@@ -146,7 +146,7 @@ export default function EditProfile() {
 
             <FormUploadFile title="Unggah SK" name="sk_file" value={skFile as any} onChange={handleFileChangeUser} />
 
-            <FormInput title="No. PBJ Sertifikat" name="pbj_number" value={pbjNumber} onChange={handleChangeUser} placeholder="Masukkan No. PBJ Sertifikat" />
+            <FormInput title="No. PBJ Sertifikat" name="pbjNumber" value={pbjNumber} onChange={handleChangeUser} placeholder="Masukkan No. PBJ Sertifikat" />
 
             <FormUploadFile title="Unggah PBJ Sertifikat" name="pbj_file" value={pbjFile as any} onChange={handleFileChangeUser} />
 
