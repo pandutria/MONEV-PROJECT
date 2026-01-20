@@ -16,17 +16,29 @@ import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import SubmitButton from '../../../ui/SubmitButton';
 import TableHeader from '../../../ui/TableHeader';
 import useNewTenderInaprocHooks from '../../../hooks/NewTenderInaprocHooks';
+import NonTenderData from '../../../data/NonTenderData';
+import KatalogV5Data from '../../../data/KatalogV5Data';
+import KatalogV6Data from '../../../data/KatalogV6Data';
 
 export default function PokjaLaporanPenjabatPengadaanAdd() {
+    // Pengadaan Langsung, E-Purchasing V5, E-Purchasing V6
     const [metodePengadaan, setMetodePengadaan] = useState<any>("");
+
     const { newTenderInaprocHooks } = useNewTenderInaprocHooks();
+
     const [tenderDataFilter, setTenderDataFilter] = useState<NewTenderProps[]>([]);
+    const [noTenderDataFilter, setNoTenderDataFilter] = useState<NonTenderDataProps[]>([]);
+    const [KatalogV5DataFilter, setKatalogV5DataFilter] = useState<KatalogV5DataProps[]>([]);
+    const [KatalogV6DataFilter, setKatalogV6DataFilter] = useState<KatalogV6DataProps[]>([]);
+
     const [showTender, setShowTender] = useState<any>('');
     const [selectedTender, setSelectedTender] = useState<NewTenderProps | null>(null);
+
     const { user, loading } = useAuth();
     const { listUser } = useUserHooks();
     const [userPPK, setUserPPK] = useState<UserProps[]>([]);
     const [search, setSearch] = useState("");
+
     const {
         selectedPPK,
         note,
@@ -85,8 +97,9 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
             }
         }
 
-        const filteringDataTender = () => {
-            const filter = newTenderInaprocHooks?.filter((item: NewTenderProps) => {
+        const filteringDataNonTender = () => {
+            const dataTender = metodePengadaan === "Pengadaan Langsung" ? NonTenderData : metodePengadaan === "E-Purchasing V5" ? KatalogV5Data : KatalogV6Data;
+            const filter = dataTender.filter((item: NonTenderDataProps) => {
                 const data = item?.kd_tender?.toString().toLowerCase().includes(search.toLowerCase());
                 return data;
             });
@@ -107,6 +120,39 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         filteringUserPPK();
         filteringDataTender();
     }, [selectedTender, showTender, listUser, search, newTenderInaprocHooks]);
+
+    useEffect(() => {
+        const fetchFilteringDataNoTender = () => {
+            const filter = NonTenderData.filter((item: NonTenderDataProps) => {
+                const data = item?.kd_nontender?.toString().toLowerCase().includes(search.toLowerCase());
+                return data;
+            });
+
+            setNoTenderDataFilter(filter);
+        }
+
+        const fetchFilteringDataKatalogV5 = () => {
+            const filter = KatalogV5Data.filter((item: KatalogV5DataProps) => {
+                const data = item?.kd?.toString().toLowerCase().includes(search.toLowerCase());
+                return data;
+            });
+
+            setKatalogV5DataFilter(filter);
+        }
+
+        const fetchFilteringDataKatalogV6 = () => {
+            const filter = KatalogV6Data.filter((item: KatalogV6DataProps) => {
+                const data = item?.kd_tender?.toString().toLowerCase().includes(search.toLowerCase());
+                return data;
+            });
+
+            setKatalogV6DataFilter(filter);
+        }
+
+        fetchFilteringDataNoTender();
+        fetchFilteringDataKatalogV5();
+        fetchFilteringDataKatalogV6();
+    }, [search, NonTenderData, KatalogV5Data, KatalogV6Data]);
 
     const isEPurchasing = String(metodePengadaan) === 'E-Purchasing V5' || String(metodePengadaan) === 'E-Purchasing V6';
     if (loading || newTenderInaprocHooks.length === 0) {

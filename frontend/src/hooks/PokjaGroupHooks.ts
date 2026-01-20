@@ -90,12 +90,14 @@ export default function usePokjaGroupHooks() {
 
     const handlePokjaGroupDelete = async (ids: number[]) => {
         try {
-            if (!ids) {
+            if (ids.length === 0) {
                 SwalMessage({
                     type: 'error',
                     title: "Gagal!",
                     text: "Harap pilih data yang ingin dihapus!",
                 });
+
+                return;
             }
 
             const result = await SwalMessage({
