@@ -60,7 +60,7 @@ func CreateRabHeader(c *gin.Context) {
 		return
 	}
 
-		if req.RabGroupId != nil {
+	if req.RabGroupId != nil {
 		var exists bool
 		err := config.DB.
 			Model(&models.RabHeader{}).

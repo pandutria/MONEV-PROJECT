@@ -55,28 +55,28 @@ export default function useRABHooks() {
         const fetchRab = async () => {
             try {
                 const response = await API.get("/rab");
-                const data = response.data.data;
+                const data: RABProps[] = response.data.data;
+
                 const latestRabMap = new Map<number, RABProps>();
 
-                data.forEach((item: RABProps) => {
-                    const existing = latestRabMap.get(item.rab_group_id);
+                data.forEach(item => {
+                    if (!item.rab_group_id) return;
 
+                    const existing = latestRabMap.get(item.rab_group_id);
                     if (!existing || item.revision > existing.revision) {
                         latestRabMap.set(item.rab_group_id, item);
                     }
                 });
 
-                const latestRabData = Array.from(latestRabMap.values());
-                const mappingData = latestRabData.map((item: RABProps) => ({
+                const mappingData = Array.from(latestRabMap.values()).map(item => ({
                     ...item,
-                    fiscal_year: item.tahun_anggaran
-                        ? item.tahun_anggaran.toString()
-                        : "",
+                    fiscal_year: item.tahun_anggaran?.toString() || ""
                 }));
 
-                const revisions = Array.from(
-                    new Set(data.map((item: RABProps) => item.revision))
-                ).map((rev) => ({ revisi: rev }));
+                const revisions = data.map(item => ({
+                    rab_id: item.id,
+                    revisi: item.revision
+                })).sort((a: any, b: any) => a - b)
 
                 const tahunOpts = buildTahunOptions(data);
                 const satkerOpts = buildSatkerOptions(data);
@@ -84,20 +84,16 @@ export default function useRABHooks() {
                 setRabData(SortDescById(mappingData));
                 setTahunData(tahunOpts);
                 setSatkerData(satkerOpts);
-                setRevisionCount(revisions)
+                setRevisionCount(revisions);
             } catch (error) {
                 console.error(error);
             }
-        }
+        };
 
         const fetchRabById = async () => {
             try {
                 if (!selectedId) return;
                 const response = await API.get(`/rab/${selectedId}`);
-                const data = response?.data?.data;
-
-                // const filteredDataByRevision = data?.filter((item))
-
                 setRabDataById(response?.data?.data);
             } catch (error) {
                 console.error(error);
@@ -242,7 +238,6 @@ export default function useRABHooks() {
                     type: "error"
                 })
             }
-            console.error(error);
         }
     }
 
@@ -252,6 +247,67 @@ export default function useRABHooks() {
         if (name == "activity") return setActivity(value);
         if (name == "start") return setStartDate(value);
         if (name == "end") return setEndDate(value);
+    }
+
+    const handleDeleteRab = async (ids: number[]) => {
+        try {
+            if (ids.length === 0) {
+                SwalMessage({
+                    type: "error",
+                    title: "Gagal!",
+                    text: "Harap pilih minimal 1 data untuk dihapus!"
+                });
+
+                return;
+            }
+
+            const rabDetailAll = await API.get(`/rab/detail`);
+            const rabDetailAllData = rabDetailAll?.data?.data;
+
+            const result = await SwalMessage({
+                type: "warning",
+                title: "Konfirmasi!",
+                text: `Apakah anda yakin ingin menghapus data RAB ini?`,
+            });
+            
+            if (result.isConfirmed) {
+                let response;
+                SwalLoading();
+
+                for (let index = 0; index < ids.length; index++) {
+                    const id = ids[index];
+
+                     for (let index = 0; index < rabDetailAllData.length; index++) {
+                        const rabDetail = rabDetailAllData[index];
+
+                        if (rabDetail.rab_header_id === id) {
+                            await API.delete(`/rab/detail/delete/${rabDetail.id}`);
+                        }
+                     }
+
+                    response = await API.delete(`/rab/delete/${id}`);
+                }
+
+                const message = response?.data.message;
+                SwalMessage({
+                    type: "success",
+                    title: "Berhasil!",
+                    text: message
+                });
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
+        } catch (error) {
+            if (error) {
+                SwalMessage({
+                    type: "error",
+                    title: "Gagal!",
+                    text: "Terjadi Kesalahan!"
+                })
+            }
+        }
     }
 
     return {
@@ -267,6 +323,7 @@ export default function useRABHooks() {
         setSelectedId,
         rabDataByid,
         handleRABPut,
-        revisionCount
+        revisionCount,
+        handleDeleteRab
     }
 }

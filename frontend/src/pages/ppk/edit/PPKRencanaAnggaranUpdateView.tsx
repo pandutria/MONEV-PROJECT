@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {  X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Navbar from '../../../components/Navbar';
 import TableContent from '../../../ui/TableContent';
@@ -30,7 +30,7 @@ export default function PPKRencanaAnggaranUpdateView() {
     activity,
     startDate,
     endDate,
-    revisionCount
+    revisionCount,
   } = useRABHooks();
   const { user, loading } = useAuth();
   const { newTenderInaprocHooks } = useNewTenderInaprocHooks();
@@ -62,20 +62,29 @@ export default function PPKRencanaAnggaranUpdateView() {
       setTenderDataFilter(filter);
     }
 
+    filteringDataTender();
+    renderShowtender();
+  }, [showTender, selectedTender, search, newTenderInaprocHooks, location, isDisabled, rabDataByid]);
+
+  useEffect(() => {
     const fetchIsPreview = () => {
       if (location.pathname.startsWith("/ppk/rencana-anggaran/lihat")) {
         setIsDisabled(true);
       }
+
+      if (selectedRevision) {
+        setSelectedId(selectedRevision);
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        })
+      } else {
+        setSelectedId(id);
+      }
     }
 
-    if (id) { 
-      setSelectedId(id)
-    }
-
-    filteringDataTender();
     fetchIsPreview();
-    renderShowtender();
-  }, [showTender, selectedTender, search, newTenderInaprocHooks, location, isDisabled, setSelectedId, id, rabDataByid]);
+  }, [id, location, selectedRevision, setSelectedId]);
 
   const columns = [
     {
@@ -238,13 +247,15 @@ export default function PPKRencanaAnggaranUpdateView() {
                 value={rabDataByid?.revision_text as any}
                 disabled={true}
                 type='textarea'
-              />  
+              />
 
-              <FormSelect value={selectedRevision} onChange={(e) => setSelectedRevision(e.target.value)} title={`Revisi ke - ${selectedRevision ? selectedRevision : revisionCount[revisionCount.length - 1].revisi}`}>
-                {revisionCount.map((item, index) => (
-                  <option key={index} value={item.revisi}>{item.revisi}</option>
-                ))}
-              </FormSelect>
+              {isDisabled && (
+                <FormSelect value={selectedRevision} onChange={(e) => setSelectedRevision(e.target.value)} title={`Revisi ke - ${selectedRevision ? selectedRevision : revisionCount[revisionCount.length - 1].revisi}`}>
+                  {revisionCount.map((item, index) => (
+                    <option key={index} value={item.rab_id}>{item.revisi}</option>
+                  ))}
+                </FormSelect>
+              )}
             </div>
 
             {!isDisabled && (
@@ -271,7 +282,7 @@ export default function PPKRencanaAnggaranUpdateView() {
                     </th>
                     <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
                       Total
-                    </th>                   
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -304,7 +315,7 @@ export default function PPKRencanaAnggaranUpdateView() {
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
                           {FormatRupiah(item.total)}
-                        </td>                        
+                        </td>
                       </tr>
                     ))
                   )}

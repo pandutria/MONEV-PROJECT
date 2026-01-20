@@ -18,11 +18,13 @@ export default function PPKRencanaAnggaran() {
     const [selectRevisi, setSelectRevisi] = useState<RABProps | null>(null);
     const [showRevisi, setShowRevisi] = useState(false);
     const [selectPreview, setSelectPreview] = useState<any>(null);
+    const [selectedRemove, setSelectedRemove] = useState<number[]>([]);
     const { user, loading } = useAuth();
     const { 
         rabData,
         tahunData,
-        satkerData
+        satkerData,
+        handleDeleteRab
     } = useRABHooks();
     const [rabDataFilter, setRabDataFilter] = useState<RABProps[]>([]);
     const [reason, setReason] = useState("");
@@ -162,18 +164,20 @@ export default function PPKRencanaAnggaran() {
                     onTahunChange={setTahun}
                     selectedSatuanKerja={satuanKerja}
                     onSatuanKerjaChange={setSatuanKerja}
-                    showHapus={false}
+                    showHapus={true}
                     onTambahClick={() => navigate("/ppk/rencana-anggaran/tambah")}
+                    onHapusClick={() => handleDeleteRab(selectedRemove)}
                 />
                 <div className="p-6">
                     <TableContent
                         columns={columns}
                         data={rabDataFilter}
-                        isSelect={false}
+                        isSelect={true}
                         showEdit={true}
-                        showPreview={true}                    
+                        showPreview={true}
                         onEdit={(item) => setSelectRevisi(item)}
                         onPreview={(item) => setSelectPreview(item)} 
+                        onSelectedIdsChange={(item) => setSelectedRemove(item)}
                     />
                 </div>
             </div>
