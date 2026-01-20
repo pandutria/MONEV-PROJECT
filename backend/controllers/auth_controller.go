@@ -64,7 +64,6 @@ func Login(c *gin.Context) {
 		"data": gin.H{
 			"id":    user.Id,
 			"email": user.Email,
-			"role": user.Role.Name,
 		},
 	})
 }
