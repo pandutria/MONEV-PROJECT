@@ -36,7 +36,7 @@ export default function PokjaLaporanPenjabatPengadaan() {
             label: 'Nama Paket'
         },
         {
-            key: 'contract_initial',
+            key: 'contract_date',
             label: 'Tanggal Masuk/Perubahan'
         },
     ];

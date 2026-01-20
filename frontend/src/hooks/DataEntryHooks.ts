@@ -6,6 +6,7 @@ import API from "../server/API";
 import { useNavigate } from "react-router-dom";
 import { SortDescById } from "../utils/SortDescById";
 import { FormatDate } from "../utils/FormatDate";
+import FormatRupiah from "../utils/FormatRupiah";
 
 export default function useDataEntryHooks() {
     const [dataEntryPengadaan, setDataEntryPengadaan] = useState<DataEntryProps[]>([]);
@@ -16,14 +17,106 @@ export default function useDataEntryHooks() {
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
     const [selectedId, setSelectedId] = useState<any>(null);
+    const [sumberDanaOptions, setSumberDanaOptions] = useState<any[]>([]);
+    const [metodePengadaanOptions, setMetodePengadaanOptions] = useState<any[]>([]);
+    const [tahunOptions, setTahunOptions] = useState<any[]>([]);
+
+    const buildSumberDanaOptions = (data: any[]) => {
+        const uniqueMap = new Map<string, string>();
+
+        data.forEach(item => {
+            if (typeof item.funding_source === "string") {
+                uniqueMap.set(item.funding_source, item.funding_source);
+            }
+
+            if (typeof item.funding_source === "object" && item.funding_source) {
+                uniqueMap.set(
+                    String(item.funding_source.id),
+                    item.funding_source.name
+                );
+            }
+        });
+
+        return Array.from(uniqueMap.entries()).map(([key, value]) => ({
+            id: String(key),
+            text: value
+        }));
+    };
+
+    const buildMetodePengadaanOptions = (data: any[]) => {
+        const uniqueMap = new Map<string, string>();
+
+        data.forEach(item => {
+            if (typeof item.procurement_method === "string") {
+                uniqueMap.set(item.procurement_method, item.procurement_method);
+            }
+
+            if (
+                typeof item.procurement_method === "object" &&
+                item.procurement_method
+            ) {
+                uniqueMap.set(
+                    String(item.procurement_method.id),
+                    item.procurement_method.name
+                );
+            }
+        });
+
+        return Array.from(uniqueMap.entries()).map(([key, value]) => ({
+            id: key,
+            text: value
+        }));
+    };
+
+    const buildtahunOptions = (data: any[]) => {
+        const uniqueMap = new Map<string, string>();
+
+        data.forEach(item => {
+            if (typeof item.fiscal_year === "string") {
+                uniqueMap.set(item.fiscal_year, item.fiscal_year);
+            }
+
+            if (
+                typeof item.fiscal_year === "object" &&
+                item.fiscal_year
+            ) {
+                uniqueMap.set(
+                    String(item.fiscal_year.id),
+                    item.fiscal_year.name
+                );
+            }
+        });
+
+        return Array.from(uniqueMap.entries()).map(([key, value]) => ({
+            id: key,
+            text: value
+        }));
+    };
 
     useEffect(() => {
         const fetchDataEntryPengadaan = async () => {
             try {
                 const response = await API.get("/dataentry");
-                const mappingData = response.data.data.map((item: any) => ({
+                const data = response.data.data;
+
+                const sumberDanaOpts = buildSumberDanaOptions(data);
+                setSumberDanaOptions(sumberDanaOpts);
+
+                const metodeOpts = buildMetodePengadaanOptions(data);
+                setMetodePengadaanOptions(metodeOpts);
+
+                const tahunOpts = buildtahunOptions(data);
+                setTahunOptions(tahunOpts);
+
+                const mappingData = data.map((item: any) => ({
                     ...item,
-                    contract_initial: FormatDate(item.contract_initial),
+                    opd: "Tidak Ada",
+                    bid_value: FormatRupiah(Number(item.bid_value)),
+                    negotiation_value: FormatRupiah(Number(item.negotiation_value)),
+                    package_name: item.package_name ?? "Tidak Ada",
+                    contract_date: FormatDate(item.contract_date),
+                    efisience: FormatRupiah(Number(item.budget_value) - Number(item.contract_initial)),
+                    presentation: Number(item.budget_value) > 0 ? (((Number(item.budget_value) - Number(item.contract_initial)) / Number(item.budget_value)) * 100).toFixed(2) + "%" : "0%"
                 }));
 
                 setDataEntryPengadaan(SortDescById(mappingData));
@@ -63,7 +156,7 @@ export default function useDataEntryHooks() {
             if (type == "Pengadaan Langsung" || type == "E-Purchasing V5" || type == "E-Purchasing V6") {
                 if (type == "Pengadaan Langsung") {
                     formData.append("procurement_type", String(data.jenis_pengadaan));
-                    formData.append("selected_ppk_id", selectedPPK);
+                    formData.append("selected_ppk_id", selectedPPK ? selectedPPK : (0).toString());
                 } else {
                     formData.append("package_status", null as any);
                     formData.append("delivery_status", null as any);
@@ -79,8 +172,9 @@ export default function useDataEntryHooks() {
             formData.append("rup_code", data.kd_rup as any);
             formData.append("fiscal_year", String(data.tahun_anggaran));
             formData.append("satker_name", data.nama_satker as any);
-            formData.append("contract_initial", String(data?.tgl_buat_paket) as any);
+            formData.append("contract_date", String(data?.tgl_buat_paket) as any);
             formData.append("funding_source", data.sumber_dana as any);
+            formData.append("bid_value", data.nilai_penawaran as any);
 
             formData.append("budget_value", data.pagu ? String(data.pagu) : null as any);
             formData.append("hps_value", data.hps ? String(data.hps) : null as any);
@@ -95,6 +189,7 @@ export default function useDataEntryHooks() {
             formData.append("negotiation_value", data.nilai_negosiasi ? data.nilai_negosiasi.toString() : null as any);
             formData.append("phone", null as any);
             formData.append("email", null as any);
+            formData.append("contract_initial", data.nilai_kontrak ? data.nilai_kontrak.toString() : null as any);
             formData.append("npwp", data.npwp_penyedia ? data.npwp_penyedia : null as any);
             formData.append("winner_address", null as any);
             formData.append("work_location", data.lokasi_pekerjaan ? data.lokasi_pekerjaan : null as any);
@@ -151,10 +246,12 @@ export default function useDataEntryHooks() {
 
             const formData = new FormData();
             formData.append("_method", "PUT");
-            formData.append("selected_ppk_id", selectedPPK);
             formData.append("procurement_method", type);
             if (note) {
                 formData.append("note", note);
+            }
+            if (selectedPPK) {
+                formData.append("selected_ppk_id", String(selectedPPK));
             }
             if (evidenceFile) {
                 formData.append("evidence_file", evidenceFile);
@@ -268,5 +365,8 @@ export default function useDataEntryHooks() {
         dataEntryPengadaanById,
         handleEntryPenjabatPengadaanPut,
         handleDataEntryPengadaanDelete,
+        sumberDanaOptions,
+        metodePengadaanOptions,
+        tahunOptions
     }
 }

@@ -2,7 +2,6 @@
 import {  X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Navbar from '../../../components/Navbar';
-import { FormatCurrency } from '../../../utils/FormatCurrency';
 import TableContent from '../../../ui/TableContent';
 import BackButton from '../../../ui/BackButton';
 import ShowTableForm from '../../../ui/ShowTableForm';
@@ -14,6 +13,7 @@ import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import TableHeader from '../../../ui/TableHeader';
+import FormatRupiah from '../../../utils/FormatRupiah';
 
 export default function PPKRencanaAnggaranUpdateView() {
   const [showTender, setShowTender] = useState(false);
@@ -295,10 +295,10 @@ export default function PPKRencanaAnggaranUpdateView() {
                           {item.volume}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {FormatCurrency(item.unit_price)}
+                          {FormatRupiah(item.unit_price)}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {FormatCurrency(item.total)}
+                          {FormatRupiah(item.total)}
                         </td>                        
                       </tr>
                     ))

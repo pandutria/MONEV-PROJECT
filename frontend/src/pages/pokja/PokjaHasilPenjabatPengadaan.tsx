@@ -15,27 +15,9 @@ export default function PokjaHasilPenjabatPengadaan() {
     const [metodePengadaan, setMetodePengadaan] = useState('');
     const [sumberDana, setSumberDana] = useState('');
     const tableRef = useRef<HTMLDivElement>(null);
-    const { dataEntryPengadaan } = useDataEntryHooks();
+    const { dataEntryPengadaan, sumberDanaOptions, metodePengadaanOptions, tahunOptions } = useDataEntryHooks();
     const [dataEntryFilter, setDataEntryFilter] = useState<DataEntryProps[]>([]);
     const { user, loading } = useAuth();
-
-    const tahunOptions = [
-        { id: '1', text: '2023' },
-        { id: '2', text: '2024' },
-        { id: '3', text: '2025' }
-    ];
-
-    const metodePengadaanOptions = [
-        { id: '1', text: 'Pengadaan Langsung' },
-        { id: '2', text: 'E-Purchasing V5' },
-        { id: '3', text: 'E-Purchasing V6' }
-    ];
-
-    const sumberDanaOptions = [
-        { id: '1', text: 'APBN' },
-        { id: '2', text: 'APBD' },
-        { id: '3', text: 'Hibah' }
-    ];
 
     const columns = [
         {
@@ -47,7 +29,7 @@ export default function PokjaHasilPenjabatPengadaan() {
             label: 'OPD'
         },
         {
-            key: 'nama_paket',
+            key: 'package_name',
             label: 'Nama Paket'
         },
         {
@@ -75,7 +57,7 @@ export default function PokjaHasilPenjabatPengadaan() {
             label: 'Nilai Negosiasi'
         },
         {
-            key: 'order_date',
+            key: 'contract_date',
             label: 'No & Tanggal'
         },
         {
@@ -90,7 +72,7 @@ export default function PokjaHasilPenjabatPengadaan() {
 
     useEffect(() => {
         const filteringDataEntry = () => {
-            const dataFilter = dataEntryPengadaan?.filter((item: TenderProps) => {
+            const dataFilter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
                 const filterType = item?.type?.includes("penjabat");
                 const tahunFilter = tahun
                     ? item?.fiscal_year?.toString().includes(tahun)
@@ -276,7 +258,6 @@ export default function PokjaHasilPenjabatPengadaan() {
                     onTahunChange={setTahun}
                     onMetodePengadaanChange={setMetodePengadaan}
                     onSumberDanaChange={setSumberDana}
-                    onBuatReport={() => console.log('Buat Report')}
                     onPrint={() => handlePrint()}
                     onSavePDF={() => handleSavePDF()}
                     onSaveExcel={() => handleSaveExcel()}
@@ -288,7 +269,7 @@ export default function PokjaHasilPenjabatPengadaan() {
                         isSelect={false}
                         showEdit={false}
                         showPreview={false}
-                        idKey="no"
+                        idKey="id"
                     />
                 </div>
             </div>

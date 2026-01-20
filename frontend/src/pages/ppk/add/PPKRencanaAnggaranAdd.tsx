@@ -2,7 +2,6 @@
 import { Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Navbar from '../../../components/Navbar';
-import { FormatCurrency } from '../../../utils/FormatCurrency';
 import * as XLSX from 'xlsx';
 import { SwalMessage } from '../../../utils/SwalMessage';
 import TableContent from '../../../ui/TableContent';
@@ -17,6 +16,7 @@ import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate } from 'react-router-dom';
 import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import TableHeader from '../../../ui/TableHeader';
+import FormatRupiah from '../../../utils/FormatRupiah';
 
 const parseRABExcel = (
   worksheet: XLSX.WorkSheet,
@@ -375,10 +375,10 @@ export default function PPKRencanaAnggaranAdd() {
                           </span>
                         </td>
                         <td className="px-6 py-4 font-poppins-semibold text-sm text-gray-800 text-center">
-                          {FormatCurrency(item.unit_price)}
+                          {FormatRupiah(item.unit_price)}
                         </td>
                         <td className="px-6 py-4 font-poppins-bold text-sm text-primary text-center bg-primary/3 hover:bg-primary/5 transition-all duration-200">
-                          {FormatCurrency(item.total)}
+                          {FormatRupiah(item.total)}
                         </td>
                         <td className="px-6 py-4 text-center">
                           <div className="flex items-center justify-center gap-2">
@@ -416,7 +416,7 @@ export default function PPKRencanaAnggaranAdd() {
                 <div className="bg-white px-6 py-3 rounded-lg border-2 border-primary/20 shadow-sm">
                   <p className="font-poppins-regular text-gray-600 text-sm mb-1">Total RAB</p>
                   <p className="font-poppins-bold text-primary text-xl">
-                    {FormatCurrency(dataFile.reduce((sum, item) => sum + Number(item.total), 0))}
+                    {FormatRupiah(dataFile.reduce((sum, item) => sum + Number(item.total), 0))}
                   </p>
                 </div>
               </div>

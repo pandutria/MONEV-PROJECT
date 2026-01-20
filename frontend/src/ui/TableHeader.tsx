@@ -37,19 +37,21 @@ export default function TableHeader({
     type = "ppk"
 }: TableHeaderProps) {
     return (
-        <div className={`w-full bg-white flex flex-col lg:flex-row lg:justify-between lg:items-end lg:gap-0 gap-4 sm:gap-6 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 ${className}`}>
-            <div className="flex flex-col gap-3 sm:gap-6 w-full">
-                <h1 className="font-poppins-bold text-xl sm:text-2xl text-gray-800">
+        <div className={`w-full bg-white flex flex-col rounded-lg p-3 sm:p-4 md:p-5 lg:p-6 mb-3 sm:mb-4 md:mb-5 lg:mb-6 shadow-sm ${className}`}>
+            <div className="mb-3 sm:mb-4 md:mb-5">
+                <h1 className="font-poppins-bold text-lg sm:text-xl md:text-2xl text-gray-800">
                     {title}
                 </h1>
+            </div>
 
-                <div className="flex flex-col gap-3 w-full">
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-3 sm:gap-4">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-2.5 md:gap-3 w-full lg:flex-1">
                     {type === 'ppk' && (
-                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
+                        <>
                             <select
                                 value={selectedTahun}
                                 onChange={(e) => onTahunChange?.(e.target.value)}
-                                className="text-xs sm:text-[12px] px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular flex-1"
+                                className="text-xs sm:text-sm px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular hover:border-gray-400 w-full sm:w-auto sm:min-w-37.5"
                             >
                                 <option value="">Pilih Tahun</option>
                                 {tahunOptions.map((item, index) => (
@@ -58,10 +60,11 @@ export default function TableHeader({
                                     </option>
                                 ))}
                             </select>
+
                             <select
                                 value={selectedSatuanKerja}
                                 onChange={(e) => onSatuanKerjaChange?.(e.target.value)}
-                                className="text-xs sm:text-[12px] px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular flex-1"
+                                className="text-xs sm:text-sm px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular hover:border-gray-400 w-full sm:w-auto sm:min-w-50"
                             >
                                 <option value="">Pilih Satuan Kerja</option>
                                 {satuanKerjaOptions.map((item, index) => (
@@ -70,39 +73,41 @@ export default function TableHeader({
                                     </option>
                                 ))}
                             </select>
-                        </div>
+                        </>
                     )}
-                    <div className="relative lg:w-100 w-full">
+
+                    <div className="relative w-full sm:flex-1">
                         <input
                             type="text"
                             value={searchValue}
                             onChange={(e) => onSearchChange?.(e.target.value)}
                             placeholder="Cari..."
-                            className="text-xs sm:text-[12px] pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-white text-gray-700 w-full font-poppins-regular"
+                            className="text-xs sm:text-sm pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-white text-gray-700 w-full font-poppins-regular hover:border-gray-400"
                         />
                         <Search className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                     </div>
                 </div>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-stretch sm:items-center justify-center w-full sm:w-auto">
-                {showTambah && (
-                    <button
-                        onClick={onTambahClick}
-                        className="flex items-center justify-center text-xs sm:text-[12px] gap-2 bg-primary border-2 border-primary hover:bg-transparent text-white hover:text-primary font-poppins-medium px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg transition-colors duration-200 cursor-pointer shadow-sm hover:shadow-md"
-                    >
-                        <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
-                        <span>Tambah</span>
-                    </button>
-                )}
-                {showHapus && (
-                    <button
-                        onClick={onHapusClick}
-                        className="flex items-center w-40 justify-center text-xs sm:text-[12px] gap-2 bg-primary border-2 border-primary hover:bg-transparent text-white hover:text-primary font-poppins-medium px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg transition-colors duration-200 cursor-pointer shadow-sm hover:shadow-md"
-                    >
-                        <Trash className="h-4 w-4 sm:h-5 sm:w-5" />
-                        <span>Hapus Terpilih</span>
-                    </button>
-                )}
+
+                <div className="flex flex-col xs:flex-row gap-2 sm:gap-2.5 md:gap-3 w-full lg:w-auto lg:min-w-fit">
+                    {showTambah && (
+                        <button
+                            onClick={onTambahClick}
+                            className="flex items-center justify-center text-xs sm:text-sm gap-2 bg-primary border-2 border-primary hover:bg-transparent text-white hover:text-primary font-poppins-medium px-4 py-2 sm:py-2.5 rounded-lg transition-colors duration-200 cursor-pointer shadow-sm hover:shadow-md whitespace-nowrap"
+                        >
+                            <Plus className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+                            <span>Tambah</span>
+                        </button>
+                    )}
+                    {showHapus && (
+                        <button
+                            onClick={onHapusClick}
+                            className="flex items-center justify-center text-xs sm:text-sm gap-2 bg-red-600 border-2 border-red-600 hover:bg-transparent text-white hover:text-red-600 font-poppins-medium px-4 py-2 sm:py-2.5 rounded-lg transition-colors duration-200 cursor-pointer shadow-sm hover:shadow-md whitespace-nowrap"
+                        >
+                            <Trash className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+                            <span>Hapus Terpilih</span>
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );

@@ -1,49 +1,49 @@
 package dtos
 
-import "time"
-
 type CreateAndUpdateDataEntryRequest struct {
-	Type              *string `form:"type"`
-	ProcurementMethod *string `form:"procurement_method"`
-	TenderCode        *string `form:"tender_code"`
-	RupCode           *string `form:"rup_code"`
-	FiscalYear        *int    `form:"fiscal_year"`
-	SatkerCode        *string `form:"satker_code"`
-	SatkerName        *string `form:"satker_name"`
-	PackageName       *string `form:"package_name"`
-	FundingSource     *string `form:"funding_source"`
-	ProcurementType   *string `form:"procurement_type"`
+	Type              *string `json:"type" form:"type"`
+	ProcurementMethod *string `json:"procurement_method" form:"procurement_method"`
+	TenderCode        *string `json:"kd_temd" form:"tender_code"`
+	RupCode           *string `json:"rup_code" form:"rup_code"`
+	FiscalYear        *string `json:"fiscal_year" form:"fiscal_year"`
+	SatkerCode        *string `json:"satker_code" form:"satker_code"`
+	SatkerName        *string `json:"satker_name" form:"satker_name"`
+	PackageName       *string `json:"package_name" form:"package_name"`
+	FundingSource     *string `json:"funding_source" form:"funding_source"`
+	ProcurementType   *string `json:"procurement_type" form:"procurement_type"`
 
-	BudgetValue *int `form:"budget_value"`
-	HpsValue    *int `form:"hps_value"`
-	ShippingFee *int `form:"shipping_fee"`
+	BudgetValue *string `json:"budget_value" form:"budget_value"`
+	HpsValue    *string `json:"hps_value" form:"hps_value"`
+	ShippingFee *string `json:"shipping_fee" form:"shipping_fee"`
 
-	ContractNumber  *string    `form:"contract_number"`
-	ContractDate    *time.Time `form:"contract_date"`
-	ContractInitial *string    `form:"contract_initial"`
-	ContractFinal   *string    `form:"contract_final"`
-	PpkName         *string    `form:"ppk_name"`
-	PpkPosition     *string    `form:"ppk_position"`
-	CompanyLeader   *string    `form:"company_leader"`
-	LeaderPosition  *string    `form:"leader_position"`
+	ContractNumber  *string `json:"contract_number" form:"contract_number"`
+	ContractDate    *string `json:"contract_date" form:"contract_date"`
+	ContractInitial *string `json:"contract_initial" form:"contract_initial"`
+	ContractFinal   *string `json:"contract_final" form:"contract_final"`
 
-	WinnerName       *string  `form:"winner_name"`
-	BidValue         *float64 `form:"bid_value"`
-	NegotiationValue *float64 `form:"negotiation_value"`
-	Phone            *string  `form:"phone"`
-	Email            *string  `form:"email"`
-	Npwp             *string  `form:"npwp"`
+	PpkName     *string `json:"ppk_name" form:"ppk_name"`
+	PpkPosition *string `json:"ppk_position" form:"ppk_position"`
 
-	WinnerAddress *string `form:"winner_address"`
-	WorkLocation  *string `form:"work_location"`
+	CompanyLeader  *string `json:"company_leader" form:"company_leader"`
+	LeaderPosition *string `json:"leader_position" form:"leader_position"`
 
-	RealizationStatus *string  `form:"realization_status"`
-	PackageStatus     *string  `form:"package_status"`
-	DeliveryStatus    *string  `form:"delivery_status"`
-	TotalValue        *float64 `form:"total_value"`
+	WinnerName       *string `json:"winner_name" form:"winner_name"`
+	BidValue         *string `json:"bid_value" form:"bid_value"`
+	NegotiationValue *string `json:"negotiation_value" form:"negotiation_value"`
 
-	Note         *string `form:"note"`
-	EvidenceFile *string `form:"evidence_file"`
+	Phone *string `json:"phone" form:"phone"`
+	Email *string `json:"email" form:"email"`
+	Npwp  *string `json:"npwp" form:"npwp"`
 
-	SelectedPpkId *uint `form:"selected_ppk_id"`
+	WinnerAddress *string `json:"winner_address" form:"winner_address"`
+	WorkLocation  *string `json:"work_location" form:"work_location"`
+
+	RealizationStatus *string `json:"realization_status" form:"realization_status"`
+	PackageStatus     *string `json:"package_status" form:"package_status"`
+	DeliveryStatus    *string `json:"delivery_status" form:"delivery_status"`
+	TotalValue        *string `json:"total_value" form:"total_value"`
+
+	Note         *string `json:"note" form:"note"`
+
+	SelectedPpkId *uint `json:"selected_ppk_id" form:"selected_ppk_id"`
 }

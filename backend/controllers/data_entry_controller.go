@@ -1,9 +1,14 @@
 package controllers
 
 import (
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/google/uuid"
 	"github.com/optimus/backend/config"
 	"github.com/optimus/backend/dtos"
 	"github.com/optimus/backend/models"
@@ -21,15 +26,25 @@ func GetAllDataEntry(c *gin.Context) {
 }
 
 func GetDataEntryById(c *gin.Context) {
+	idParam := c.Param("id")
+
 	var data models.DataEntry
-	id := c.Param("id")
-	config.DB.First(&data, id)
+	result := config.DB.
+		Preload("User").
+		Preload("SelectedPpk").
+		First(&data, idParam)
+
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Data tidak ditemukan",
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data":    data,
 	})
-	return
 }
 
 func CreateDataEntry(c *gin.Context) {
@@ -46,13 +61,34 @@ func CreateDataEntry(c *gin.Context) {
 	var user models.User
 	config.DB.First(&user, userId)
 
-	err := c.ShouldBindBodyWithJSON(&req)
+	err := c.ShouldBindWith(&req, binding.FormMultipart)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
+
+	EvidenceFile, _ := c.FormFile("evidence_file")
+
+	uploadDir := "uploads/entry"
+	_ = os.MkdirAll(uploadDir, os.ModePerm)
+
+	saveUpload := func(file *multipart.FileHeader) *string {
+		if file == nil {
+			return nil
+		}
+
+		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
+		path := filepath.Join(uploadDir, filename)
+
+		if err := c.SaveUploadedFile(file, path); err != nil {
+			return nil
+		}
+		return &path
+	}
+
+	EvidencePath := saveUpload(EvidenceFile)
 
 	data := models.DataEntry{
 		Type:              req.Type,
@@ -93,9 +129,9 @@ func CreateDataEntry(c *gin.Context) {
 		PackageStatus:     req.PackageStatus,
 		DeliveryStatus:    req.DeliveryStatus,
 		TotalValue:        req.TotalValue,
+		EvidenceFile:      EvidencePath,
 
-		Note:         req.Note,
-		EvidenceFile: req.EvidenceFile,
+		Note: req.Note,
 
 		SelectedPpkId: req.SelectedPpkId,
 		UserId:        user.Id,
@@ -105,6 +141,7 @@ func CreateDataEntry(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Membuat data gagal!",
+			"error":   err.Error(),
 		})
 		return
 	}
@@ -119,7 +156,7 @@ func UpdateDataEntry(c *gin.Context) {
 	var req dtos.CreateAndUpdateDataEntryRequest
 	id := c.Param("id")
 
-	err := c.ShouldBindBodyWithJSON(&req)
+	err := c.ShouldBind(&req)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": err.Error(),
@@ -127,62 +164,52 @@ func UpdateDataEntry(c *gin.Context) {
 		return
 	}
 
+		EvidenceFile, _ := c.FormFile("evidence_file")
+
+	uploadDir := "uploads/entry"
+	_ = os.MkdirAll(uploadDir, os.ModePerm)
+
+	saveUpload := func(file *multipart.FileHeader) *string {
+		if file == nil {
+			return nil
+		}
+
+		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
+		path := filepath.Join(uploadDir, filename)
+
+		if err := c.SaveUploadedFile(file, path); err != nil {
+			return nil
+		}
+		return &path
+	}
+
+	EvidencePath := saveUpload(EvidenceFile)
+
 	var data models.DataEntry
 	config.DB.First(&data, id)
 
-	data.Type = req.Type
-	data.ProcurementMethod = req.ProcurementMethod
-	data.TenderCode = req.TenderCode
-	data.RupCode = req.RupCode
-	data.FiscalYear = req.FiscalYear
-	data.SatkerCode = req.SatkerCode
-	data.SatkerName = req.SatkerName
-	data.PackageName = req.PackageName
-	data.FundingSource = req.FundingSource
-	data.ProcurementType = req.ProcurementType
+	if req.Note != nil {
+		data.Note = req.Note
+	}
 
-	data.BudgetValue = req.BudgetValue
-	data.HpsValue = req.HpsValue
-	data.ShippingFee = req.ShippingFee
+	if req.SelectedPpkId != nil {
+		data.SelectedPpkId = req.SelectedPpkId
+	}
 
-	data.ContractNumber = req.ContractNumber
-	data.ContractDate = req.ContractDate
-	data.ContractInitial = req.ContractInitial
-	data.ContractFinal = req.ContractFinal
-	data.PpkName = req.PpkName
-	data.PpkPosition = req.PpkPosition
-	data.CompanyLeader = req.CompanyLeader
-	data.LeaderPosition = req.LeaderPosition
-
-	data.WinnerName = req.WinnerName
-	data.BidValue = req.BidValue
-	data.NegotiationValue = req.NegotiationValue
-	data.Phone = req.Phone
-	data.Email = req.Email
-	data.Npwp = req.Npwp
-	data.WinnerAddress = req.WinnerAddress
-	data.WorkLocation = req.WorkLocation
-
-	data.RealizationStatus = req.RealizationStatus
-	data.PackageStatus = req.PackageStatus
-	data.DeliveryStatus = req.DeliveryStatus
-	data.TotalValue = req.TotalValue
-
-	data.Note = req.Note
-	data.EvidenceFile = req.EvidenceFile
-
-	data.SelectedPpkId = req.SelectedPpkId
+	if EvidencePath != nil {
+		data.EvidenceFile = EvidencePath
+	}
 
 	err = config.DB.Save(&data).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Membuat data gagal!",
+			"message": "mengubah data gagal!",
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Membuat data berhasil",
+		"message": "mengubah data berhasil",
 		"data":    data,
 	})
 }
