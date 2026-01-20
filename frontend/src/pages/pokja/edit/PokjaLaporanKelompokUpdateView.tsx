@@ -65,11 +65,11 @@ export default function PokjaLaporanKelompokUpdateView() {
                 setSelectedId(id);
             }
 
-            if (location.pathname.startsWith("/pokja/data-entry-penjabat-pengadaan/lihat/")) {
+            if (location.pathname.startsWith("/pokja/data-entry-kelompok-kerja/lihat/")) {
                 setIsDisabled(true);
             }
         }
-
+        
         fetchtenderId();
     }, [selectedTender, listUser, newTenderInaprocHooks, id, setSelectedId, location]);
 

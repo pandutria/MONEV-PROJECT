@@ -14,9 +14,9 @@ import useRABHooks from '../../../hooks/RABHooks';
 import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate } from 'react-router-dom';
-import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import TableHeader from '../../../ui/TableHeader';
 import FormatRupiah from '../../../utils/FormatRupiah';
+import useNewTenderInaprocHooks from '../../../hooks/NewTenderInaprocHooks';
 
 const parseRABExcel = (
   worksheet: XLSX.WorkSheet,
@@ -58,8 +58,9 @@ export default function PPKRencanaAnggaranAdd() {
   const [showDetail, setShowDetail] = useState(false);
   const [showTender, setShowTender] = useState(false);
   const [search, setSearch] = useState("");
-  const [tenderDataFilter, setTenderDataFilter] = useState<TenderProps[]>([]);
-  const [selectedTender, setSelectedTender] = useState<TenderProps | any>(null);
+  const [tenderDataFilter, setTenderDataFilter] = useState<NewTenderProps[]>([]);
+  const [selectedTender, setSelectedTender] = useState<NewTenderProps | any>(null);
+  const { newTenderInaprocHooks } = useNewTenderInaprocHooks();
   const {
     handleRABPost,
     handleChangeRAB,
@@ -69,7 +70,6 @@ export default function PPKRencanaAnggaranAdd() {
     endDate
   } = useRABHooks();
   const { user, loading } = useAuth();
-  const { dataEntryPengadaan } = useDataEntryHooks();
 
   const handleDeleteRow = (index: number) => {
     setDataFile(prev => prev.filter((_, i) => i !== index));
@@ -136,8 +136,8 @@ export default function PPKRencanaAnggaranAdd() {
     }
 
     const filteringDataTender = () => {
-      const filter = dataEntryPengadaan?.filter((item: TenderProps) => {
-        const data = item?.tender_code?.toLowerCase().includes(search.toLowerCase());
+      const filter = newTenderInaprocHooks?.filter((item: NewTenderProps) => {
+        const data = item?.kd_tender?.toString().toLowerCase().includes(search.toLowerCase());
         return data;
       });
 
@@ -146,7 +146,7 @@ export default function PPKRencanaAnggaranAdd() {
 
     filteringDataTender();
     renderShowtender();
-  }, [showTender, selectedTender, search, dataEntryPengadaan]);
+  }, [showTender, selectedTender, search, newTenderInaprocHooks]);
 
   const columns = [
     {
@@ -154,28 +154,28 @@ export default function PPKRencanaAnggaranAdd() {
       label: 'No'
     },
     {
-      key: 'fiscal_year',
+      key: 'tahun_anggaran',
       label: 'Tahun Anggaran'
     },
     {
-      key: 'satker_name',
+      key: 'nama_satker',
       label: 'Satuan Kerja'
     },
     {
-      key: 'rup_code',
+      key: 'kd_rup',
       label: 'Kode RUP'
     },
     {
-      key: 'tender_code',
+      key: 'kd_tender',
       label: 'kode Tender'
     },
     {
-      key: 'package_name',
+      key: 'nama_paket',
       label: 'Nama Paket'
     },
   ];
 
-  if (loading) {
+  if (loading || newTenderInaprocHooks.length === 0) {
     return <LoadingSpinner />
   }
 
@@ -229,7 +229,7 @@ export default function PPKRencanaAnggaranAdd() {
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-poppins-regular">
-              <ShowTableForm tenderCode={selectedTender?.tender_code} onClick={() => {
+              <ShowTableForm tenderCode={selectedTender?.kd_tender} onClick={() => {
                 setShowTender(true);
                 setSelectedTender(null);
               }} />
@@ -237,28 +237,28 @@ export default function PPKRencanaAnggaranAdd() {
               <FormInput
                 title='Tahun Anggaran'
                 placeholder='Masukkan tahun anggaran (otomatis)'
-                value={selectedTender?.fiscal_year as any}
+                value={selectedTender?.tahun_anggaran as any}
                 disabled={true}
               />
 
               <FormInput
                 title='Satuan Kerja'
                 placeholder='Masukkan tahun satuan kerja (otomatis)'
-                value={selectedTender?.satker_name}
+                value={selectedTender?.nama_satker}
                 disabled={true}
               />
 
               <FormInput
                 title='Kode RUP'
                 placeholder='Masukkan tahun kode RUP (otomatis)'
-                value={selectedTender?.rup_code}
+                value={selectedTender?.kd_rup}
                 disabled={true}
               />
 
               <FormInput
                 title='Lokasi Pekerjaan'
                 placeholder='Masukkan lokasi pekerjaan (otomatis)'
-                value={selectedTender?.work_location as any}
+                value={selectedTender?.lokasi_pekerjaan}
                 disabled={true}
                 type='textarea'
               />

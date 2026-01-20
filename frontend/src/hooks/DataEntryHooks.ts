@@ -194,6 +194,7 @@ export default function useDataEntryHooks() {
             formData.append("winner_address", null as any);
             formData.append("work_location", data.lokasi_pekerjaan ? data.lokasi_pekerjaan : null as any);
             formData.append("procurement_method", type);
+            formData.append("package_name", data.nama_paket ? data.nama_paket : null as any);
             formData.append("note", note);
 
             if (evidenceFile) {

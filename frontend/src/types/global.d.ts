@@ -97,20 +97,52 @@ declare global {
 
   export interface RABProps {
     id: number;
-    tender_id: number;
-    tender?: TenderProps;
-    program?: string | null;
-    activity?: string | null;
-    start_date?: string | null;
-    end_date?: string | null;
-
-    revision_count: number;
+    created_at: string;
+    created_by_id: number;
+    revision: number;
     revision_text?: string | null;
 
-    created_by_id?: number | null;
-    created_by?: UserProps | null;
+    start_date?: string | null;
+    end_date?: string | null;
+    created_by?: UserProps;
 
-    rab_details?: RabDetailProps[];
+    kode_rup?: string | null;
+    kode_tender?: string | null;
+    nama_paket?: string | null;
+    jenis_pengadaan?: string | null;
+    sumber_dana?: string | null;
+    tahun_anggaran?: number | null;
+    satuan_kerja?: string | null;
+    lokasi_pekerjaan?: string | null;
+
+    program?: string | null;
+    activity?: string | null;
+
+    nilai_pagu?: number | null;
+    nilai_hps?: number | null;
+    nilai_penawaran?: number | null;
+    nilai_negosiasi?: number | null;
+
+    nomor_kontrak?: string | null;
+    tanggal_kontrak?: string | null;
+
+    nama_ppk?: string | null;
+    jabatan_ppk?: string | null;
+
+    nama_pimpinan?: string | null;
+    jabatan_pimpinan?: string | null;
+
+    pemenang?: string | null;
+    alamat_pemenang?: string | null;
+    npwp?: string | null;
+    email?: string | null;
+    telepon?: string | null;
+
+    status_paket?: string | null;
+    status_pengiriman?: string | null;
+
+    rab_group_id: number;
+    rab_details: RABDetailProps[];
   }
 
   export interface RABDetailProps {

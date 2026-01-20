@@ -55,9 +55,5 @@ func main() {
 	}))
 	routes.SetupRoutes(r)
 
-<<<<<<< HEAD
-	r.Run(":8000")
-=======
 	r.Run("0.0.0.0:8096")
->>>>>>> 70549c668671cd43a2b81d53bbb4625c17e826d4
 }

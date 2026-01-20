@@ -45,18 +45,18 @@ export default function TableHeader({
             </div>
 
             <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-3 sm:gap-4">
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-2.5 md:gap-3 w-full lg:flex-1">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-2.5 md:gap-3 w-full lg:w-auto">
                     {type === 'ppk' && (
                         <>
                             <select
                                 value={selectedTahun}
                                 onChange={(e) => onTahunChange?.(e.target.value)}
-                                className="text-xs sm:text-sm px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular hover:border-gray-400 w-full sm:w-auto sm:min-w-37.5"
+                                className="text-xs sm:text-sm px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular hover:border-gray-400 w-full sm:w-40"
                             >
                                 <option value="">Pilih Tahun</option>
                                 {tahunOptions.map((item, index) => (
-                                    <option key={index} value={item.tahun}>
-                                        {item.tahun}
+                                    <option key={index} value={item.text}>
+                                        {item.text}
                                     </option>
                                 ))}
                             </select>
@@ -64,7 +64,7 @@ export default function TableHeader({
                             <select
                                 value={selectedSatuanKerja}
                                 onChange={(e) => onSatuanKerjaChange?.(e.target.value)}
-                                className="text-xs sm:text-sm px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular hover:border-gray-400 w-full sm:w-auto sm:min-w-50"
+                                className="text-xs sm:text-sm px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular hover:border-gray-400 w-full sm:w-56"
                             >
                                 <option value="">Pilih Satuan Kerja</option>
                                 {satuanKerjaOptions.map((item, index) => (
@@ -76,7 +76,7 @@ export default function TableHeader({
                         </>
                     )}
 
-                    <div className="relative w-full sm:flex-1">
+                    <div className="relative w-full md:w-72">
                         <input
                             type="text"
                             value={searchValue}
@@ -88,7 +88,7 @@ export default function TableHeader({
                     </div>
                 </div>
 
-                <div className="flex flex-col xs:flex-row gap-2 sm:gap-2.5 md:gap-3 w-full lg:w-auto lg:min-w-fit">
+                <div className="flex flex-col md:flex-row gap-2 sm:gap-2.5 md:gap-3 w-full lg:w-auto lg:min-w-fit">
                     {showTambah && (
                         <button
                             onClick={onTambahClick}

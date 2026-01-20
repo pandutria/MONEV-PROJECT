@@ -104,7 +104,7 @@ export default function PokjaHasilKelompokKerja() {
 
     useEffect(() => {
         const filteringDataEntry = () => {
-            const dataFilter = dataEntryPengadaan?.filter((item: TenderProps) => {
+            const dataFilter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
                 const filterType = item?.type?.includes("kelompok");
                 const tahunFilter = tahun
                     ? item?.fiscal_year?.toString().includes(tahun)
