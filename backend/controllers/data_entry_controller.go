@@ -1,9 +1,14 @@
 package controllers
 
 import (
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/google/uuid"
 	"github.com/optimus/backend/config"
 	"github.com/optimus/backend/dtos"
 	"github.com/optimus/backend/models"
@@ -11,7 +16,11 @@ import (
 
 func GetAllDataEntry(c *gin.Context) {
 	var data []models.DataEntry
-	config.DB.Find(&data)
+	config.DB.
+		Preload("User").
+		Preload("User.Role").
+		Preload("SelectedPpk.Role").
+		Find(&data)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
@@ -21,19 +30,30 @@ func GetAllDataEntry(c *gin.Context) {
 }
 
 func GetDataEntryById(c *gin.Context) {
+	idParam := c.Param("id")
+
 	var data models.DataEntry
-	id := c.Param("id")
-	config.DB.First(&data, id)
+	result := config.DB.
+		Preload("User").
+		Preload("User.Role").
+		Preload("SelectedPpk.Role").
+		First(&data, idParam)
+
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Data tidak ditemukan",
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data":    data,
 	})
-	return
 }
 
 func CreateDataEntry(c *gin.Context) {
-	var req dtos.CreateAndUpdateDataEntryRequest
+	var req dtos.CreateDataEntryRequest
 	userId, isNull := c.Get("user_id")
 
 	if !isNull {
@@ -46,7 +66,7 @@ func CreateDataEntry(c *gin.Context) {
 	var user models.User
 	config.DB.First(&user, userId)
 
-	err := c.ShouldBindBodyWithJSON(&req)
+	err := c.ShouldBindWith(&req, binding.FormMultipart)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": err.Error(),
@@ -54,48 +74,64 @@ func CreateDataEntry(c *gin.Context) {
 		return
 	}
 
+	BuktiFile, _ := c.FormFile("bukti_file")
+
+	uploadDir := "uploads/entry"
+	_ = os.MkdirAll(uploadDir, os.ModePerm)
+
+	saveUpload := func(file *multipart.FileHeader) *string {
+		if file == nil {
+			return nil
+		}
+
+		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
+		path := filepath.Join(uploadDir, filename)
+
+		if err := c.SaveUploadedFile(file, path); err != nil {
+			return nil
+		}
+		return &path
+	}
+
+	BuktiPath := saveUpload(BuktiFile)
+
 	data := models.DataEntry{
-		Type:              req.Type,
-		ProcurementMethod: req.ProcurementMethod,
-		TenderCode:        req.TenderCode,
-		RupCode:           req.RupCode,
-		FiscalYear:        req.FiscalYear,
-		SatkerCode:        req.SatkerCode,
-		SatkerName:        req.SatkerName,
-		PackageName:       req.PackageName,
-		FundingSource:     req.FundingSource,
-		ProcurementType:   req.ProcurementType,
+		Tipe: req.Tipe,
+		JenisPengadaan: req.JenisPengadaan,
+		MetodePengadaan: req.MetodePengadaan,
+		KodePaket:       req.KodePaket,
+		KodeRup:         req.KodeRup,
+		TahunAnggaran:   req.TahunAnggaran,
+		SatuanKerja:     req.SatuanKerja,
+		NamaPaket:       req.NamaPaket,
+		SumberDana:      req.SumberDana,
 
-		BudgetValue: req.BudgetValue,
-		HpsValue:    req.HpsValue,
-		ShippingFee: req.ShippingFee,
+		StatusPaket:      req.StatusPaket,
+		StatusPengiriman: req.StatusPengiriman,
 
-		ContractNumber:  req.ContractNumber,
-		ContractDate:    req.ContractDate,
-		ContractInitial: req.ContractInitial,
-		ContractFinal:   req.ContractFinal,
-		PpkName:         req.PpkName,
-		PpkPosition:     req.PpkPosition,
-		CompanyLeader:   req.CompanyLeader,
-		LeaderPosition:  req.LeaderPosition,
+		NilaiPagu: req.NilaiPagu,
+		NilaiHps:  req.NilaiHps,
 
-		WinnerName:       req.WinnerName,
-		BidValue:         req.BidValue,
-		NegotiationValue: req.NegotiationValue,
-		Phone:            req.Phone,
-		Email:            req.Email,
-		Npwp:             req.Npwp,
+		NomorKontrak:   req.NomorKontrak,
+		TanggalKontrak: req.TanggalKontrak,
+		NamaPpk:        req.NamaPpk,
+		JabatanPpk:     req.JabatanPpk,
 
-		WinnerAddress: req.WinnerAddress,
-		WorkLocation:  req.WorkLocation,
+		NamaPimpinanPerusahaan: req.NamaPimpinanPerusahaan,
+		JabatanPimpinan:        req.JabatanPimpinan,
 
-		RealizationStatus: req.RealizationStatus,
-		PackageStatus:     req.PackageStatus,
-		DeliveryStatus:    req.DeliveryStatus,
-		TotalValue:        req.TotalValue,
+		Pemenang:       req.Pemenang,
+		NilaiPenawaran: req.NilaiPenawaran,
+		NilaiNegosiasi: req.NilaiNegosiasi,
+		NomorTelp:      req.NomorTelp,
+		Email:          req.Email,
+		Npwp:           req.Npwp,
 
-		Note:         req.Note,
-		EvidenceFile: req.EvidenceFile,
+		AlamatPemenang:  req.AlamatPemenang,
+		LokasiPekerjaan: req.LokasiPekerjaan,
+
+		BuktiFile: BuktiPath,
+		Catatan:   req.Catatan,
 
 		SelectedPpkId: req.SelectedPpkId,
 		UserId:        user.Id,
@@ -105,6 +141,7 @@ func CreateDataEntry(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Membuat data gagal!",
+			"error":   err.Error(),
 		})
 		return
 	}
@@ -116,10 +153,10 @@ func CreateDataEntry(c *gin.Context) {
 }
 
 func UpdateDataEntry(c *gin.Context) {
-	var req dtos.CreateAndUpdateDataEntryRequest
+	var req dtos.UpdateDataEntryRequest
 	id := c.Param("id")
 
-	err := c.ShouldBindBodyWithJSON(&req)
+	err := c.ShouldBindWith(&req, binding.FormMultipart)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": err.Error(),
@@ -127,62 +164,63 @@ func UpdateDataEntry(c *gin.Context) {
 		return
 	}
 
+	// if req.SelectedPpkId != nil && *req.SelectedPpkId == 0 {
+	// 	req.SelectedPpkId = nil
+	// }
+
+	BuktiFile, _ := c.FormFile("bukti_file")
+
+	uploadDir := "uploads/entry"
+	_ = os.MkdirAll(uploadDir, os.ModePerm)
+
+	saveUpload := func(file *multipart.FileHeader) *string {
+		if file == nil {
+			return nil
+		}
+
+		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
+		path := filepath.Join(uploadDir, filename)
+
+		if err := c.SaveUploadedFile(file, path); err != nil {
+			return nil
+		}
+		return &path
+	}
+
+	BuktiPath := saveUpload(BuktiFile)
+
 	var data models.DataEntry
 	config.DB.First(&data, id)
 
-	data.Type = req.Type
-	data.ProcurementMethod = req.ProcurementMethod
-	data.TenderCode = req.TenderCode
-	data.RupCode = req.RupCode
-	data.FiscalYear = req.FiscalYear
-	data.SatkerCode = req.SatkerCode
-	data.SatkerName = req.SatkerName
-	data.PackageName = req.PackageName
-	data.FundingSource = req.FundingSource
-	data.ProcurementType = req.ProcurementType
+	if req.Catatan != nil && *req.Catatan != "" {
+		data.Catatan = req.Catatan
+	} else {
+		data.Catatan = nil
+	}
 
-	data.BudgetValue = req.BudgetValue
-	data.HpsValue = req.HpsValue
-	data.ShippingFee = req.ShippingFee
+	if req.SelectedPpkId != nil {
+		data.SelectedPpkId = req.SelectedPpkId
+	} else {
+		data.SelectedPpkId = nil
+	}
 
-	data.ContractNumber = req.ContractNumber
-	data.ContractDate = req.ContractDate
-	data.ContractInitial = req.ContractInitial
-	data.ContractFinal = req.ContractFinal
-	data.PpkName = req.PpkName
-	data.PpkPosition = req.PpkPosition
-	data.CompanyLeader = req.CompanyLeader
-	data.LeaderPosition = req.LeaderPosition
-
-	data.WinnerName = req.WinnerName
-	data.BidValue = req.BidValue
-	data.NegotiationValue = req.NegotiationValue
-	data.Phone = req.Phone
-	data.Email = req.Email
-	data.Npwp = req.Npwp
-	data.WinnerAddress = req.WinnerAddress
-	data.WorkLocation = req.WorkLocation
-
-	data.RealizationStatus = req.RealizationStatus
-	data.PackageStatus = req.PackageStatus
-	data.DeliveryStatus = req.DeliveryStatus
-	data.TotalValue = req.TotalValue
-
-	data.Note = req.Note
-	data.EvidenceFile = req.EvidenceFile
-
-	data.SelectedPpkId = req.SelectedPpkId
+	if BuktiPath != nil && *BuktiPath != "" {
+		data.BuktiFile = BuktiPath
+	} else {
+		data.BuktiFile = nil
+	}
 
 	err = config.DB.Save(&data).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Membuat data gagal!",
+			"message": "mengubah data gagal!",
+			"error":   err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Membuat data berhasil",
+		"message": "mengubah data berhasil",
 		"data":    data,
 	})
 }
@@ -196,6 +234,7 @@ func DeleteDataEntry(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Mengahapus dara gagal!",
+			"error": err.Error(),
 		})
 		return
 	}

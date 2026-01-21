@@ -1,59 +1,44 @@
 package models
 
-import (
-	"time"
-)
-
 type DataEntry struct {
-	Id                uint    `gorm:"primaryKey" json:"id"`
-	Type              *string `json:"type"`
-	ProcurementMethod *string `json:"procurement_method"`
-	TenderCode        *string `json:"tender_code"`
-	RupCode           *string `json:"rup_code"`
-	FiscalYear        *int    `json:"fiscal_year"`
-	SatkerCode        *string `json:"satker_code"`
-	SatkerName        *string `json:"satker_name"`
-	PackageName       *string `json:"package_name"`
-	FundingSource     *string `json:"funding_source"`
-	ProcurementType   *string `json:"procurement_type"`
+	Id uint `gorm:"primaryKey" json:"id"`
 
-	BudgetValue *int `json:"budget_value"`
-	HpsValue    *int `json:"hps_value"`
-	ShippingFee *int `json:"shipping_fee"`
+	Tipe            *string `json:"tipe"`
+	JenisPengadaan  *string `form:"jenis_pengadaan"`
+	MetodePengadaan *string `json:"metode_pengadaan"`
+	KodePaket       *string `json:"kode_paket"`
+	KodeRup         *string `json:"kode_rup"`
+	TahunAnggaran   *string `json:"tahun_anggaran"`
+	SatuanKerja     *string `json:"satuan_kerja"`
+	NamaPaket       *string `json:"nama_paket"`
+	SumberDana      *string `json:"sumber_dana"`
 
-	ContractNumber  *string    `json:"contract_number"`
-	ContractDate    *time.Time `json:"contract_date"`
-	ContractInitial *string    `json:"contract_initial"`
-	ContractFinal   *string    `json:"contract_final"`
-	PpkName         *string    `json:"ppk_name"`
-	PpkPosition     *string    `json:"ppk_position"`
-	CompanyLeader   *string    `json:"company_leader"`
-	LeaderPosition  *string    `json:"leader_position"`
+	StatusPaket      *string `json:"status_paket"`
+	StatusPengiriman *string `json:"status_pengiriman"`
 
-	WinnerName       *string  `json:"winner_name"`
-	BidValue         *float64 `json:"bid_value"`
-	NegotiationValue *float64 `json:"negotiation_value"`
-	Phone            *string  `json:"phone"`
-	Email            *string  `json:"email"`
-	Npwp             *string  `json:"npwp"`
+	NilaiPagu *string `json:"nilai_pagu"`
+	NilaiHps  *string `json:"nilai_hps"`
 
-	WinnerAddress *string `json:"winner_address"`
-	WorkLocation  *string `json:"work_location"`
+	NomorKontrak   *string `json:"nomor_kontrak"`
+	TanggalKontrak *string `json:"tanggal_kontrak"`
+	NamaPpk        *string `json:"nama_ppk"`
+	JabatanPpk     *string `json:"jabatan_ppk"`
 
-	EvidenceFile *string `json:"evidence_file"`
-	Note         *string `json:"note"`
+	NamaPimpinanPerusahaan *string `json:"nama_pimpinan_perusahaan"`
+	JabatanPimpinan        *string `json:"jabatan_pimpinan"`
 
-	RealizationStatus *string  `json:"realization_status"`
-	PackageStatus     *string  `json:"package_status"`
-	DeliveryStatus    *string  `json:"delivery_status"`
-	TotalValue        *float64 `json:"total_value"`
+	Pemenang       *string `json:"pemenang"`
+	NilaiPenawaran *string `json:"nilai_penawaran"`
+	NilaiNegosiasi *string `json:"nilai_negosiasi"`
+	NomorTelp      *string `json:"nomor_telp"`
+	Email          *string `json:"email"`
+	Npwp           *string `json:"npwp"`
 
-	// KlpdCode       *string `json:"klpd_code"`
-	// RupDescription *string `json:"rup_description"`
-	// RupName        *string `json:"rup_name"`
-	// OrderDate      *string `json:"order_date"`
-	// OrderId        *string `json:"order_id"`
-	// VendorId       *int    `json:"vendor_id"`
+	AlamatPemenang  *string `json:"alamat_pemenang"`
+	LokasiPekerjaan *string `json:"lokasi_pekerjaan"`
+
+	BuktiFile *string `json:"bukti_file"`
+	Catatan   *string `json:"catatan"`
 
 	SelectedPpkId *uint `gorm:"column:selected_ppk_id" json:"selected_ppk_id"`
 	SelectedPpk   *User `gorm:"foreignKey:SelectedPpkId;references:Id" json:"selected_ppk,omitempty"`

@@ -20,7 +20,7 @@ func main() {
 		&models.User{},
 		&models.PokjaGroups{},
 		// &models.UserPokjaGroups{},
-		&models.TenderPaket{},
+		// &models.TenderPaket{},
 		&models.RabHeader{},
 		&models.RabDetail{},
 		&models.ScheduleHeader{},
@@ -42,7 +42,10 @@ func main() {
 		&models.RupPaketPenyedia{},
 		&models.RupPaketSwakelola{},
 		&models.RupPenyediaTerumumkan{},
+		&models.DataEntry{},
 	)
+
+	config.DB.Debug().AutoMigrate(&models.DataEntry{})
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
@@ -52,5 +55,5 @@ func main() {
 	}))
 	routes.SetupRoutes(r)
 
-	r.Run(":8000")
+	r.Run("0.0.0.0:8096")
 }

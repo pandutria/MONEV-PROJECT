@@ -1,49 +1,48 @@
 package dtos
 
-import "time"
+type CreateDataEntryRequest struct {
+	Tipe            *string `form:"tipe"`
+	JenisPengadaan  *string `form:"jenis_pengadaan"`
+	MetodePengadaan *string `form:"metode_pengadaan"`
+	KodePaket       *string `form:"kode_paket"`
+	KodeRup         *string `form:"kode_rup"`
+	TahunAnggaran   *string `form:"tahun_anggaran"`
+	SatuanKerja     *string `form:"satuan_kerja"`
+	NamaPaket       *string `form:"nama_paket"`
+	SumberDana      *string `form:"sumber_dana"`
 
-type CreateAndUpdateDataEntryRequest struct {
-	Type              *string `form:"type"`
-	ProcurementMethod *string `form:"procurement_method"`
-	TenderCode        *string `form:"tender_code"`
-	RupCode           *string `form:"rup_code"`
-	FiscalYear        *int    `form:"fiscal_year"`
-	SatkerCode        *string `form:"satker_code"`
-	SatkerName        *string `form:"satker_name"`
-	PackageName       *string `form:"package_name"`
-	FundingSource     *string `form:"funding_source"`
-	ProcurementType   *string `form:"procurement_type"`
+	StatusPaket      *string `form:"status_paket"`
+	StatusPengiriman *string `form:"status_pengiriman"`
 
-	BudgetValue *int `form:"budget_value"`
-	HpsValue    *int `form:"hps_value"`
-	ShippingFee *int `form:"shipping_fee"`
+	NilaiPagu *string `form:"nilai_pagu"`
+	NilaiHps  *string `form:"nilai_hps"`
 
-	ContractNumber  *string    `form:"contract_number"`
-	ContractDate    *time.Time `form:"contract_date"`
-	ContractInitial *string    `form:"contract_initial"`
-	ContractFinal   *string    `form:"contract_final"`
-	PpkName         *string    `form:"ppk_name"`
-	PpkPosition     *string    `form:"ppk_position"`
-	CompanyLeader   *string    `form:"company_leader"`
-	LeaderPosition  *string    `form:"leader_position"`
+	NomorKontrak   *string `form:"nomor_kontrak"`
+	TanggalKontrak *string `form:"tanggal_kontrak"`
+	NamaPpk        *string `form:"nama_ppk"`
+	JabatanPpk     *string `form:"jabatan_ppk"`
 
-	WinnerName       *string  `form:"winner_name"`
-	BidValue         *float64 `form:"bid_value"`
-	NegotiationValue *float64 `form:"negotiation_value"`
-	Phone            *string  `form:"phone"`
-	Email            *string  `form:"email"`
-	Npwp             *string  `form:"npwp"`
+	NamaPimpinanPerusahaan *string `form:"nama_pimpinan_perusahaan"`
+	JabatanPimpinan        *string `form:"jabatan_pimpinan"`
 
-	WinnerAddress *string `form:"winner_address"`
-	WorkLocation  *string `form:"work_location"`
+	Pemenang       *string `form:"pemenang"`
+	NilaiPenawaran *string `form:"nilai_penawaran"`
+	NilaiNegosiasi *string `form:"nilai_negosiasi"`
+	NomorTelp      *string `form:"nomor_telp"`
+	Email          *string `form:"email"`
+	Npwp           *string `form:"npwp"`
 
-	RealizationStatus *string  `form:"realization_status"`
-	PackageStatus     *string  `form:"package_status"`
-	DeliveryStatus    *string  `form:"delivery_status"`
-	TotalValue        *float64 `form:"total_value"`
+	AlamatPemenang  *string `form:"alamat_pemenang"`
+	LokasiPekerjaan *string `form:"lokasi_pekerjaan"`
 
-	Note         *string `form:"note"`
-	EvidenceFile *string `form:"evidence_file"`
+	Catatan        *string `form:"catatan"`
+	DitujukanKePpk *string `form:"ditujukan_ke_ppk"`
 
 	SelectedPpkId *uint `form:"selected_ppk_id"`
+	UserId        uint  `form:"user_id"`
+}
+
+type UpdateDataEntryRequest struct {
+	Catatan       *string `form:"catatan"`
+	SelectedPpkId *uint   `form:"selected_ppk_id"`
 }

@@ -56,8 +56,10 @@ func GetAllNonTenderIsb(c *gin.Context) {
 }
 
 func GetAllNonTenderSelesaiIsb(c *gin.Context) {
+	year := c.Query("tahun")
+
 	var data []models.NonTenderSelesaiIsb
-	config.DB.Find(&data)
+	config.DB.Where("tahun_anggaran = ?", year).Find(&data)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
@@ -134,10 +136,11 @@ func GetAllTenderTahapIsb(c *gin.Context) {
 
 func GetAllPaketPurchasing(c *gin.Context) {
 	kd_paket := c.Query("kd_paket")
+	year := c.Query("tahun")
 	var data []models.PaketPurchasing
 
 	if kd_paket != "" {
-		config.DB.Where("kd_paket = ?", kd_paket).Find(&data)
+		config.DB.Where("tahun_anggaran = ?", year).Where("kd_paket = ?", kd_paket).Find(&data)
 	} else {
 		config.DB.Find(&data)
 	}

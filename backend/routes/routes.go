@@ -42,7 +42,8 @@ func SetupRoutes(r *gin.Engine) {
 
 		public.GET("/rab", controllers.GetAllRabHeader)
 		public.GET("/rab/:id", controllers.GetRabHeaderById)
-		public.PUT("/rab/update/:id", controllers.UpdateRabHeader)
+		public.GET("/rab/group/:id", controllers.GetRabHeaderGroup)
+		// public.PUT("/rab/update/:id", controllers.UpdateRabHeader)
 		public.DELETE("/rab/delete/:id", controllers.DeleteRabHeader)
 
 		public.GET("/rab/detail", controllers.GetAllRabDetail)
@@ -51,7 +52,8 @@ func SetupRoutes(r *gin.Engine) {
 
 		public.GET("/schedule", controllers.GetAllScheduleHeader)
 		public.GET("/schedule/:id", controllers.GetScheduleById)
-		public.PUT("/schedule/update/:id", controllers.UpdateSchedule)
+		public.GET("/schedule/group/:id", controllers.GetScheduleByGroup)
+		// public.PUT("/schedule/update/:id", controllers.UpdateSchedule)
 		public.DELETE("/schedule/delete/:id", controllers.DeleteSchedule)
 
 		public.GET("/schedule/item", controllers.GetAllScheduleItem)
@@ -87,7 +89,6 @@ func SetupRoutes(r *gin.Engine) {
 		public.GET("/tender_kontrak_isbs", controllers.GetAllTenderKontrakIsb)
 		public.GET("/tender_selesai_isbs", controllers.GetAllTenderSelesaiIsb)
 		public.GET("/tender_tahap_isbs", controllers.GetAllTenderTahapIsb)
-		public.GET("/paket_purchasing", controllers.GetAllPaketPurchasing)
 		public.GET("/paket_purchasing", controllers.GetAllPaketPurchasing)
 		public.GET("/rup_paket_penyedia", controllers.GetAllRupPaketPenyedia)
 		public.GET("/rup_paket_swakelola", controllers.GetAllRupPaketSwakelola)
