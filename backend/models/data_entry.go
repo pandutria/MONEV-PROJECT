@@ -3,6 +3,8 @@ package models
 type DataEntry struct {
 	Id uint `gorm:"primaryKey" json:"id"`
 
+	Tipe            *string `json:"tipe"`
+	JenisPengadaan  *string `form:"jenis_pengadaan"`
 	MetodePengadaan *string `json:"metode_pengadaan"`
 	KodePaket       *string `json:"kode_paket"`
 	KodeRup         *string `json:"kode_rup"`
@@ -11,7 +13,6 @@ type DataEntry struct {
 	NamaPaket       *string `json:"nama_paket"`
 	SumberDana      *string `json:"sumber_dana"`
 
-	RealisasiPaket   *string `json:"realisasi_paket"`
 	StatusPaket      *string `json:"status_paket"`
 	StatusPengiriman *string `json:"status_pengiriman"`
 
@@ -37,8 +38,8 @@ type DataEntry struct {
 	AlamatPemenang  *string `json:"alamat_pemenang"`
 	LokasiPekerjaan *string `json:"lokasi_pekerjaan"`
 
-	BuktiFile   *string `json:"bukti_file"`
-	Catatan        *string `json:"catatan"`
+	BuktiFile *string `json:"bukti_file"`
+	Catatan   *string `json:"catatan"`
 
 	SelectedPpkId *uint `gorm:"column:selected_ppk_id" json:"selected_ppk_id"`
 	SelectedPpk   *User `gorm:"foreignKey:SelectedPpkId;references:Id" json:"selected_ppk,omitempty"`

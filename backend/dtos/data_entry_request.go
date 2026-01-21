@@ -1,7 +1,8 @@
 package dtos
 
-
 type CreateDataEntryRequest struct {
+	Tipe            *string `form:"tipe"`
+	JenisPengadaan  *string `form:"jenis_pengadaan"`
 	MetodePengadaan *string `form:"metode_pengadaan"`
 	KodePaket       *string `form:"kode_paket"`
 	KodeRup         *string `form:"kode_rup"`
@@ -10,7 +11,6 @@ type CreateDataEntryRequest struct {
 	NamaPaket       *string `form:"nama_paket"`
 	SumberDana      *string `form:"sumber_dana"`
 
-	RealisasiPaket   *string `form:"realisasi_paket"`
 	StatusPaket      *string `form:"status_paket"`
 	StatusPengiriman *string `form:"status_pengiriman"`
 
@@ -44,6 +44,6 @@ type CreateDataEntryRequest struct {
 }
 
 type UpdateDataEntryRequest struct {
-	Catatan         *string `form:"catatan"`
-	SelectedPpkId *uint `form:"selected_ppk_id"`
+	Catatan       *string `form:"catatan"`
+	SelectedPpkId *uint   `form:"selected_ppk_id"`
 }

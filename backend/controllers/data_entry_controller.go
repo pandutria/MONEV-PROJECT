@@ -96,6 +96,8 @@ func CreateDataEntry(c *gin.Context) {
 	BuktiPath := saveUpload(BuktiFile)
 
 	data := models.DataEntry{
+		Tipe: req.Tipe,
+		JenisPengadaan: req.JenisPengadaan,
 		MetodePengadaan: req.MetodePengadaan,
 		KodePaket:       req.KodePaket,
 		KodeRup:         req.KodeRup,
@@ -104,7 +106,6 @@ func CreateDataEntry(c *gin.Context) {
 		NamaPaket:       req.NamaPaket,
 		SumberDana:      req.SumberDana,
 
-		RealisasiPaket:   req.RealisasiPaket,
 		StatusPaket:      req.StatusPaket,
 		StatusPengiriman: req.StatusPengiriman,
 
