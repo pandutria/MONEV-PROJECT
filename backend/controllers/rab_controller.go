@@ -12,7 +12,7 @@ import (
 
 func GetAllRabHeader(c *gin.Context) {
 	var header []models.RabHeader
-	config.DB.Preload("CreatedBy.Role").Preload("RabDetails").Find(&header)
+	config.DB.Preload("DataEntry.SelectedPpk").Preload("CreatedBy.Role").Preload("RabDetails").Find(&header)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data":    header,
@@ -23,7 +23,7 @@ func GetRabHeaderById(c *gin.Context) {
 	id := c.Param("id")
 
 	var header models.RabHeader
-	config.DB.Preload("CreatedBy.Role").Preload("RabDetails").First(&header, id)
+	config.DB.Preload("DataEntry.SelectedPpk").Preload("CreatedBy.Role").Preload("RabDetails").First(&header, id)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
 		"data":    header,
@@ -60,7 +60,7 @@ func CreateRabHeader(c *gin.Context) {
 		return
 	}
 
-		if req.RabGroupId != nil {
+	if req.RabGroupId != nil {
 		var exists bool
 		err := config.DB.
 			Model(&models.RabHeader{}).
@@ -107,41 +107,14 @@ func CreateRabHeader(c *gin.Context) {
 	config.DB.First(&user, userId)
 
 	header := models.RabHeader{
-		RabGroupId:    req.RabGroupId,
-		RevisionCount: &revision,
-
-		KodeTender:     req.KodeTender,
-		KodeRup:        req.KodeRup,
-		TahunAnggaran:  req.TahunAnggaran,
-		SatuanKerja:    req.SatuanKerja,
-		NamaPaket:      req.NamaPaket,
-		TanggalMasuk:   req.TanggalMasuk,
-		SumberDana:     req.SumberDana,
-		JenisPengadaan: req.JenisPengadaan,
-
-		NilaiPagu:      req.NilaiPagu,
-		NilaiHps:       req.NilaiHps,
-		NilaiPenawaran: req.NilaiPenawaran,
-		NilaiNegosiasi: req.NilaiNegosiasi,
-
-		NomorKontrak:   req.NomorKontrak,
-		TanggalKontrak: req.TanggalKontrak,
-
-		NamaPpk:    req.NamaPpk,
-		JabatanPpk: req.JabatanPpk,
-
-		NamaPimpinan:    req.NamaPimpinan,
-		JabatanPimpinan: req.JabatanPimpinan,
-		Pemenang:        req.Pemenang,
-		Telepon:         req.Telepon,
-		Email:           req.Email,
-		NPWP:            req.NPWP,
-		AlamatPemenang:  req.AlamatPemenang,
-
-		LokasiPekerjaan:  req.LokasiPekerjaan,
-		StatusPaket:      req.StatusPaket,
-		StatusPengiriman: req.StatusPengiriman,
-		CreatedById:      user.Id,
+		RabGroupId:   req.RabGroupId,
+		AlasanCount:  &revision,
+		AlasanText: req.AlasanText,
+		Program:      req.Program,
+		TanggalMulai: req.TanggalMulai,
+		TanggalAkhir: req.TanggalAkhir,
+		DataEntryId: req.DataEntryId,
+		CreatedById:  user.Id,
 	}
 
 	err = config.DB.Create(&header).Error
