@@ -5,6 +5,7 @@ interface TableHeaderProps {
     title: string;
     showHapus?: boolean;
     showTambah?: boolean;
+    showTahunQuery?: boolean;
     onTambahClick?: () => void;
     onHapusClick?: () => void;
     tahunOptions?: any[];
@@ -28,6 +29,7 @@ export default function TableHeader({
     onHapusClick,
     showTambah = true,
     showHapus = false,
+    showTahunQuery = true,
     selectedTahun = '',
     selectedTahunQuery = '',
     selectedSatuanKerja = '',
@@ -85,7 +87,7 @@ export default function TableHeader({
                         </>
                     )}
 
-                    {type === 'pokja' && (
+                    {type === 'pokja' && showTahunQuery && (
                         <select
                             value={selectedTahunQuery}
                             onChange={(e) => onTahunQueryChange?.(e.target.value)}

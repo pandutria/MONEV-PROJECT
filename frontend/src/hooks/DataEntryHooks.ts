@@ -25,14 +25,14 @@ export default function useDataEntryHooks() {
         const uniqueMap = new Map<string, string>();
 
         data.forEach(item => {
-            if (typeof item.funding_source === "string") {
-                uniqueMap.set(item.funding_source, item.funding_source);
+            if (typeof item.sumber_dana === "string") {
+                uniqueMap.set(item.sumber_dana, item.sumber_dana);
             }
 
-            if (typeof item.funding_source === "object" && item.funding_source) {
+            if (typeof item.sumber_dana === "object" && item.sumber_dana) {
                 uniqueMap.set(
-                    String(item.funding_source.id),
-                    item.funding_source.name
+                    String(item.sumber_dana.id),
+                    item.sumber_dana.name
                 );
             }
         });
@@ -47,17 +47,17 @@ export default function useDataEntryHooks() {
         const uniqueMap = new Map<string, string>();
 
         data.forEach(item => {
-            if (typeof item.procurement_method === "string") {
-                uniqueMap.set(item.procurement_method, item.procurement_method);
+            if (typeof item.jenis_pengadaan === "string") {
+                uniqueMap.set(item.jenis_pengadaan, item.jenis_pengadaan);
             }
 
             if (
-                typeof item.procurement_method === "object" &&
-                item.procurement_method
+                typeof item.jenis_pengadaan === "object" &&
+                item.jenis_pengadaan
             ) {
                 uniqueMap.set(
-                    String(item.procurement_method.id),
-                    item.procurement_method.name
+                    String(item.jenis_pengadaan.id),
+                    item.jenis_pengadaan.name
                 );
             }
         });
@@ -72,17 +72,17 @@ export default function useDataEntryHooks() {
         const uniqueMap = new Map<string, string>();
 
         data.forEach(item => {
-            if (typeof item.fiscal_year === "string") {
-                uniqueMap.set(item.fiscal_year, item.fiscal_year);
+            if (typeof item.tahun_anggaran === "string") {
+                uniqueMap.set(item.tahun_anggaran, item.tahun_anggaran);
             }
 
             if (
-                typeof item.fiscal_year === "object" &&
-                item.fiscal_year
+                typeof item.tahun_anggaran === "object" &&
+                item.tahun_anggaran
             ) {
                 uniqueMap.set(
-                    String(item.fiscal_year.id),
-                    item.fiscal_year.name
+                    String(item.tahun_anggaran.id),
+                    item.tahun_anggaran.name
                 );
             }
         });
@@ -108,15 +108,16 @@ export default function useDataEntryHooks() {
                 const tahunOpts = buildtahunOptions(data);
                 setTahunOptions(tahunOpts);
 
-                const mappingData = data.map((item: any) => ({
+                const mappingData = data.map((item: DataEntryProps) => ({
                     ...item,
                     opd: "Tidak Ada",
-                    bid_value: FormatRupiah(Number(item.bid_value)),
-                    negotiation_value: FormatRupiah(Number(item.negotiation_value)),
-                    package_name: item.package_name ?? "Tidak Ada",
-                    contract_date: FormatDate(item.contract_date),
-                    efisience: FormatRupiah(Number(item.budget_value) - Number(item.contract_initial)),
-                    presentation: Number(item.budget_value) > 0 ? (((Number(item.budget_value) - Number(item.contract_initial)) / Number(item.budget_value)) * 100).toFixed(2) + "%" : "0%"
+                    nilai_pagu: item.nilai_pagu ?? "Tidak Ada",
+                    nilai_hps: item.nilai_hps ?? "Tidak Ada",
+                    nilai_penawaran: FormatRupiah(Number(item.nilai_penawaran)) ?? "-",
+                    nilai_negosiasi: FormatRupiah(Number(item.nilai_negosiasi)) ?? "-",
+                    tanggal_masuk: "-",
+                    // efisience: FormatRupiah(Number(item.budget_value) - Number(item.contract_initial)),
+                    // presentation: Number(item.budget_value) > 0 ? (((Number(item.budget_value) - Number(item.contract_initial)) / Number(item.budget_value)) * 100).toFixed(2) + "%" : "0%"
                 }));
 
                 setDataEntryPengadaan(SortDescById(mappingData));
@@ -141,7 +142,7 @@ export default function useDataEntryHooks() {
         fetchDataEntryPengadaanById();
     }, [selectedId]);
 
-    const handleEntryPenjabatPengadaanPost = async (data: any, type: string) => {
+    const handleEntryPenjabatPengadaanPost = async (data: any, dataPenyedia: any, type: string) => {
         try {
             if (!data.kd_rup || !type) {
                 SwalMessage({
@@ -154,23 +155,112 @@ export default function useDataEntryHooks() {
 
             const formData = new FormData();
             if (type == "Pengadaan Langsung") {
+                formData.append("tipe", "Penjabat");
+                formData.append("kode_paket", data.kd_nontender);
+                formData.append("nama_paket", data.nama_paket);
+                formData.append("sumber_dana", data.sumber_dana);
                 formData.append("jenis_pengadaan", data.jenis_pengadaan);
-                formData.append("tipe", "Penjabat");
+
+                if (data.nama_penyedia) {
+                    formData.append("pemenang", data.nama_penyedia);
+                }
+                if (data.nomor_telp) {
+                    formData.append("nomor_telp", data.nomor_telp);
+                }
+                if (data.email) {
+                    formData.append("email", data.email);
+                }
+                if (data.npwp_penyedia) {
+                    formData.append("npwp", data.npwp_penyedia);
+                }
+
+                if (data.alamat) {
+                    formData.append("alamat_pemenang", data.alamat);
+                }
             }
 
-            if (type == "E-Purchasing V5" || type == "E-Purchasing V6") {
+            if (type == "E-Purchasing V5") {
+                formData.append("tipe", "Penjabat");
+                formData.append("kode_paket", data.kd_paket);
+                formData.append("nama_paket", data.nama_paket);
+                formData.append("sumber_dana", data.nama_sumber_dana);
                 formData.append("status_paket", data.status_paket);
-                formData.append("status_pengiriman", data.status_pengiriman);
-                formData.append("tipe", "Penjabat");
+                formData.append("status_pengiriman", data.paket_status_str);                
+
+                if (dataPenyedia[0].nama_penyedia) {
+                    formData.append("pemenang", dataPenyedia[0].nama_penyedia);
+                }
+                if (dataPenyedia[0].no_telp_penyedia) {
+                    formData.append("nomor_telp", dataPenyedia[0].no_telp_penyedia);
+                }
+                if (dataPenyedia[0].email_penyedia) {
+                    formData.append("email", dataPenyedia[0].email_penyedia);
+                }
+                if (dataPenyedia[0].npwp_penyedia) {
+                    formData.append("npwp", dataPenyedia[0].npwp_penyedia);
+                }
+
+                if (dataPenyedia[0].alamat_penyedia) {
+                    formData.append("alamat_pemenang", dataPenyedia[0].alamat_penyedia);
+                }
             }
 
-            formData.append("metode_pengadaan", type);
-            formData.append("kode_paket", data.kd_nontender);
+            if (type == "E-Purchasing V6") {
+                formData.append("tipe", "Penjabat");
+                formData.append("kode_paket", data.kd_paket);
+                formData.append("nama_paket", data.rup_nama_pkt);
+                formData.append("sumber_dana", data.sumber_dana);
+                formData.append("status_paket", data.status_pkt);
+                formData.append("status_pengiriman", data.status_pengiriman);
+
+                if (dataPenyedia[0].nama_penyedia) {
+                    formData.append("pemenang", dataPenyedia[0].nama_penyedia);
+                }
+                if (dataPenyedia[0].telepon) {
+                    formData.append("nomor_telp", dataPenyedia[0].telepon);
+                }
+                if (dataPenyedia[0].email) {
+                    formData.append("email", dataPenyedia[0].email);
+                }
+                if (dataPenyedia[0].npwp_penyedia) {
+                    formData.append("npwp", dataPenyedia[0].npwp_penyedia);
+                }
+
+                if (dataPenyedia[0].alamat_penyedia) {
+                    formData.append("alamat_pemenang", dataPenyedia[0].alamat_penyedia);
+                }
+            }
+
+            if (!(type == "Pengadaan Langsung" || type == "E-Purchasing V5" || type == "E-Purchasing V6")) {
+                formData.append("tipe", "Kelompok");
+                formData.append("kode_paket", data.kd_tender);
+                formData.append("nama_paket", data.nama_paket);
+                formData.append("sumber_dana", data.sumber_dana);
+
+                if (data.nama_penyedia) {
+                    formData.append("pemenang", data.nama_penyedia);
+                }
+                if (data.nomor_telp) {
+                    formData.append("nomor_telp", data.nomor_telp);
+                }
+                if (data.email) {
+                    formData.append("email", data.email);
+                }
+                if (data.npwp_penyedia) {
+                    formData.append("npwp", data.npwp_penyedia);
+                }
+
+                if (data.alamat) {
+                    formData.append("alamat_pemenang", data.alamat);
+                }
+            }
+
+            formData.append("metode_pengadaan", type);            
             formData.append("kode_rup", data.kd_rup);
             formData.append("tahun_anggaran", data.tahun_anggaran);
-            formData.append("satuan_kerja", data.nama_satker);
-            formData.append("nama_paket", data.nama_paket);
-            formData.append("sumber_dana", data.sumber_dana);
+            if (data.nama_satker) {
+                formData.append("satuan_kerja", data.nama_satker);
+            }
 
             if (data.pagu) {
                 formData.append("nilai_pagu", data.pagu);
@@ -199,37 +289,19 @@ export default function useDataEntryHooks() {
                 formData.append("jabatan_pimpinan", data.jabatan_pimpinan);
             }
 
-            if (data.nama_penyedia) {
-                formData.append("pemenang", data.nama_penyedia);
-            }
-            if (data.nilai_penawaran) {
-                formData.append("nilai_penawaran", data.nilai_penawaran);
-            }
             if (data.nilai_penawaran) {
                 formData.append("nilai_penawaran", data.nilai_penawaran);
             }
             if (data.nilai_negosiasi) {
                 formData.append("nilai_negosiasi", data.nilai_negosiasi);
             }
-            if (data.nomor_telp) {
-                formData.append("nomor_telp", data.nomor_telp);
-            }
-            if (data.email) {
-                formData.append("email", data.email);
-            }
-            if (data.npwp_penyedia) {
-                formData.append("npwp", data.npwp_penyedia);
-            }
 
-            if (data.alamat_pemenang) {
-                formData.append("alamat_pemenang", data.alamat_pemenang);
-            }
             if (data.lokasi_pekerjaan) {
                 formData.append("lokasi_pekerjaan", data.lokasi_pekerjaan);
             }
 
-            if (data.catatan) {
-                formData.append("catatan", data.catatan);
+            if (note) {
+                formData.append("catatan", note);
             }
             if (evidenceFile) {
                 formData.append("bukti_file", evidenceFile);
@@ -263,36 +335,25 @@ export default function useDataEntryHooks() {
             if (error) {
                 SwalMessage({
                     title: "Gagal!",
-                    text: "Terjadi Kesalahan!",
+                    text: "Pastikan kode paket/tender terisi!",
                     type: "error"
                 })
             }
-            console.error(error)
         }
     }
 
     const handleEntryPenjabatPengadaanPut = async (type: string) => {
         try {
-            if (!type) {
-                SwalMessage({
-                    title: "Gagal!",
-                    text: "Kode Tender wajib diisi!",
-                    type: "error"
-                });
-                return;
-            }
-
             const formData = new FormData();
             formData.append("_method", "PUT");
-            formData.append("procurement_method", type);
             if (note) {
-                formData.append("note", note);
+                formData.append("catatan", note);
             }
             if (selectedPPK) {
                 formData.append("selected_ppk_id", String(selectedPPK));
             }
             if (evidenceFile) {
-                formData.append("evidence_file", evidenceFile);
+                formData.append("bukti_file", evidenceFile);
             }
 
             SwalLoading();

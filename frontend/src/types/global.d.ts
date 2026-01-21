@@ -105,30 +105,75 @@ declare global {
 
   export interface TenderDataProps {
     _event_date: string | null;
+
     hps: number;
+    pagu: number;
+
     jenis_klpd: string;
+    jenis_pengadaan?: string;
+
     kd_klpd: string;
     kd_lpse: number;
-    kd_paket: number;
-    kd_penyedia: number;
-    kd_rup_paket: string;
+
+    kd_paket?: number;
+    kd_pkt_dce?: number | null;
+
+    kd_rup?: string;
+    kd_rup_paket?: string;
+
     kd_satker: string;
+    kd_satker_str?: string;
+
     kd_tender: number;
-    nama_klpd: string;
-    nama_penyedia: string;
-    nama_satker: string;
-    nilai_kontrak: number;
-    nilai_negosiasi: number;
-    nilai_pdn_kontrak: number | null;
-    nilai_penawaran: number;
-    nilai_terkoreksi: number;
-    nilai_umk_kontrak: number | null;
-    npwp_16_penyedia: string;
-    npwp_penyedia: string;
-    pagu: number;
+
+    kd_penyedia?: number;
+
+    kontrak_pembayaran?: string;
+    kualifikasi_paket?: string;
+
+    list_tahun_anggaran?: string;
     tahun_anggaran: number;
-    tgl_penetapan_pemenang: string;
-    tgl_pengumuman_tender: string;
+
+    lokasi_pekerjaan?: string;
+
+    mtd_evaluasi?: string;
+    mtd_kualifikasi?: string;
+    mtd_pemilihan?: string;
+
+    nama_klpd: string;
+    nama_lpse?: string;
+    nama_paket?: string;
+
+    nama_penyedia?: string;
+    nama_satker: string;
+
+    nama_pokja?: string;
+    nama_ppk?: string;
+
+    nip_pokja?: string;
+    nip_ppk?: string;
+
+    nilai_kontrak?: number;
+    nilai_negosiasi?: number;
+    nilai_pdn_kontrak?: number | null;
+    nilai_penawaran?: number;
+    nilai_terkoreksi?: number;
+    nilai_umk_kontrak?: number | null;
+
+    npwp_16_penyedia?: string | null;
+    npwp_penyedia?: string | null;
+
+    status_tender?: string;
+    sumber_dana?: string;
+
+    tanggal_status?: string;
+    tgl_buat_paket?: string;
+    tgl_kolektif_kolegial?: string;
+    tgl_penetapan_pemenang?: string;
+    tgl_pengumuman_tender?: string;
+
+    url_lpse?: string;
+    versi_tender?: string;
   }
 
   // Hooks Props
@@ -176,14 +221,16 @@ declare global {
 
   export interface DataEntryProps {
     id: number;
-    
+
     metode_pengadaan: string | null;
     kode_paket: string | null;
     kode_rup: string | null;
     tahun_anggaran: string | null;
     satuan_kerja: string | null;
     nama_paket: string | null;
+    tanggal_masuk: string | null;
     sumber_dana: string | null;
+    jenis_pengadaan: string | null;
 
     realisasi_paket: string | null;
     status_paket: string | null;
@@ -219,6 +266,8 @@ declare global {
 
     user_id: number;
     user?: UserProps | null;
+
+    tipe: string;
   }
 
   export interface RABProps {

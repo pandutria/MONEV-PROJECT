@@ -98,6 +98,21 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
     ]
 
     useEffect(() => {
+        if (!metodePengadaan) return;
+
+        SwalMessage({
+            type: "warning",
+            title: "Peringatan!",
+            text: "Harap pilih kode tender / paket kembali!"
+        })
+
+        setSelectedTender(null);
+        setPenyediaV5Param(null);
+        setPenyediaV6Param(null);
+        setShowTender(false);
+    }, [metodePengadaan,  setPenyediaV5Param, setPenyediaV6Param]);
+
+    useEffect(() => {
         const fetchTender = () => {
             if (showTender) {
                 window.scrollTo({
@@ -128,7 +143,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
         fetchTender();
         filteringUserPPK();
-    }, [selectedTender, showTender, listUser]);
+    }, [selectedTender, showTender, listUser, setSelectedTender]);
 
     useEffect(() => {
         const filteringDataNonTender = () => {
@@ -165,7 +180,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
         const fetchPenyediaV6 = () => {
             if (!selectedTender) return;
-            setPenyediaV6Param(selectedTender?.kd_penyedia);
+            setPenyediaV6Param(selectedTender?.kd_penyedia_v6);
         }
 
         filteringDataNonTender();
@@ -197,8 +212,6 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
     if (!user || user.role.name != "pokja") {
         return <Navigate to="/" replace />
     }
-
-    console.log(penyediaV5Data)
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
@@ -324,13 +337,10 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                     <div className="md:col-span-2">
                                         <FormSelect title="Metode Pengadaan" name="" value={String(metodePengadaan)} onChange={(e) => {
                                             setMetodePengadaan(e.target.value);
-                                            // setSelectedTender(null);
-                                            // setPenyediaV5Param(null);
-                                            // setPenyediaV6Param(null);
                                         }}>
                                             {metodePengadaanOptions.map((item, index) => (
                                                 <option key={index} value={item.name}>{item.name}</option>
-                                            ))} 
+                                            ))}
                                         </FormSelect>
                                     </div>
 
@@ -351,11 +361,25 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                         <FormInput title="Satuan Kerja" name="" value={selectedTender?.nama_satker} placeholder="Otomatis terisi" disabled={true} />
                                     </div>
 
-                                    <div className="md:col-span-2">
-                                        <FormInput title="Nama Paket" name="" value={selectedTender?.nama_paket} placeholder="Otomatis terisi" disabled={true} />
-                                    </div>
+                                    {metodePengadaan == "Pengadaan Langsung" || metodePengadaan == "E-Purchasing V5" ? (
+                                        <div className="md:col-span-2">
+                                            <FormInput title="Nama Paket" name="" value={selectedTender?.nama_paket} placeholder="Otomatis terisi" disabled={true} />
+                                        </div>
+                                    ) : (
+                                        <div className="md:col-span-2">
+                                            <FormInput title="Nama Paket" name="" value={selectedTender?.rup_nama_pkt} placeholder="Otomatis terisi" disabled={true} />
+                                        </div>
+                                    )}
 
-                                    <FormInput title="Sumber Dana" name="" value={selectedTender?.sumber_dana ? selectedTender?.sumber_dana : selectedTender?.nama_sumber_dana} placeholder="Otomatis terisi" disabled={true} />
+                                    {metodePengadaan == "Pengadaan Langsung" && (
+                                        <FormInput title="Sumber Dana" name="" value={selectedTender?.sumber_dana} placeholder="Otomatis terisi" disabled={true} />
+                                    )}
+                                    {metodePengadaan == "E-Purchasing V5" && (
+                                        <FormInput title="Sumber Dana" name="" value={selectedTender?.nama_sumber_dana} placeholder="Otomatis terisi" disabled={true} />
+                                    )}
+                                    {metodePengadaan == "E-Purchasing V6" && (
+                                        <FormInput title="Sumber Dana" name="" value={selectedTender?.sumber_dana} placeholder="Otomatis terisi" disabled={true} />
+                                    )}
 
                                     {!isEPurchasing && (
                                         <FormInput title="Jenis Pengadaan" name="" value={selectedTender?.jenis_pengadaan?.toString()} placeholder="Otomatis terisi" disabled={true} />
@@ -368,10 +392,17 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                     <h2 className="font-poppins-semibold text-lg text-gray-800 mb-4 pb-2 border-b-2 border-primary/20">
                                         2. REALISASI PAKET
                                     </h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <FormInput title="Status Paket" value={selectedTender?.status_paket} name="" placeholder="Otomatis terisi" disabled={true} />
-                                        <FormInput title="Status Pengiriman" value={selectedTender?.paket_status_str} name="" placeholder="Otomatis terisi" disabled={true} />
-                                    </div>
+                                    {metodePengadaan == "E-Purchasing V5" ? (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <FormInput title="Status Paket" value={selectedTender?.status_paket} name="" placeholder="Otomatis terisi" disabled={true} />
+                                            <FormInput title="Status Pengiriman" value={selectedTender?.paket_status_str} name="" placeholder="Otomatis terisi" disabled={true} />
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <FormInput title="Status Paket" value={selectedTender?.status_pkt} name="" placeholder="Otomatis terisi" disabled={true} />
+                                            <FormInput title="Status Pengiriman" value={selectedTender?.status_pengiriman} name="" placeholder="Otomatis terisi" disabled={true} />
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
@@ -403,14 +434,34 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                 <h2 className="font-poppins-semibold text-lg text-gray-800 mb-4 pb-2 border-b-2 border-primary/20">
                                     {isEPurchasing ? '5' : '4'}. INFORMASI PEMENANG
                                 </h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <FormInput title="Pemenang" name="" value={selectedTender?.nama_penyedia?.toString() ? selectedTender?.nama_penyedia.toString() : penyediaV5Data[0].nama_penyedia} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title={isEPurchasing ? 'Nilai Total' : 'Nilai Penawaran'} name="" value={selectedTender?.nilai_penawaran?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Nilai Negosiasi/Nilai SPK (Rp)" name="" value={selectedTender?.nilai_negosiasi?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Nomor Telepon/HP" name="" value={penyediaV5Data[0].no_telp_penyedia} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Email" name="" value={penyediaV5Data[0].email_penyedia} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="NPWP" name="" value={selectedTender?.npwp_penyedia?.toString() ? selectedTender?.npwp_penyedia?.toString() : penyediaV5Data[0].npwp_penyedia} placeholder="Otomatis terisi" disabled={true} />
-                                </div>
+                                {metodePengadaan === "E-Purchasing V5" ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <FormInput title="Pemenang" name="" value={penyediaV5Data?.[0]?.nama_penyedia} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Nilai Total" name="" value={selectedTender?.nilai_penawaran?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Nilai Negosiasi/Nilai SPK (Rp)" name="" value={selectedTender?.nilai_negosiasi?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Email" name="" value={penyediaV5Data?.[0]?.email_penyedia} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Nomor Telepon/HP" name="" value={penyediaV5Data?.[0]?.no_telp_penyedia} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="NPWP" name="" value={penyediaV5Data?.[0]?.npwp_penyedia} placeholder="Otomatis terisi" disabled={true} />
+                                    </div>
+                                ) : metodePengadaan === "E-Purchasing V6" ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <FormInput title="Pemenang" name="" value={penyediaV6Data?.[0]?.nama_penyedia} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Nilai Total" name="" value={selectedTender?.nilai_penawaran?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Nilai Negosiasi/Nilai SPK (Rp)" name="" value={selectedTender?.nilai_negosiasi?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Email" name="" value={penyediaV6Data?.[0]?.email} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Nomor Telepon/HP" name="" value={penyediaV6Data?.[0]?.telepon} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="NPWP" name="" value={penyediaV6Data?.[0]?.npwp_penyedia} placeholder="Otomatis terisi" disabled={true} />
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <FormInput title="Pemenang" name="" value={selectedTender?.nama_penyedia?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Nilai Penawaran" name="" value={selectedTender?.nilai_penawaran?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Nilai Negosiasi/Nilai SPK (Rp)" name="" value={selectedTender?.nilai_negosiasi?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Email" name="" value={selectedTender?.email_penyedia} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Nomor Telepon/HP" name="" value={selectedTender?.no_telp_penyedia} placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="NPWP" name="" value={selectedTender?.npwp_penyedia?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    </div>
+                                )}
                             </div>
 
                             <div>
@@ -418,7 +469,13 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                     {isEPurchasing ? '6' : '5'}. LOKASI & ALAMAT
                                 </h2>
                                 <div className="grid grid-cols-1 gap-6">
-                                    <FormInput title="Alamat Pemenang" value={selectedTender?.alamat ? selectedTender?.alamat : penyediaV5Data[0].alamat_penyedia} name="" placeholder="Otomatis terisi" disabled={true} />
+                                    {metodePengadaan == "Pengadaan Langsung" ? (
+                                        <FormInput title="Alamat Pemenang" value={selectedTender?.alamat} name="" placeholder="Otomatis terisi" disabled={true} />
+                                    ) : metodePengadaan == "E-Purchasing V5" ? (
+                                        <FormInput title="Alamat Pemenang" value={penyediaV5Data?.[0]?.alamat_penyedia} name="" placeholder="Otomatis terisi" disabled={true} />
+                                    ) : (
+                                        <FormInput title="Alamat Pemenang" value={penyediaV6Data?.[0]?.alamat_penyedia} name="" placeholder="Otomatis terisi" disabled={true} />
+                                    )}
                                     <FormInput title="Lokasi Pekerjaan" name="" value={selectedTender?.lokasi_pekerjaan?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                 </div>
                             </div>
@@ -442,7 +499,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                             </div>
 
                             <div className="flex justify-end gap-4 pt-4">
-                                <SubmitButton text='Simpan' onClick={() => handleEntryPenjabatPengadaanPost(selectedTender as any, metodePengadaan)} />
+                                <SubmitButton text='Simpan' onClick={() => handleEntryPenjabatPengadaanPost(selectedTender as any, penyediaV5Data ? penyediaV5Data : penyediaV6Data ? penyediaV6Data : null, metodePengadaan)} />
                             </div>
                         </div>
                     </div>

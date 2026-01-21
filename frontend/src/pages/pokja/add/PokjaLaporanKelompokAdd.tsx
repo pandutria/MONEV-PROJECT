@@ -15,14 +15,18 @@ import useUserHooks from '../../../hooks/UserHooks';
 import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import SubmitButton from '../../../ui/SubmitButton';
 import TableHeader from '../../../ui/TableHeader';
-import useNewTenderInaprocHooks from '../../../hooks/NewTenderInaprocHooks';
+import TenderData from '../../../data/TenderData';
+import { SwalMessage } from '../../../utils/SwalMessage';
 
 export default function PokjaLaporanKelompokAdd() {
     const [metodePengadaan, setMetodePengadaan] = useState<any>("");
-    const { newTenderInaprocHooks } = useNewTenderInaprocHooks();
-    const [tenderDataFilter, setTenderDataFilter] = useState<NewTenderProps[]>([]);
+    const { tenderData, tenderTahun, setTenderTahun } = TenderData();
+    const [tenderDataFilter, setTenderDataFilter] = useState<TenderDataProps[]>([]);
+
     const [showTender, setShowTender] = useState<any>('');
-    const [selectedTender, setSelectedTender] = useState<NewTenderProps | any>(null);
+    const [selectedTender, setSelectedTender] = useState<any>(null);
+    const [metodePengadaanOptions, setMetodePengadaanOptions] = useState<any>([]);
+
     const { user, loading } = useAuth();
     const { listUser } = useUserHooks();
     const [search, setSearch] = useState("");
@@ -33,32 +37,20 @@ export default function PokjaLaporanKelompokAdd() {
         handleChangeFileEntryPenjabatPengadaan
     } = useDataEntryHooks();
 
-    const metodePengadaanOptions = [
-        {
-            id: 1,
-            name: "Kontes"
-        },
-        {
-            id: 2,
-            name: "Penunjukan Langsung"
-        },
-        {
-            id: 3,
-            name: "Sayembara"
-        },
-        {
-            id: 4,
-            name: "Seleksi"
-        },
-        {
-            id: 5,
-            name: "Tender"
-        },
-        {
-            id: 6,
-            name: "Tender Cepat"
-        },
-    ];
+    useEffect(() => {
+        if (!tenderData || tenderData.length === 0) return;
+
+        const uniqueMetode = Array.from(
+            new Set(tenderData.map((item: any) => item.mtd_pemilihan))
+        );
+
+        const options = uniqueMetode.map((name, index) => ({
+            id: index + 1,
+            name
+        }));
+
+        setMetodePengadaanOptions(options);
+    }, [tenderData]);
 
     const tenderColumns = [
         {
@@ -74,21 +66,13 @@ export default function PokjaLaporanKelompokAdd() {
             label: "Kode RUP"
         },
         {
+            key: "mtd_pemilihan",
+            label: "Metode Pengadaan"
+        },
+        {
             key: "tahun_anggaran",
             label: "Tahun Anggaran"
-        },
-        {
-            key: "nama_satker",
-            label: "Satuan Kerja"
-        },
-        {
-            key: "nama_paket",
-            label: "Nama Paket"
-        },
-        {
-            key: "sumber_dana",
-            label: "Sumber Dana"
-        },
+        }
     ]
 
     useEffect(() => {
@@ -105,26 +89,39 @@ export default function PokjaLaporanKelompokAdd() {
         }
 
         const filteringDataTender = () => {
-            const filter = newTenderInaprocHooks?.filter((item: NewTenderProps) => {
-                const data = item?.kd_tender?.toString().toLowerCase().includes(search.toLowerCase());
-                return data;
+            const filter = tenderData?.filter((item: TenderDataProps) => {
+                const data = item?.kd_paket?.toString().toLowerCase().includes(search.toLowerCase());
+                const metode = item.mtd_pemilihan?.toString().toLowerCase().includes(metodePengadaan?.toLowerCase());
+                return data && metode;
             });
-            
+
             setTenderDataFilter(filter);
         }
-        
+
         fetchTender();
         filteringDataTender();
-    }, [selectedTender, showTender, listUser, search, newTenderInaprocHooks]);
-    
-    if (loading || newTenderInaprocHooks.length == 0) {
+    }, [selectedTender, showTender, listUser, search, tenderData, metodePengadaan]);
+
+    const handleShowTender = () => {
+        if (metodePengadaan) {
+            setShowTender(true);
+            setSelectedTender(null);
+        } else {
+            SwalMessage({
+                type: "error",
+                title: "Gagal!",
+                text: "Harap pilih metode pengadaan terlebih dahulu!"
+            });
+        }
+    }
+
+    if (loading || tenderData.length == 0) {
         return <LoadingSpinner />
     }
 
     if (!user || user.role.name != "pokja") {
         return <Navigate to="/" replace />
     }
-
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
@@ -145,6 +142,8 @@ export default function PokjaLaporanKelompokAdd() {
                                     showHapus={false}
                                     showTambah={false}
                                     searchValue={search}
+                                    selectedTahunQuery={tenderTahun}
+                                    onTahunQueryChange={(item) => setTenderTahun(item)}
                                     onSearchChange={(item) => setSearch(item)}
                                 />
                                 <div className="overflow-y-auto max-h-[70vh] w-full">
@@ -181,17 +180,14 @@ export default function PokjaLaporanKelompokAdd() {
                                         <FormSelect title="Metode Pengadaan" name="" value={String(metodePengadaan)} onChange={(e) => {
                                             setMetodePengadaan(e.target.value);
                                         }}>
-                                            {metodePengadaanOptions.map((item, index) => (
+                                            {metodePengadaanOptions.map((item: any, index: number) => (
                                                 <option key={index} value={item.name}>{item.name}</option>
                                             ))}
                                         </FormSelect>
                                     </div>
 
                                     <div className="md:col-span-2">
-                                        <ShowTableForm tenderCode={selectedTender ? selectedTender?.kd_tender : "Kode tender / No Tender"} onClick={() => {
-                                            setShowTender(true);
-                                            setSelectedTender(null);
-                                        }} />
+                                        <ShowTableForm tenderCode={selectedTender ? selectedTender?.kd_tender : "Kode tender / No Tender"} onClick={() => handleShowTender()} />
                                     </div>
 
                                     <FormInput title="Kode RUP" name="" value={selectedTender?.kd_rup} placeholder="Otomatis terisi" disabled={true} />
@@ -273,7 +269,7 @@ export default function PokjaLaporanKelompokAdd() {
                             </div>
 
                             <div className="flex justify-end gap-4 pt-4">
-                                <SubmitButton text='Simpan' onClick={() => handleEntryPenjabatPengadaanPost(selectedTender, metodePengadaan)} />
+                                <SubmitButton text='Simpan' onClick={() => handleEntryPenjabatPengadaanPost(selectedTender, null, metodePengadaan)} />
                             </div>
                         </div>
                     </div>

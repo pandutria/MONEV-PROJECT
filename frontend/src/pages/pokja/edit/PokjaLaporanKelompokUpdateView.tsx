@@ -12,13 +12,10 @@ import { Navigate, useLocation, useParams } from 'react-router-dom';
 import useUserHooks from '../../../hooks/UserHooks';
 import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import SubmitButton from '../../../ui/SubmitButton';
-import useNewTenderInaprocHooks from '../../../hooks/NewTenderInaprocHooks';
 
 export default function PokjaLaporanKelompokUpdateView() {
     const { id } = useParams();
-    const [metodePengadaan, setMetodePengadaan] = useState<any>("");
-    const { newTenderInaprocHooks } = useNewTenderInaprocHooks();
-    const [selectedTender, setSelectedTender] = useState<NewTenderProps | any>(null);
+
     const { user, loading } = useAuth();
     const { listUser } = useUserHooks();
     const [isDisabled, setIsDisabled] = useState(false);
@@ -32,33 +29,6 @@ export default function PokjaLaporanKelompokUpdateView() {
         dataEntryPengadaanById
     } = useDataEntryHooks();
 
-    const metodePengadaanOptions = [
-        {
-            id: 1,
-            name: "Kontes"
-        },
-        {
-            id: 2,
-            name: "Penunjukan Langsung"
-        },
-        {
-            id: 3,
-            name: "Sayembara"
-        },
-        {
-            id: 4,
-            name: "Seleksi"
-        },
-        {
-            id: 5,
-            name: "Tender"
-        },
-        {
-            id: 6,
-            name: "Tender Cepat"
-        },
-    ];
-
     useEffect(() => {
         const fetchtenderId = () => {
             if (id) {
@@ -71,7 +41,7 @@ export default function PokjaLaporanKelompokUpdateView() {
         }
         
         fetchtenderId();
-    }, [selectedTender, listUser, newTenderInaprocHooks, id, setSelectedId, location]);
+    }, [listUser, id, setSelectedId, location]);
 
     if (loading) {
         return <LoadingSpinner />
@@ -100,41 +70,33 @@ export default function PokjaLaporanKelompokUpdateView() {
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="md:col-span-2">
-                                        <FormSelect disabled={true} title="Metode Pengadaan" name="" value={dataEntryPengadaanById?.procurement_method?.toString()} onChange={(e) => {
-                                            setMetodePengadaan(e.target.value);
-                                        }}>
-                                            {metodePengadaanOptions.map((item, index) => (
-                                                <option key={index} value={item.name}>{item.name}</option>
-                                            ))}
+                                        <FormSelect disabled={true} title="Metode Pengadaan" name="" value={dataEntryPengadaanById?.metode_pengadaan?.toString()}>
+                                            <option value={dataEntryPengadaanById?.metode_pengadaan?.toString()}>{dataEntryPengadaanById?.metode_pengadaan?.toString()}</option>
                                         </FormSelect>
                                     </div>
 
                                     <div className="md:col-span-2">
-                                        <ShowTableForm disabled={true} tenderCode={dataEntryPengadaanById?.tender_code?.toString()} onClick={() => {
-                                            if (!isDisabled) {
-                                                setSelectedTender(null);
-                                            }
-                                        }} />
+                                        <ShowTableForm disabled={true} tenderCode={dataEntryPengadaanById?.kode_paket?.toString()} />
                                     </div>
 
-                                    <FormInput disabled={true} title="Kode RUP" name="" value={dataEntryPengadaanById?.rup_code?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Tahun Anggaran" name="" value={dataEntryPengadaanById?.fiscal_year?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Kode RUP" name="" value={dataEntryPengadaanById?.kode_rup?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Tahun Anggaran" name="" value={dataEntryPengadaanById?.tahun_anggaran?.toString()} placeholder="Otomatis terisi" />
 
                                     <div className="md:col-span-2">
-                                        <FormInput disabled={true} title="Satuan Kerja" name="" value={dataEntryPengadaanById?.satker_name?.toString()} placeholder="Otomatis terisi" />
+                                        <FormInput disabled={true} title="Satuan Kerja" name="" value={dataEntryPengadaanById?.satuan_kerja?.toString()} placeholder="Otomatis terisi" />
                                     </div>
 
                                     <div className="md:col-span-2">
-                                        <FormInput disabled={true} title="Nama Paket" name="" value={dataEntryPengadaanById?.package_name?.toString()} placeholder="Otomatis terisi" />
+                                        <FormInput disabled={true} title="Nama Paket" name="" value={dataEntryPengadaanById?.nama_paket?.toString()} placeholder="Otomatis terisi" />
                                     </div>
 
                                     <div className="md:col-span-2">
-                                        <FormInput disabled={true} title="Tanggal Masuk" name="" value={dataEntryPengadaanById?.order_date?.toString()} placeholder="Otomatis terisi" />
+                                        <FormInput disabled={true} title="Tanggal Masuk" name="" value={dataEntryPengadaanById?.tanggal_masuk?.toString()} placeholder="Otomatis terisi" />
                                     </div>
 
-                                    <FormInput disabled={true} title="Sumber Dana" name="" value={dataEntryPengadaanById?.funding_source?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Sumber Dana" name="" value={dataEntryPengadaanById?.sumber_dana?.toString()} placeholder="Otomatis terisi" />
 
-                                    <FormInput disabled={true} title="Jenis Pengadaan" name="" value={dataEntryPengadaanById?.procurement_type?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Jenis Pengadaan" name="" value={dataEntryPengadaanById?.jenis_pengadaan?.toString()} placeholder="Otomatis terisi" />
                                 </div>
                             </div>                            
 
@@ -143,8 +105,8 @@ export default function PokjaLaporanKelompokUpdateView() {
                                     2. INFORMASI KEUANGAN
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <FormInput disabled={true} title="Nilai Pagu (Rp)" name="" value={dataEntryPengadaanById?.budget_value?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Nilai HPS (Rp)" name="" value={dataEntryPengadaanById?.hps_value?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Nilai Pagu (Rp)" name="" value={dataEntryPengadaanById?.nilai_pagu?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Nilai HPS (Rp)" name="" value={dataEntryPengadaanById?.nilai_hps?.toString()} placeholder="Otomatis terisi" />
                                 </div>
                             </div>
 
@@ -153,12 +115,12 @@ export default function PokjaLaporanKelompokUpdateView() {
                                     3. DETAIL KONTRAK
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <FormInput disabled={true} title="Nomor Kontrak" name="" value={dataEntryPengadaanById?.contract_number?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Tanggal Kontrak" name="" value={dataEntryPengadaanById?.contract_date?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Nama PPK" name="" value={dataEntryPengadaanById?.ppk_name?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Jabatan PPK" name="" value={dataEntryPengadaanById?.ppk_position?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Nama Pimpinan Perusahaan" name="" value={dataEntryPengadaanById?.company_leader?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Jabatan Pimpinan" name="" value={dataEntryPengadaanById?.leader_position?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Nomor Kontrak" name="" value={dataEntryPengadaanById?.nomor_kontrak?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Tanggal Kontrak" name="" value={dataEntryPengadaanById?.tanggal_kontrak?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Nama PPK" name="" value={dataEntryPengadaanById?.nama_ppk?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Jabatan PPK" name="" value={dataEntryPengadaanById?.jabatan_ppk?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Nama Pimpinan Perusahaan" name="" value={dataEntryPengadaanById?.nama_pimpinan_perusahaan?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Jabatan Pimpinan" name="" value={dataEntryPengadaanById?.jabatan_pimpinan?.toString()} placeholder="Otomatis terisi" />
                                 </div>
                             </div>
 
@@ -167,10 +129,10 @@ export default function PokjaLaporanKelompokUpdateView() {
                                     4. INFORMASI PEMENANG
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <FormInput disabled={true} title="Pemenang" name="" value={dataEntryPengadaanById?.winner_name?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Nilai Penawaran" name="" value={dataEntryPengadaanById?.total_value?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Nilai Negosiasi/Nilai SPK (Rp)" name="" value={dataEntryPengadaanById?.negotiation_value?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Nomor Telepon/HP" name="" value={dataEntryPengadaanById?.phone?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Pemenang" name="" value={dataEntryPengadaanById?.pemenang?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Nilai Penawaran" name="" value={dataEntryPengadaanById?.nilai_penawaran?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Nilai Negosiasi/Nilai SPK (Rp)" name="" value={dataEntryPengadaanById?.nilai_negosiasi?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Nomor Telepon/HP" name="" value={dataEntryPengadaanById?.nomor_telp?.toString()} placeholder="Otomatis terisi" />
                                     <FormInput disabled={true} title="Email" name="" value={dataEntryPengadaanById?.email?.toString()} placeholder="Otomatis terisi" />
                                     <FormInput disabled={true} title="NPWP" name="" value={dataEntryPengadaanById?.npwp?.toString()} placeholder="Otomatis terisi" />
                                 </div>
@@ -181,8 +143,8 @@ export default function PokjaLaporanKelompokUpdateView() {
                                     5. LOKASI & ALAMAT
                                 </h2>
                                 <div className="grid grid-cols-1 gap-6">
-                                    <FormInput disabled={true} title="Alamat Pemenang" name="" value={dataEntryPengadaanById?.winner_address?.toString()} placeholder="Otomatis terisi" />
-                                    <FormInput disabled={true} title="Lokasi Pekerjaan" name="" value={dataEntryPengadaanById?.work_location?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Alamat Pemenang" name="" value={dataEntryPengadaanById?.alamat_pemenang?.toString()} placeholder="Otomatis terisi" />
+                                    <FormInput disabled={true} title="Lokasi Pekerjaan" name="" value={dataEntryPengadaanById?.lokasi_pekerjaan?.toString()} placeholder="Otomatis terisi" />
                                 </div>
                             </div>
 
@@ -191,14 +153,14 @@ export default function PokjaLaporanKelompokUpdateView() {
                                     6. LAMPIRAN DAN CATATAN
                                 </h2>
                                 <div className="grid grid-cols-1 gap-6">
-                                    <FormUploadFile disabled={isDisabled} value={dataEntryPengadaanById ? dataEntryPengadaanById.evidence_file : ''} title="Evidence/Bukti Laporan Hasil Pemilihan PP" name="file" onChange={handleChangeFileEntryPenjabatPengadaan} />
-                                    <FormInput disabled={isDisabled} title="Catatan" type='textarea' name="note" value={note ? note as any : dataEntryPengadaanById?.note} onChange={handleChangeEntryPenjabatPengadaan} placeholder="Catatan" />
+                                    <FormUploadFile disabled={isDisabled} value={dataEntryPengadaanById ? dataEntryPengadaanById.bukti_file : ''} title="Evidence/Bukti Laporan Hasil Pemilihan PP" name="file" onChange={handleChangeFileEntryPenjabatPengadaan} />
+                                    <FormInput disabled={isDisabled} title="Catatan" type='textarea' name="note" value={note ? note as any : dataEntryPengadaanById?.catatan} onChange={handleChangeEntryPenjabatPengadaan} placeholder="Catatan" />
                                 </div>
                             </div>
 
                             {!isDisabled && (
                                 <div className="flex justify-end gap-4 pt-4">
-                                    <SubmitButton text='Simpan' onClick={() => handleEntryPenjabatPengadaanPut(metodePengadaan ? metodePengadaan : dataEntryPengadaanById?.procurement_method?.toString())} />
+                                    <SubmitButton text='Simpan' onClick={() => handleEntryPenjabatPengadaanPut(dataEntryPengadaanById?.metode_pengadaan?.toString() as any)} />
                                 </div>
                             )}
                         </div>

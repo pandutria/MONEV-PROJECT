@@ -24,19 +24,19 @@ export default function PokjaLaporanKelompok() {
             label: 'No'
         },
         {
-            key: 'tender_code',
+            key: 'kode_paket',
             label: 'Kode Tender'
         },
         {
-            key: 'rup_code',
+            key: 'kode_rup',
             label: 'Kode RUP'
         },
         {
-            key: 'package_name',
+            key: 'nama_paket',
             label: 'Nama Paket'
         },
         {
-            key: 'contract_date',
+            key: 'tanggal_kontrak',
             label: 'Tanggal Masuk/Perubahan'
         },
     ];    
@@ -58,9 +58,9 @@ export default function PokjaLaporanKelompok() {
 
         const filteringDataEntryPengadaan = () => {
             const filter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
-                const typeFilter = item?.type?.includes("kelompok");
+                const typeFilter = item?.tipe?.includes("Kelompok");
 
-                const dataFilter = search ? item?.tender_code?.toLowerCase().includes(search.toLowerCase()) : true;
+                const dataFilter = search ? item?.kode_paket?.toLowerCase().includes(search.toLowerCase()) : true;
                 return dataFilter && typeFilter;
             });
 
@@ -91,6 +91,7 @@ export default function PokjaLaporanKelompok() {
                     onHapusClick={() => handleDataEntryPengadaanDelete(selectedRemove)}
                     onTambahClick={() => navigate("/pokja/data-entry-kelompok-kerja/tambah")}
                     type="pokja"
+                    showTahunQuery={false}
                     searchValue={search}
                     onSearchChange={(item) => setSearch(item)}
                 />

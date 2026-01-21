@@ -24,20 +24,24 @@ export default function PokjaLaporanPenjabatPengadaan() {
             label: 'No'
         },
         {
-            key: 'tender_code',
+            key: 'kode_paket',
             label: 'Kode Tender'
         },
         {
-            key: 'rup_code',
+            key: 'kode_rup',
             label: 'Kode RUP'
         },
         {
-            key: 'package_name',
+            key: 'nama_paket',
             label: 'Nama Paket'
         },
         {
-            key: 'contract_date',
+            key: 'tanggal_kontrak',
             label: 'Tanggal Masuk/Perubahan'
+        },
+        {
+            key: 'metode_pengadaan',
+            label: 'Metode Pengadaan'
         },
     ];
 
@@ -58,8 +62,8 @@ export default function PokjaLaporanPenjabatPengadaan() {
 
         const filteringDataEntryPengadaan = () => {
             const filter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
-                const filterType = item?.type?.includes("penjabat");
-                const dataFilter = search ? item?.tender_code?.toLowerCase().includes(search.toLowerCase()) : true;
+                const filterType = item?.tipe?.includes("Penjabat");
+                const dataFilter = search ? item?.kode_paket?.toLowerCase().includes(search.toLowerCase()) : true;
                 return dataFilter && filterType;
             });
 
@@ -91,6 +95,7 @@ export default function PokjaLaporanPenjabatPengadaan() {
                     onHapusClick={() => handleDataEntryPengadaanDelete(selectedRemove)}
                     onTambahClick={() => navigate("/pokja/data-entry-penjabat-pengadaan/tambah")}
                     searchValue={search}
+                    showTahunQuery={false}
                     onSearchChange={(item) => setSearch(item)}
                 />
                 <div className="p-6">

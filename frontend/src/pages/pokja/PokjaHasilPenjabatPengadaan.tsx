@@ -29,35 +29,35 @@ export default function PokjaHasilPenjabatPengadaan() {
             label: 'OPD'
         },
         {
-            key: 'package_name',
+            key: 'nama_paket',
             label: 'Nama Paket'
         },
         {
-            key: 'procurement_method',
+            key: 'metode_pengadaan',
             label: 'Metode Pengadaan'
         },
         {
-            key: 'budget_value',
+            key: 'nilai_pagu',
             label: 'Nilai Pagu'
         },
         {
-            key: 'hps_value',
+            key: 'nilai_hps',
             label: 'Nilai HPS'
         },
         {
-            key: 'winner_name',
+            key: 'pemenang',
             label: 'Pemenang'
         },
         {
-            key: 'bid_value',
+            key: 'nilai_penawaran',
             label: 'Nilai Penawaran'
         },
         {
-            key: 'negotiation_value',
+            key: 'nilai_negosiasi',
             label: 'Nilai Negosiasi'
         },
         {
-            key: 'contract_date',
+            key: 'tanggal_masuk',
             label: 'No & Tanggal'
         },
         {
@@ -73,17 +73,17 @@ export default function PokjaHasilPenjabatPengadaan() {
     useEffect(() => {
         const filteringDataEntry = () => {
             const dataFilter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
-                const filterType = item?.type?.includes("penjabat");
+                const filterType = item?.tipe?.includes("Penjabat");
                 const tahunFilter = tahun
-                    ? item?.fiscal_year?.toString().includes(tahun)
+                    ? item?.tahun_anggaran?.toString().includes(tahun)
                     : true;
 
                 const metodeFilter = metodePengadaan
-                    ? item?.procurement_method === metodePengadaan
+                    ? item?.metode_pengadaan === metodePengadaan
                     : true;
 
                 const sumberDanaFilter = sumberDana
-                    ? item?.funding_source === sumberDana
+                    ? item?.sumber_dana === sumberDana
                     : true;
 
                 return filterType && tahunFilter && metodeFilter && sumberDanaFilter;;
