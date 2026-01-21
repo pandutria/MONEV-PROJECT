@@ -14,27 +14,11 @@ import { Navigate, useLocation, useParams } from 'react-router-dom';
 import TableHeader from '../../../ui/TableHeader';
 import useScheduleHooks from '../../../hooks/ScheduleHooks';
 
-interface TenderProps {
-  id: number;
-  fiscal_year: string;
-  satker_name: string;
-  rup_code: string;
-  tender_code: string;
-  package_name: string;
-  work_location: string;
-  program: string;
-  activity: string;
-  start_date: string;
-  end_date: string;
-  revision_count: number;
-  revision_text: string;
-}
-
 export default function PPKJadwalPelaksanaanUpdateView() {
   const [showTender, setShowTender] = useState(false);
   const [search, setSearch] = useState("");
-  const [tenderDataFilter, setTenderDataFilter] = useState<TenderProps[]>([]);
-  const [selectedRab, setSelectedRab] = useState<TenderProps | null>(null);
+  const [tenderDataFilter, setTenderDataFilter] = useState<NewTenderProps[]>([]);
+  const [selectedRab, setSelectedRab] = useState<RABProps | null>(null);
   const { rabData } = useRABHooks();
   const {
     setSelectedId,
@@ -94,23 +78,23 @@ export default function PPKJadwalPelaksanaanUpdateView() {
       label: 'No'
     },
     {
-      key: 'fiscal_year',
+      key: 'tahun_anggaran',
       label: 'Tahun Anggaran'
     },
     {
-      key: 'satker_name',
+      key: 'satuan_kerja',
       label: 'Satuan Kerja'
     },
     {
-      key: 'rup_code',
+      key: 'kode_rup',
       label: 'Kode RUP'
     },
     {
-      key: 'tender_code',
+      key: 'kode_tender',
       label: 'kode Tender'
     },
     {
-      key: 'package_name',
+      key: 'nama_paket',
       label: 'Nama Paket'
     },
   ];
@@ -169,7 +153,7 @@ export default function PPKJadwalPelaksanaanUpdateView() {
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-poppins-regular">
-              <ShowTableForm tenderCode={selectedRab?.tender_code ? selectedRab?.tender_code : scheduleDataById?.rab?.tender?.tender_code} onClick={() => {
+              <ShowTableForm disabled={isDisabled} tenderCode={selectedRab?.kode_tender ? selectedRab?.kode_tender : scheduleDataById?.rab?.tender?.tender_code} onClick={() => {
                 if (!isDisabled) {
                   setShowTender(true);
                   setSelectedRab(null);

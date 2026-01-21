@@ -18,22 +18,24 @@ export default function PPKRencanaAnggaran() {
     const [selectRevisi, setSelectRevisi] = useState<RABProps | null>(null);
     const [showRevisi, setShowRevisi] = useState(false);
     const [selectPreview, setSelectPreview] = useState<any>(null);
+    const [selectedRemove, setSelectedRemove] = useState<number[]>([]);
     const { user, loading } = useAuth();
     const { 
         rabData,
         tahunData,
-        satkerData
+        satkerData,
+        handleDeleteRab
     } = useRABHooks();
-    const [rabDataFilter, setRabDataFilter] = useState<TenderProps[]>([]);
+    const [rabDataFilter, setRabDataFilter] = useState<RABProps[]>([]);
     const [reason, setReason] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         const filteringDataRab = () => {
-            const dataFilter = rabData?.filter((item: TenderProps | any) => {
-                const tahunFilter = tahun ? item?.fiscal_year.toString().includes(tahun) : true;
-                const searchFilter = search ? item?.tender_code.toLowerCase().includes(search.toLowerCase()) : true;
-                const satuanKerjaFilter = satuanKerja ? item.satker_name.toLowerCase().includes(satuanKerja.toLowerCase()) : true;
+            const dataFilter = rabData?.filter((item: RABProps) => {
+                const tahunFilter = tahun ? item?.tahun_anggaran?.toString().includes(tahun) : true;
+                const searchFilter = search ? item?.kode_tender?.toLowerCase().includes(search.toLowerCase()) : true;
+                const satuanKerjaFilter = satuanKerja ? item.satuan_kerja?.toLowerCase().includes(satuanKerja.toLowerCase()) : true;
 
                 return tahunFilter && searchFilter && satuanKerjaFilter;
             });
@@ -50,27 +52,27 @@ export default function PPKRencanaAnggaran() {
             label: 'No'
         },
         {
-            key: 'fiscal_year',
+            key: 'tahun_anggaran',
             label: 'Tahun Anggaran'
         },
         {
-            key: 'satker_name',
+            key: 'satuan_kerja',
             label: 'Satuan Kerja'
         },
         {
-            key: 'rup_code',
+            key: 'kode_rup',
             label: 'Kode RUP'
         },
         {
-            key: 'tender_code',
+            key: 'kode_tender',
             label: 'kode Tender'
         },
         {
-            key: 'package_name',
+            key: 'nama_paket',
             label: 'Nama Paket'
         },
         {
-            key: 'revisi',
+            key: 'revision',
             label: 'Revisi'
         },
     ];
@@ -162,18 +164,20 @@ export default function PPKRencanaAnggaran() {
                     onTahunChange={setTahun}
                     selectedSatuanKerja={satuanKerja}
                     onSatuanKerjaChange={setSatuanKerja}
-                    showHapus={false}
+                    showHapus={true}
                     onTambahClick={() => navigate("/ppk/rencana-anggaran/tambah")}
+                    onHapusClick={() => handleDeleteRab(selectedRemove)}
                 />
                 <div className="p-6">
                     <TableContent
                         columns={columns}
                         data={rabDataFilter}
-                        isSelect={false}
+                        isSelect={true}
                         showEdit={true}
-                        showPreview={true}                    
+                        showPreview={true}
                         onEdit={(item) => setSelectRevisi(item)}
                         onPreview={(item) => setSelectPreview(item)} 
+                        onSelectedIdsChange={(item) => setSelectedRemove(item)}
                     />
                 </div>
             </div>

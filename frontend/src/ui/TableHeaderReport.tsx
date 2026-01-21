@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FileText, Printer, FileDown, FileSpreadsheet } from 'lucide-react';
+import { Printer, FileDown, FileSpreadsheet } from 'lucide-react';
 
 interface TableHeaderReportProps {
     title: string;
@@ -37,7 +37,6 @@ export default function TableHeaderReport({
     onMetodePengadaanChange,
     onSumberDanaChange,
     onNamaPenggunaChange,
-    onBuatReport,
     onPrint,
     onSavePDF,
     onSaveExcel,
@@ -110,14 +109,6 @@ export default function TableHeaderReport({
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
-                    <button
-                        onClick={onBuatReport}
-                        className="flex items-center justify-center text-[12px] gap-2 bg-primary border-2 border-primary hover:bg-transparent text-white hover:text-primary font-poppins-medium px-4 py-2.5 rounded-lg transition-colors duration-200 cursor-pointer shadow-sm hover:shadow-md"
-                    >
-                        <FileText className="h-5 w-5" />
-                        Buat Report
-                    </button>
-
                     <button
                         onClick={onPrint}
                         className="flex items-center justify-center text-[12px] gap-2 bg-blue-600 border-2 border-blue-600 hover:bg-transparent text-white hover:text-blue-600 font-poppins-medium px-4 py-2.5 rounded-lg transition-colors duration-200 cursor-pointer shadow-sm hover:shadow-md"

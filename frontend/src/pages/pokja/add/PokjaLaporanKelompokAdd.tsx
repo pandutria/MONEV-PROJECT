@@ -106,18 +106,18 @@ export default function PokjaLaporanKelompokAdd() {
 
         const filteringDataTender = () => {
             const filter = newTenderInaprocHooks?.filter((item: NewTenderProps) => {
-                const data = item?.kd_tender?.toString()?.toLowerCase().includes(search.toLowerCase());
+                const data = item?.kd_tender?.toString().toLowerCase().includes(search.toLowerCase());
                 return data;
             });
-
+            
             setTenderDataFilter(filter);
         }
-
+        
         fetchTender();
         filteringDataTender();
     }, [selectedTender, showTender, listUser, search, newTenderInaprocHooks]);
-
-    if (loading) {
+    
+    if (loading || newTenderInaprocHooks.length == 0) {
         return <LoadingSpinner />
     }
 

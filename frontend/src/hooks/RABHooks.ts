@@ -18,63 +18,77 @@ export default function useRABHooks() {
     const [rabDataByid, setRabDataById] = useState<RABProps | null>(null);
     const [selectedId, setSelectedId] = useState<any>(null);
     const navigate = useNavigate();
+    const [revisionCount, setRevisionCount] = useState<any[]>([]);
+
+    const buildTahunOptions = (data: { tahun_anggaran?: number | null }[]) => {
+        const uniqueYears = Array.from(
+            new Set(
+                data
+                    .map(item => item.tahun_anggaran)
+                    .filter((v): v is number => typeof v === "number")
+            )
+        ).sort((a, b) => b - a);
+
+        return uniqueYears.map(tahun => ({
+            id: tahun.toString(),
+            text: tahun.toString()
+        }));
+    };
+
+
+    const buildSatkerOptions = (data: any[]) => {
+        const uniqueMap = new Map<string, string>();
+
+        data.forEach(item => {
+            if (typeof item.satuan_kerja === "string") {
+                uniqueMap.set(item.satuan_kerja, item.satuan_kerja);
+            }
+        });
+
+        return Array.from(uniqueMap.entries()).map(([key, value]) => ({
+            id: key,
+            text: value
+        }));
+    };
 
     useEffect(() => {
         const fetchRab = async () => {
             try {
                 const response = await API.get("/rab");
-                const mappingData = response.data.data.map((item: RABProps) => ({
-                    id: item.id,
-                    fiscal_year: item.tender?.fiscal_year,
-                    satker_name: item.tender?.satker_name,
-                    rup_code: item.tender?.rup_code,
-                    tender_code: item.tender?.tender_code,
-                    package_name: item.tender?.package_name ? item.tender?.package_name : "Tidak Ada",
-                    revisi: item.revision_count,
-                    program: item.program,
-                    activity: item.activity,
-                    start_date: item.start_date,
-                    end_date: item.end_date,
-                    revision_text: item.revision_text,
-                    revision_count: item.revision_count
+                const data: RABProps[] = response.data.data;
+
+                const latestRabMap = new Map<number, RABProps>();
+
+                data.forEach(item => {
+                    if (!item.rab_group_id) return;
+
+                    const existing = latestRabMap.get(item.rab_group_id);
+                    if (!existing || item.revision > existing.revision) {
+                        latestRabMap.set(item.rab_group_id, item);
+                    }
+                });
+
+                const mappingData = Array.from(latestRabMap.values()).map(item => ({
+                    ...item,
+                    fiscal_year: item.tahun_anggaran?.toString() || ""
                 }));
 
-                const tahunUnique = Array.from(
-                    new Set(
-                        mappingData
-                            .map((item: { fiscal_year: any; }) => item.fiscal_year)
-                            .filter(Boolean)
-                    )
-                ).sort((a, b) => Number(b) - Number(a));
+                const revisions = data.map(item => ({
+                    rab_id: item.id,
+                    revisi: item.revision
+                })).sort((a: any, b: any) => a - b)
 
-                const tahunOptions = tahunUnique.map((tahun, index) => ({
-                    id: index + 1,
-                    tahun: tahun?.toString()
-                }));
-
-
-                const satkerUnique = Array.from(
-                    new Set(
-                        mappingData
-                            .map((item: { satker_name: any; }) => item.satker_name)
-                            .filter(Boolean)
-                    )
-                );
-
-                const satkerOptions = [
-                    ...satkerUnique.map((satker, index) => ({
-                        id: index + 2,
-                        text: satker
-                    }))
-                ];
+                const tahunOpts = buildTahunOptions(data);
+                const satkerOpts = buildSatkerOptions(data);
 
                 setRabData(SortDescById(mappingData));
-                setTahunData(tahunOptions);
-                setSatkerData(satkerOptions);
+                setTahunData(tahunOpts);
+                setSatkerData(satkerOpts);
+                setRevisionCount(revisions);
             } catch (error) {
                 console.error(error);
             }
-        }
+        };
 
         const fetchRabById = async () => {
             try {
@@ -84,13 +98,13 @@ export default function useRABHooks() {
             } catch (error) {
                 console.error(error);
             }
-        }        
+        }
 
         fetchRab();
         fetchRabById();
     }, [selectedId]);
 
-    const handleRABPost = async (dataRabHead: TenderProps, dataRabDetail: RABDetailProps[]) => {
+    const handleRABPost = async (dataRabHead: NewTenderProps, dataRabDetail: RABDetailProps[]) => {
         try {
             if (!dataRabHead || !dataRabDetail) {
                 SwalMessage({
@@ -104,11 +118,16 @@ export default function useRABHooks() {
 
             SwalLoading();
             const responseRabHeader = await API.post("/rab/create", {
-                tender_id: dataRabHead.id,
-                program: program,
-                activity: activity,
-                start_date: startDate,
-                end_date: endDate
+                tahun_anggaran: Number(dataRabHead.tahun_anggaran),
+                satuan_kerja: dataRabHead.nama_satker?.toString(),
+                kode_rup: dataRabHead.kd_rup?.toString(),
+                kode_tender: dataRabHead.kd_tender?.toString(),
+                nama_paket: dataRabHead.nama_paket?.toString(),
+                lokasi_pekerjaan: dataRabHead.lokasi_pekerjaan?.toString(),
+                program: program?.toString(),
+                activity: activity?.toString(),
+                start_date: startDate?.toString(),
+                end_date: endDate?.toString()
 
             }, {
                 headers: {
@@ -149,36 +168,59 @@ export default function useRABHooks() {
                     type: "error"
                 })
             }
+            console.error(error)
         }
     }
 
-    const handleRABPut = async (dataRabHead: TenderProps, reason: string) => {
+    const handleRABPut = async (dataRabHead: NewTenderProps, groupRabHeader: RABProps, reason: string) => {
         try {
             if (!dataRabHead) {
                 SwalMessage({
                     type: "error",
                     title: "Gagal!",
-                    text: "Harap isi field yang telah disediakan!"
+                    text: "Belum ada data yang diubah!"
                 });
 
                 return;
             }
 
             SwalLoading();
-            const response = await API.put(`/rab/update/${dataRabHead.id}`, {
-                tender_id: dataRabHead.id,
-                program: program,
-                activity: activity,
-                start_date: startDate,
-                end_date: endDate,
+            const responseRabHeader = await API.post("/rab/create", {
+                rab_group_id: groupRabHeader.rab_group_id,
+                tahun_anggaran: Number(dataRabHead.tahun_anggaran),
+                satuan_kerja: dataRabHead.nama_satker?.toString(),
+                kode_rup: dataRabHead.kd_rup?.toString(),
+                kode_tender: dataRabHead.kd_tender?.toString(),
+                nama_paket: dataRabHead.nama_paket?.toString(),
+                lokasi_pekerjaan: dataRabHead.lokasi_pekerjaan?.toString(),
+                program: program?.toString(),
+                activity: activity?.toString(),
+                start_date: startDate?.toString(),
+                end_date: endDate?.toString(),
                 revision_text: reason,
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            });            
+            });
 
-            const message = response?.data.message;
+            const rabHeaderId = responseRabHeader.data.data.id;
+            const dataRabDetail = groupRabHeader.rab_details;
+            let responseRabDetail;
+
+            for (let index = 0; index < dataRabDetail.length; index++) {
+                const data = dataRabDetail[index];
+                responseRabDetail = await API.post("/rab/detail/create", {
+                    rab_header_id: rabHeaderId,
+                    description: data.description,
+                    volume: data.volume,
+                    unit: data.unit,
+                    unit_price: data.unit_price,
+                    total: data.total
+                });
+            }
+
+            const message = responseRabDetail?.data.message;
             SwalMessage({
                 type: "success",
                 title: "Berhasil!",
@@ -196,7 +238,6 @@ export default function useRABHooks() {
                     type: "error"
                 })
             }
-            console.error(error);
         }
     }
 
@@ -206,6 +247,67 @@ export default function useRABHooks() {
         if (name == "activity") return setActivity(value);
         if (name == "start") return setStartDate(value);
         if (name == "end") return setEndDate(value);
+    }
+
+    const handleDeleteRab = async (ids: number[]) => {
+        try {
+            if (ids.length === 0) {
+                SwalMessage({
+                    type: "error",
+                    title: "Gagal!",
+                    text: "Harap pilih minimal 1 data untuk dihapus!"
+                });
+
+                return;
+            }
+
+            const rabDetailAll = await API.get(`/rab/detail`);
+            const rabDetailAllData = rabDetailAll?.data?.data;
+
+            const result = await SwalMessage({
+                type: "warning",
+                title: "Konfirmasi!",
+                text: `Apakah anda yakin ingin menghapus data RAB ini?`,
+            });
+            
+            if (result.isConfirmed) {
+                let response;
+                SwalLoading();
+
+                for (let index = 0; index < ids.length; index++) {
+                    const id = ids[index];
+
+                     for (let index = 0; index < rabDetailAllData.length; index++) {
+                        const rabDetail = rabDetailAllData[index];
+
+                        if (rabDetail.rab_header_id === id) {
+                            await API.delete(`/rab/detail/delete/${rabDetail.id}`);
+                        }
+                     }
+
+                    response = await API.delete(`/rab/delete/${id}`);
+                }
+
+                const message = response?.data.message;
+                SwalMessage({
+                    type: "success",
+                    title: "Berhasil!",
+                    text: message
+                });
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
+        } catch (error) {
+            if (error) {
+                SwalMessage({
+                    type: "error",
+                    title: "Gagal!",
+                    text: "Terjadi Kesalahan!"
+                })
+            }
+        }
     }
 
     return {
@@ -220,6 +322,8 @@ export default function useRABHooks() {
         satkerData,
         setSelectedId,
         rabDataByid,
-        handleRABPut
+        handleRABPut,
+        revisionCount,
+        handleDeleteRab
     }
 }

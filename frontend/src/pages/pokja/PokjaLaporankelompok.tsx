@@ -36,7 +36,7 @@ export default function PokjaLaporanKelompok() {
             label: 'Nama Paket'
         },
         {
-            key: 'contract_initial',
+            key: 'contract_date',
             label: 'Tanggal Masuk/Perubahan'
         },
     ];    
@@ -57,7 +57,7 @@ export default function PokjaLaporanKelompok() {
         }
 
         const filteringDataEntryPengadaan = () => {
-            const filter = dataEntryPengadaan?.filter((item: TenderProps) => {
+            const filter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
                 const typeFilter = item?.type?.includes("kelompok");
 
                 const dataFilter = search ? item?.tender_code?.toLowerCase().includes(search.toLowerCase()) : true;

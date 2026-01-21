@@ -15,27 +15,9 @@ export default function PokjaHasilKelompokKerja() {
     const [metodePengadaan, setMetodePengadaan] = useState('');
     const [sumberDana, setSumberDana] = useState('');
     const tableRef = useRef<HTMLDivElement>(null);
-    const { dataEntryPengadaan } = useDataEntryHooks();
-    const [dataEntryFilter, setDataEntryFilter] = useState<TenderProps[]>([]);
+    const { dataEntryPengadaan, tahunOptions, metodePengadaanOptions, sumberDanaOptions } = useDataEntryHooks();
+    const [dataEntryFilter, setDataEntryFilter] = useState<DataEntryProps[]>([]);
     const { user, loading } = useAuth();
-
-    const tahunOptions = [
-        { id: '1', text: '2023' },
-        { id: '2', text: '2024' },
-        { id: '3', text: '2025' }
-    ];
-
-    const metodePengadaanOptions = [
-        { id: '1', text: 'Pengadaan Langsung' },
-        { id: '2', text: 'E-Purchasing V5' },
-        { id: '3', text: 'E-Purchasing V6' }
-    ];
-
-    const sumberDanaOptions = [
-        { id: '1', text: 'APBN' },
-        { id: '2', text: 'APBD' },
-        { id: '3', text: 'Hibah' }
-    ];
 
     const columns = [
         {
@@ -122,7 +104,7 @@ export default function PokjaHasilKelompokKerja() {
 
     useEffect(() => {
         const filteringDataEntry = () => {
-            const dataFilter = dataEntryPengadaan?.filter((item: TenderProps) => {
+            const dataFilter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
                 const filterType = item?.type?.includes("kelompok");
                 const tahunFilter = tahun
                     ? item?.fiscal_year?.toString().includes(tahun)

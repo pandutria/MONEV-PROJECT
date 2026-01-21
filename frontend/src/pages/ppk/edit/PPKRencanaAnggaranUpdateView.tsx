@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {  X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Navbar from '../../../components/Navbar';
-import { FormatCurrency } from '../../../utils/FormatCurrency';
 import TableContent from '../../../ui/TableContent';
 import BackButton from '../../../ui/BackButton';
 import ShowTableForm from '../../../ui/ShowTableForm';
@@ -12,14 +11,16 @@ import useRABHooks from '../../../hooks/RABHooks';
 import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
-import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import TableHeader from '../../../ui/TableHeader';
+import FormatRupiah from '../../../utils/FormatRupiah';
+import useNewTenderInaprocHooks from '../../../hooks/NewTenderInaprocHooks';
+import FormSelect from '../../../ui/FormSelect';
 
 export default function PPKRencanaAnggaranUpdateView() {
   const [showTender, setShowTender] = useState(false);
   const [search, setSearch] = useState("");
-  const [tenderDataFilter, setTenderDataFilter] = useState<TenderProps[]>([]);
-  const [selectedTender, setSelectedTender] = useState<TenderProps | any>(null);
+  const [tenderDataFilter, setTenderDataFilter] = useState<NewTenderProps[]>([]);
+  const [selectedTender, setSelectedTender] = useState<NewTenderProps | any>(null);
   const location = useLocation();
   const [isDisabled, setIsDisabled] = useState(false);
   const {
@@ -28,13 +29,15 @@ export default function PPKRencanaAnggaranUpdateView() {
     program,
     activity,
     startDate,
-    endDate
+    endDate,
+    revisionCount,
   } = useRABHooks();
   const { user, loading } = useAuth();
-  const { dataEntryPengadaan } = useDataEntryHooks();
+  const { newTenderInaprocHooks } = useNewTenderInaprocHooks();
   const { setSelectedId, rabDataByid } = useRABHooks();
   const { id } = useParams();
   const { reason } = location.state;
+  const [selectedRevision, setSelectedRevision] = useState<any>(null);
 
   useEffect(() => {
     const renderShowtender = () => {
@@ -51,32 +54,37 @@ export default function PPKRencanaAnggaranUpdateView() {
     }
 
     const filteringDataTender = () => {
-      const filter = dataEntryPengadaan?.filter((item: TenderProps) => {
-        const data = item?.tender_code?.toLowerCase().includes(search.toLowerCase());
+      const filter = newTenderInaprocHooks?.filter((item: NewTenderProps) => {
+        const data = item?.kd_tender?.toString()?.toLowerCase().includes(search.toLowerCase());
         return data;
       });
 
       setTenderDataFilter(filter);
     }
 
+    filteringDataTender();
+    renderShowtender();
+  }, [showTender, selectedTender, search, newTenderInaprocHooks, location, isDisabled, rabDataByid]);
+
+  useEffect(() => {
     const fetchIsPreview = () => {
       if (location.pathname.startsWith("/ppk/rencana-anggaran/lihat")) {
         setIsDisabled(true);
       }
 
-      if (!selectedTender) {
-        setSelectedTender(rabDataByid);
+      if (selectedRevision) {
+        setSelectedId(selectedRevision);
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        })
+      } else {
+        setSelectedId(id);
       }
     }
 
-    if (id) {
-      setSelectedId(id)
-    }
-
-    filteringDataTender();
     fetchIsPreview();
-    renderShowtender();
-  }, [showTender, selectedTender, search, dataEntryPengadaan, location, isDisabled, setSelectedId, id, rabDataByid]);
+  }, [id, location, selectedRevision, setSelectedId]);
 
   const columns = [
     {
@@ -84,28 +92,28 @@ export default function PPKRencanaAnggaranUpdateView() {
       label: 'No'
     },
     {
-      key: 'fiscal_year',
+      key: 'tahun_anggaran',
       label: 'Tahun Anggaran'
     },
     {
-      key: 'satker_name',
+      key: 'nama_satker',
       label: 'Satuan Kerja'
     },
     {
-      key: 'rup_code',
+      key: 'kd_rup',
       label: 'Kode RUP'
     },
     {
-      key: 'tender_code',
+      key: 'kd_tender',
       label: 'kode Tender'
     },
     {
-      key: 'package_name',
+      key: 'nama_paket',
       label: 'Nama Paket'
     },
   ];
 
-  if (loading) {
+  if (loading || newTenderInaprocHooks.length === 0) {
     return <LoadingSpinner />
   }
 
@@ -159,7 +167,7 @@ export default function PPKRencanaAnggaranUpdateView() {
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-poppins-regular">
-              <ShowTableForm tenderCode={selectedTender?.tender_code ? selectedTender.tender_code : rabDataByid?.tender?.tender_code} onClick={() => {
+              <ShowTableForm disabled={isDisabled} tenderCode={selectedTender?.kode_tender ? selectedTender.kode_tender : rabDataByid?.kode_tender} onClick={() => {
                 if (!isDisabled) {
                   setShowTender(true);
                   setSelectedTender(null);
@@ -169,28 +177,28 @@ export default function PPKRencanaAnggaranUpdateView() {
               <FormInput
                 title='Tahun Anggaran'
                 placeholder='Masukkan tahun anggaran (otomatis)'
-                value={selectedTender?.fiscal_year ? selectedTender?.fiscal_year : rabDataByid?.tender?.fiscal_year}
+                value={selectedTender?.tahun_anggaran ? selectedTender?.tahun_anggaran : rabDataByid?.tahun_anggaran}
                 disabled={true}
               />
 
               <FormInput
                 title='Satuan Kerja'
                 placeholder='Masukkan tahun satuan kerja (otomatis)'
-                value={selectedTender?.satker_name ? selectedTender?.satker_name : rabDataByid?.tender?.satker_name}
+                value={selectedTender?.satuan_kerja ? selectedTender?.satuan_kerja : rabDataByid?.satuan_kerja}
                 disabled={true}
               />
 
               <FormInput
                 title='Kode RUP'
                 placeholder='Masukkan tahun kode RUP (otomatis)'
-                value={selectedTender?.rup_code ? selectedTender?.rup_code : rabDataByid?.tender?.rup_code}
+                value={selectedTender?.kode_rup ? selectedTender?.kode_rup : rabDataByid?.kode_rup}
                 disabled={true}
               />
 
               <FormInput
                 title='Lokasi Pekerjaan'
                 placeholder='Lokasi pekerjaan (otomatis)'
-                value={selectedTender?.work_location ? selectedTender?.work_location : rabDataByid?.tender?.work_location}
+                value={selectedTender?.lokasi_pekerjaan ? selectedTender?.lokasi_pekerjaan : rabDataByid?.lokasi_pekerjaan}
                 disabled={true}
                 type='textarea'
               />
@@ -240,10 +248,18 @@ export default function PPKRencanaAnggaranUpdateView() {
                 disabled={true}
                 type='textarea'
               />
+
+              {isDisabled && (
+                <FormSelect value={selectedRevision} onChange={(e) => setSelectedRevision(e.target.value)} title={`Revisi ke - ${selectedRevision ? selectedRevision : revisionCount[revisionCount.length - 1].revisi}`}>
+                  {revisionCount.map((item, index) => (
+                    <option key={index} value={item.rab_id}>{item.revisi}</option>
+                  ))}
+                </FormSelect>
+              )}
             </div>
 
             {!isDisabled && (
-              <SubmitButton text='Perbarui RAB' onClick={() => handleRABPut(selectedTender, reason)} />
+              <SubmitButton text='Perbarui RAB' onClick={() => handleRABPut(selectedTender, rabDataByid as any, reason)} />
             )}
           </div>
 
@@ -266,7 +282,7 @@ export default function PPKRencanaAnggaranUpdateView() {
                     </th>
                     <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
                       Total
-                    </th>                   
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -295,11 +311,11 @@ export default function PPKRencanaAnggaranUpdateView() {
                           {item.volume}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {FormatCurrency(item.unit_price)}
+                          {FormatRupiah(item.unit_price)}
                         </td>
                         <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {FormatCurrency(item.total)}
-                        </td>                        
+                          {FormatRupiah(item.total)}
+                        </td>
                       </tr>
                     ))
                   )}

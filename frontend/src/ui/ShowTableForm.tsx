@@ -8,7 +8,7 @@ export default function ShowTableForm({ tenderCode, onClick, disabled=false }: s
     return (
         <div>
             <label className="block font-poppins-medium text-xs sm:text-sm text-gray-700 mb-2">
-                Kode Tender
+                Kode Paket / No Tender
             </label>
             <div className="    flex flex-col sm:flex-row w-full gap-2 sm:gap-4 items-stretch sm:items-center">
                 <div className="flex-1 text-xs sm:text-[14px] px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-lg font-poppins-medium text-left text-gray-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 flex items-center justify-between">

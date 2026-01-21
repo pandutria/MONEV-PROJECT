@@ -1,6 +1,137 @@
 export { };
 
 declare global {
+  // Data Props
+  export interface NonTenderDataProps {
+    hps: number;
+    jenis_klpd: string;
+    jenis_pengadaan: string;
+    kd_klpd: string;
+    kd_lpse: number;
+    kd_nontender: number;
+    kd_paket_dce: number | null;
+    kd_penyedia: number;
+    kd_rup: string;
+    kd_satker: string;
+    kd_satker_str: string;
+    kontrak_pembayaran: string;
+    kualifikasi_paket: string;
+    lpse_id: number;
+    mak: string;
+    mtd_pemilihan: string;
+    nama_klpd: string;
+    nama_lpse: string;
+    nama_paket: string;
+    nama_penyedia: string;
+    nama_satker: string;
+    nilai_kontrak: number;
+    nilai_negosiasi: number;
+    nilai_pdn_kontrak: number;
+    nilai_penawaran: number;
+    nilai_terkoreksi: number;
+    nilai_umk_kontrak: number;
+    npwp_16_penyedia: string | null;
+    npwp_penyedia: string;
+    pagu: number;
+    status_nontender: string;
+    sumber_dana: string;
+    tahun_anggaran: number;
+    tgl_penarikan: string | null;
+    tgl_pengumuman_nontender: string;
+    tgl_selesai_nontender: string;
+    url_lpse: string;
+  }
+
+  export interface KatalogV5DataProps {
+    alamat_satker: string;
+    catatan_produk: string;
+    deskripsi: string | null;
+    email_user_pokja: string;
+    harga_satuan: string;
+    jabatan_ppk: string;
+    jml_jenis_produk: string;
+    kd_klpd: string;
+    kd_komoditas: string;
+    kd_paket: string;
+    kd_penyedia: string;
+    kd_penyedia_distributor: string;
+    kd_produk: string;
+    kd_rup: string;
+    kd_user_pokja: string;
+    kd_user_ppk: string;
+    kode_anggaran: string;
+    kuantitas: string;
+    nama_paket: string;
+    nama_satker: string | null;
+    nama_sumber_dana: string;
+    no_paket: string;
+    no_telp_user_pokja: string;
+    npwp_satker: string;
+    ongkos_kirim: string;
+    paket_status_str: string;
+    ppk_nip: string;
+    satker_id: string;
+    status_paket: string;
+    tahun_anggaran: string;
+    tanggal_buat_paket: string;
+    tanggal_edit_paket: string;
+    total: string | null;
+    total_harga: string;
+  }
+
+  export interface KatalogV6DataProps {
+    jenis_instansi: string | null;
+    jml_jenis_produk: number;
+    jml_produk: number;
+    kd_klpd: string;
+    kd_paket: string;
+    kd_penyedia_sikap: number;
+    kd_penyedia_v6: string;
+    kd_rup: string;
+    kd_satker_str: string;
+    mak: string;
+    nama_instansi: string | null;
+    nama_satker: string;
+    ongkir: number;
+    product_ids: string[] | null;
+    rup_nama_pkt: string;
+    status_pengiriman: string;
+    status_pkt: string;
+    sumber_dana: string;
+    tahun_anggaran: number;
+    tgl_order: string;
+    total_harga: number;
+  }
+
+  export interface TenderDataProps {
+    _event_date: string | null;
+    hps: number;
+    jenis_klpd: string;
+    kd_klpd: string;
+    kd_lpse: number;
+    kd_paket: number;
+    kd_penyedia: number;
+    kd_rup_paket: string;
+    kd_satker: string;
+    kd_tender: number;
+    nama_klpd: string;
+    nama_penyedia: string;
+    nama_satker: string;
+    nilai_kontrak: number;
+    nilai_negosiasi: number;
+    nilai_pdn_kontrak: number | null;
+    nilai_penawaran: number;
+    nilai_terkoreksi: number;
+    nilai_umk_kontrak: number | null;
+    npwp_16_penyedia: string;
+    npwp_penyedia: string;
+    pagu: number;
+    tahun_anggaran: number;
+    tgl_penetapan_pemenang: string;
+    tgl_pengumuman_tender: string;
+  }
+
+  // Hooks Props
   export interface RoleProps {
     id: number;
     name: string;
@@ -45,72 +176,99 @@ declare global {
 
   export interface DataEntryProps {
     id: number;
-    type: string | null;
-    procurement_method: string | null;
-    tender_code: string;
-    rup_code: string;
-    fiscal_year: number;
-    satker_code: string;
-    satker_name: string;
-    package_name: string | null;
-    funding_source: string;
-    procurement_type: string | null;
-    budget_value: number | null;
-    hps_value: number | null;
-    shipping_fee: number;
-    contract_number: string | null;
-    contact_initial: string | null;
-    contract_date: string | null;
-    ppk_name: string | null;
-    ppk_position: string | null;
-    company_leader: string | null;
-    leader_position: string | null;
-    winner_name: string | null;
-    bid_value: number | null;
-    negotiation_value: number | null;
-    phone: string | null;
+    
+    metode_pengadaan: string | null;
+    kode_paket: string | null;
+    kode_rup: string | null;
+    tahun_anggaran: string | null;
+    satuan_kerja: string | null;
+    nama_paket: string | null;
+    sumber_dana: string | null;
+
+    realisasi_paket: string | null;
+    status_paket: string | null;
+    status_pengiriman: string | null;
+
+    nilai_pagu: string | null;
+    nilai_hps: string | null;
+
+    nomor_kontrak: string | null;
+    tanggal_kontrak: string | null;
+    nama_ppk: string | null;
+    jabatan_ppk: string | null;
+
+    nama_pimpinan_perusahaan: string | null;
+    jabatan_pimpinan: string | null;
+
+    pemenang: string | null;
+    nilai_penawaran: string | null;
+    nilai_total: string | null;
+    nilai_negosiasi: string | null;
+    nomor_telp: string | null;
     email: string | null;
     npwp: string | null;
-    winner_address: string | null;
-    work_location: string | null;
-    evidence_file: string | null;
-    note: string | null;
-    realization_status: string | null;
-    package_status: string;
-    delivery_status: string;
-    total_value: number;
-    account_code: string;
-    klpd_code: string;
-    rup_description: string;
-    rup_name: string;
-    order_date: string;
-    order_id: string;
-    vendor_id: number;
-    total_quantity: number;
-    count_product: number;
+
+    alamat_pemenang: string | null;
+    lokasi_pekerjaan: string | null;
+
+    bukti_file: string | null;
+    catatan: string | null;
+
     selected_ppk_id: number | null;
+    selected_ppk?: UserProps | null;
+
     user_id: number;
-    selected_ppk_id: number;
-    selected_ppk: UserProps;
-    user: UserProps;
+    user?: UserProps | null;
   }
 
   export interface RABProps {
     id: number;
-    tender_id: number;
-    tender?: TenderProps;
-    program?: string | null;
-    activity?: string | null;
-    start_date?: string | null;
-    end_date?: string | null;
-
-    revision_count: number;
+    created_at: string;
+    created_by_id: number;
+    revision: number;
     revision_text?: string | null;
 
-    created_by_id?: number | null;
-    created_by?: UserProps | null;
+    start_date?: string | null;
+    end_date?: string | null;
+    created_by?: UserProps;
 
-    rab_details?: RabDetailProps[];
+    kode_rup?: string | null;
+    kode_tender?: string | null;
+    nama_paket?: string | null;
+    jenis_pengadaan?: string | null;
+    sumber_dana?: string | null;
+    tahun_anggaran?: number | null;
+    satuan_kerja?: string | null;
+    lokasi_pekerjaan?: string | null;
+
+    program?: string | null;
+    activity?: string | null;
+
+    nilai_pagu?: number | null;
+    nilai_hps?: number | null;
+    nilai_penawaran?: number | null;
+    nilai_negosiasi?: number | null;
+
+    nomor_kontrak?: string | null;
+    tanggal_kontrak?: string | null;
+
+    nama_ppk?: string | null;
+    jabatan_ppk?: string | null;
+
+    nama_pimpinan?: string | null;
+    jabatan_pimpinan?: string | null;
+
+    pemenang?: string | null;
+    alamat_pemenang?: string | null;
+    npwp?: string | null;
+    email?: string | null;
+    telepon?: string | null;
+
+    status_paket?: string | null;
+    status_pengiriman?: string | null;
+
+    rab_group_id: number;
+    rab_details: RABDetailProps[];
   }
 
   export interface RABDetailProps {

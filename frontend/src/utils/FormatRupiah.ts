@@ -1,6 +1,8 @@
-export default function FormatRupiah(number: number) {
+export default function formatRupiah(value: number) {
     return new Intl.NumberFormat("id-ID", {
+        style: "currency",
         currency: "IDR",
-        style: "currency"
-    }).format(number);
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(value);
 }

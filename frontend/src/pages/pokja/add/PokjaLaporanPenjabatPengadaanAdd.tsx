@@ -15,18 +15,36 @@ import useUserHooks from '../../../hooks/UserHooks';
 import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import SubmitButton from '../../../ui/SubmitButton';
 import TableHeader from '../../../ui/TableHeader';
-import useNewTenderInaprocHooks from '../../../hooks/NewTenderInaprocHooks';
+import NonTenderData from '../../../data/NonTenderData';
+import KatalogV5Data from '../../../data/KatalogV5Data';
+import KatalogV6Data from '../../../data/KatalogV6Data';
+import { SwalMessage } from '../../../utils/SwalMessage';
+import PenyediaV5Data from '../../../data/PenyediaV5Data';
+import PenyediaV6Data from '../../../data/PenyediaV6Data';
 
 export default function PokjaLaporanPenjabatPengadaanAdd() {
     const [metodePengadaan, setMetodePengadaan] = useState<any>("");
-    const { newTenderInaprocHooks } = useNewTenderInaprocHooks();
-    const [tenderDataFilter, setTenderDataFilter] = useState<NewTenderProps[]>([]);
+
+    const { nonTenderData, setNonTenderTahun, nonTenderTahun } = NonTenderData();
+    const { katalogv5Data, setKatalogV5tahun, katalogv5Tahun } = KatalogV5Data();
+    const { katalogv6Data, setKatalogV6Tahun, katalogv6Tahun } = KatalogV6Data();
+
+    const { penyediaV5Data, setPenyediaV5Param } = PenyediaV5Data();
+    const { penyediaV6Data, setPenyediaV6Param } = PenyediaV6Data();
+
+    const [noTenderDataFilter, setNoTenderDataFilter] = useState<NonTenderDataProps[]>([]);
+    const [katalogV5DataFilter, setKatalogV5DataFilter] = useState<KatalogV5DataProps[]>([]);
+    const [katalogV6DataFilter, setKatalogV6DataFilter] = useState<KatalogV6DataProps[]>([]);
+
     const [showTender, setShowTender] = useState<any>('');
-    const [selectedTender, setSelectedTender] = useState<NewTenderProps | null>(null);
+    const [selectedTender, setSelectedTender] = useState<any>(null);
+    const [showSelectedPPK, setShowSelectedPPK] = useState(false);
+
     const { user, loading } = useAuth();
     const { listUser } = useUserHooks();
     const [userPPK, setUserPPK] = useState<UserProps[]>([]);
     const [search, setSearch] = useState("");
+
     const {
         selectedPPK,
         note,
@@ -41,13 +59,13 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         { id: 3, name: 'E-Purchasing V6' }
     ];
 
-    const tenderColumns = [
+    const noTenderColumns = [
         {
             key: "id",
             label: "No"
         },
         {
-            key: "kd_tender",
+            key: "kd_nontender",
             label: "Kode Tender"
         },
         {
@@ -57,19 +75,26 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         {
             key: "tahun_anggaran",
             label: "Tahun Anggaran"
+        }
+    ]
+
+    const paketColumns = [
+        {
+            key: "id",
+            label: "No"
         },
         {
-            key: "nama_satker",
-            label: "Satuan Kerja"
+            key: "kd_paket",
+            label: "Kode Tender"
         },
         {
-            key: "nama_paket",
-            label: "Nama Paket"
+            key: "kd_rup",
+            label: "Kode RUP"
         },
         {
-            key: "sumber_dana",
-            label: "Sumber Dana"
-        },
+            key: "tahun_anggaran",
+            label: "Tahun Anggaran"
+        }
     ]
 
     useEffect(() => {
@@ -85,14 +110,6 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
             }
         }
 
-        const filteringDataTender = () => {
-            const filter = newTenderInaprocHooks?.filter((item: NewTenderProps) => {
-                const data = item?.kd_tender?.toString().toLowerCase().includes(search.toLowerCase());
-                return data;
-            });
-
-            setTenderDataFilter(filter);
-        }
 
         const filteringUserPPK = () => {
             const filteringData = listUser?.filter((item: UserProps) => {
@@ -103,13 +120,77 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
             setUserPPK(filteringData);
         }
 
+        if (selectedTender?.jenis_pengadaan) {
+            if (selectedTender?.jenis_pengadaan.toLowerCase() === ("Pekerjaan Konstruksi").toLowerCase()) {
+                setShowSelectedPPK(true);
+            }
+        }
+
         fetchTender();
         filteringUserPPK();
-        filteringDataTender();
-    }, [selectedTender, showTender, listUser, search, newTenderInaprocHooks]);
+    }, [selectedTender, showTender, listUser]);
+
+    useEffect(() => {
+        const filteringDataNonTender = () => {
+            const filter = nonTenderData.filter((item: NonTenderDataProps) => {
+                const data = item?.kd_nontender?.toString().toLowerCase().includes(search.toLowerCase());
+                return data;
+            });
+
+            setNoTenderDataFilter(filter);
+        }
+
+        const filteringDataKatalogV5 = () => {
+            const filter = katalogv5Data.filter((item: KatalogV5DataProps) => {
+                const data = item?.kd_paket?.toString().toLowerCase().includes(search.toLowerCase());
+                return data;
+            });
+
+            setKatalogV5DataFilter(filter)
+        }
+
+        const filteringDataKatalogV6 = () => {
+            const filter = katalogv6Data.filter((item: KatalogV6DataProps) => {
+                const data = item?.kd_paket?.toString().toLowerCase().includes(search.toLowerCase());
+                return data;
+            });
+
+            setKatalogV6DataFilter(filter);
+        }
+
+        const fetchPenyediaV5 = () => {
+            if (!selectedTender) return;
+            setPenyediaV5Param(selectedTender?.kd_penyedia);
+        }
+
+        const fetchPenyediaV6 = () => {
+            if (!selectedTender) return;
+            setPenyediaV6Param(selectedTender?.kd_penyedia);
+        }
+
+        filteringDataNonTender();
+        filteringDataKatalogV5();
+        filteringDataKatalogV6();
+
+        fetchPenyediaV5();
+        fetchPenyediaV6();
+    }, [search, nonTenderData, katalogv5Data, katalogv6Data, setPenyediaV5Param, selectedTender, setPenyediaV6Param]);
 
     const isEPurchasing = String(metodePengadaan) === 'E-Purchasing V5' || String(metodePengadaan) === 'E-Purchasing V6';
-    if (loading || newTenderInaprocHooks.length === 0) {
+    const handleShowTender = () => {
+        if (metodePengadaan) {
+            setShowTender(true);
+            setSelectedTender(null);
+        } else {
+            SwalMessage({
+                type: "error",
+                title: "Gagal!",
+                text: "Harap pilih metode pengadaan terlebih dahulu!"
+            });
+        }
+    }
+
+    if (loading || noTenderDataFilter.length === 0 || katalogV5DataFilter.length === 0 || katalogV6DataFilter.length === 0) {
         return <LoadingSpinner />
     }
 
@@ -117,6 +198,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         return <Navigate to="/" replace />
     }
 
+    console.log(penyediaV5Data)
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
@@ -131,29 +213,99 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                 <div className="absolute top-4 right-4 cursor-pointer text-primary" onClick={() => setShowTender(false)}>
                                     <X />
                                 </div>
-                                <TableHeader
-                                    title="Data Tender"
-                                    type='pokja'
-                                    showHapus={false}
-                                    showTambah={false}
-                                    searchValue={search}
-                                    onSearchChange={(item) => setSearch(item)}
-                                />
-                                <div className="overflow-y-auto max-h-[70vh] w-full">
-                                    <TableContent
-                                        columns={tenderColumns}
-                                        data={tenderDataFilter}
-                                        isSelect={false}
-                                        showEdit={false}
-                                        showPreview={false}
-                                        showSelect={true}
-                                        idKey="id"
-                                        onSelectedDataChange={(item) => {
-                                            setSelectedTender(item as any)
-                                            setShowTender(false)
-                                        }}
+                                {metodePengadaan === "Pengadaan Langsung" && (
+                                    <TableHeader
+                                        title="Data Tender / Paket"
+                                        type='pokja'
+                                        showHapus={false}
+                                        showTambah={false}
+                                        searchValue={search}
+                                        selectedTahunQuery={nonTenderTahun}
+                                        onTahunQueryChange={(item) => setNonTenderTahun(item)}
+                                        onSearchChange={(item) => setSearch(item)}
                                     />
-                                </div>
+
+                                )}
+
+                                {metodePengadaan === "Pengadaan Langsung" && (
+                                    <div className="overflow-y-auto max-h-[70vh] w-full">
+                                        <TableContent
+                                            columns={noTenderColumns}
+                                            data={noTenderDataFilter}
+                                            isSelect={false}
+                                            showEdit={false}
+                                            showPreview={false}
+                                            showSelect={true}
+                                            idKey="id"
+                                            onSelectedDataChange={(item) => {
+                                                setSelectedTender(item as any)
+                                                setShowTender(false)
+                                            }}
+                                        />
+                                    </div>
+                                )}
+
+                                {metodePengadaan === "E-Purchasing V5" && (
+                                    <TableHeader
+                                        title="Data Tender / Paket"
+                                        type='pokja'
+                                        showHapus={false}
+                                        showTambah={false}
+                                        searchValue={search}
+                                        selectedTahunQuery={katalogv5Tahun}
+                                        onTahunQueryChange={(item) => setKatalogV5tahun(item)}
+                                        onSearchChange={(item) => setSearch(item)}
+                                    />
+                                )}
+
+                                {metodePengadaan === "E-Purchasing V5" && (
+                                    <div className="overflow-y-auto max-h-[70vh] w-full">
+                                        <TableContent
+                                            columns={paketColumns}
+                                            data={katalogV5DataFilter}
+                                            isSelect={false}
+                                            showEdit={false}
+                                            showPreview={false}
+                                            showSelect={true}
+                                            idKey="id"
+                                            onSelectedDataChange={(item) => {
+                                                setSelectedTender(item as any)
+                                                setShowTender(false)
+                                            }}
+                                        />
+                                    </div>
+                                )}
+
+                                {metodePengadaan === "E-Purchasing V6" && (
+                                    <TableHeader
+                                        title="Data Tender / Paket"
+                                        type='pokja'
+                                        showHapus={false}
+                                        showTambah={false}
+                                        searchValue={search}
+                                        selectedTahunQuery={katalogv6Tahun}
+                                        onTahunQueryChange={(item) => setKatalogV6Tahun(item)}
+                                        onSearchChange={(item) => setSearch(item)}
+                                    />
+                                )}
+
+                                {metodePengadaan === "E-Purchasing V6" && (
+                                    <div className="overflow-y-auto max-h-[70vh] w-full">
+                                        <TableContent
+                                            columns={paketColumns}
+                                            data={katalogV6DataFilter}
+                                            isSelect={false}
+                                            showEdit={false}
+                                            showPreview={false}
+                                            showSelect={true}
+                                            idKey="id"
+                                            onSelectedDataChange={(item) => {
+                                                setSelectedTender(item as any)
+                                                setShowTender(false)
+                                            }}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
@@ -172,19 +324,25 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                     <div className="md:col-span-2">
                                         <FormSelect title="Metode Pengadaan" name="" value={String(metodePengadaan)} onChange={(e) => {
                                             setMetodePengadaan(e.target.value);
+                                            // setSelectedTender(null);
+                                            // setPenyediaV5Param(null);
+                                            // setPenyediaV6Param(null);
                                         }}>
                                             {metodePengadaanOptions.map((item, index) => (
                                                 <option key={index} value={item.name}>{item.name}</option>
-                                            ))}
+                                            ))} 
                                         </FormSelect>
                                     </div>
 
-                                    <div className="md:col-span-2">
-                                        <ShowTableForm tenderCode={selectedTender ? selectedTender?.kd_tender?.toString() : "Kode tender / No Tender"} onClick={() => {
-                                            setShowTender(true);
-                                            setSelectedTender(null);
-                                        }} />
-                                    </div>
+                                    {metodePengadaan === "Pengadaan Langsung" ? (
+                                        <div className="md:col-span-2">
+                                            <ShowTableForm tenderCode={selectedTender ? selectedTender?.kd_nontender?.toString() : "Kode Paket / No Tender"} onClick={() => handleShowTender()} />
+                                        </div>
+                                    ) : (
+                                        <div className="md:col-span-2">
+                                            <ShowTableForm tenderCode={selectedTender ? selectedTender?.kd_paket?.toString() : "Kode Paket / No Tender"} onClick={() => handleShowTender()} />
+                                        </div>
+                                    )}
 
                                     <FormInput title="Kode RUP" name="" value={selectedTender?.kd_rup} placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title="Tahun Anggaran" name="" value={selectedTender?.tahun_anggaran.toString()} placeholder="Otomatis terisi" disabled={true} />
@@ -197,11 +355,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                         <FormInput title="Nama Paket" name="" value={selectedTender?.nama_paket} placeholder="Otomatis terisi" disabled={true} />
                                     </div>
 
-                                    <div className="md:col-span-2">
-                                        <FormInput title="Tanggal Masuk" name="" value={selectedTender?.tgl_buat_paket} placeholder="Otomatis terisi" disabled={true} />
-                                    </div>
-
-                                    <FormInput title="Sumber Dana" name="" value={selectedTender?.sumber_dana} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Sumber Dana" name="" value={selectedTender?.sumber_dana ? selectedTender?.sumber_dana : selectedTender?.nama_sumber_dana} placeholder="Otomatis terisi" disabled={true} />
 
                                     {!isEPurchasing && (
                                         <FormInput title="Jenis Pengadaan" name="" value={selectedTender?.jenis_pengadaan?.toString()} placeholder="Otomatis terisi" disabled={true} />
@@ -215,8 +369,8 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                         2. REALISASI PAKET
                                     </h2>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <FormInput title="Status Paket" name="" placeholder="Otomatis terisi" disabled={true} />
-                                        <FormInput title="Status Pengiriman" name="" placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Status Paket" value={selectedTender?.status_paket} name="" placeholder="Otomatis terisi" disabled={true} />
+                                        <FormInput title="Status Pengiriman" value={selectedTender?.paket_status_str} name="" placeholder="Otomatis terisi" disabled={true} />
                                     </div>
                                 </div>
                             )}
@@ -240,8 +394,8 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                     <FormInput title="Tanggal Kontrak" name="" value={selectedTender?.tgl_kontrak?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title="Nama PPK" name="" value={selectedTender?.nama_ppk?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title="Jabatan PPK" name="" value={selectedTender?.jabatan_ppk?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Nama Pimpinan Perusahaan" name="" value={selectedTender?.wakil_sah_penyedia?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Jabatan Pimpinan" name="" value={selectedTender?.jabatan_wakil_penyedia?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Nama Pimpinan Perusahaan" name="" value={selectedTender?.nama_pimpinan?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Jabatan Pimpinan" name="" value={selectedTender?.jabatan_pimpinan?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                 </div>
                             </div>
 
@@ -250,12 +404,12 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                     {isEPurchasing ? '5' : '4'}. INFORMASI PEMENANG
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <FormInput title="Pemenang" name="" value={selectedTender?.nama_penyedia?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Pemenang" name="" value={selectedTender?.nama_penyedia?.toString() ? selectedTender?.nama_penyedia.toString() : penyediaV5Data[0].nama_penyedia} placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title={isEPurchasing ? 'Nilai Total' : 'Nilai Penawaran'} name="" value={selectedTender?.nilai_penawaran?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title="Nilai Negosiasi/Nilai SPK (Rp)" name="" value={selectedTender?.nilai_negosiasi?.toString()} placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Nomor Telepon/HP" name="" placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="Email" name="" placeholder="Otomatis terisi" disabled={true} />
-                                    <FormInput title="NPWP" name="" value={selectedTender?.npwp_penyedia?.toString()} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Nomor Telepon/HP" name="" value={penyediaV5Data[0].no_telp_penyedia} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Email" name="" value={penyediaV5Data[0].email_penyedia} placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="NPWP" name="" value={selectedTender?.npwp_penyedia?.toString() ? selectedTender?.npwp_penyedia?.toString() : penyediaV5Data[0].npwp_penyedia} placeholder="Otomatis terisi" disabled={true} />
                                 </div>
                             </div>
 
@@ -264,7 +418,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                     {isEPurchasing ? '6' : '5'}. LOKASI & ALAMAT
                                 </h2>
                                 <div className="grid grid-cols-1 gap-6">
-                                    <FormInput title="Alamat Pemenang" name="" placeholder="Otomatis terisi" disabled={true} />
+                                    <FormInput title="Alamat Pemenang" value={selectedTender?.alamat ? selectedTender?.alamat : penyediaV5Data[0].alamat_penyedia} name="" placeholder="Otomatis terisi" disabled={true} />
                                     <FormInput title="Lokasi Pekerjaan" name="" value={selectedTender?.lokasi_pekerjaan?.toString()} placeholder="Otomatis terisi" disabled={true} />
                                 </div>
                             </div>
@@ -277,7 +431,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
                                     <FormUploadFile title="Evidence/Bukti Laporan Hasil Pemilihan PP" name="file" onChange={handleChangeFileEntryPenjabatPengadaan} />
                                     <FormInput title="Catatan" type='textarea' name="note" value={note} onChange={handleChangeEntryPenjabatPengadaan} placeholder="Catatan" />
 
-                                    {!isEPurchasing && (
+                                    {showSelectedPPK && (
                                         <FormSelect title="Ditujukan ke PPK" name="ppk" value={selectedPPK} onChange={handleChangeEntryPenjabatPengadaan}>
                                             {userPPK.map((item, index) => (
                                                 <option key={index} value={item.id}>PPK - {item.fullname}</option>
