@@ -8,11 +8,14 @@ interface TableHeaderProps {
     onTambahClick?: () => void;
     onHapusClick?: () => void;
     tahunOptions?: any[];
+    tahunOptionQuery?: any[];
     satuanKerjaOptions?: any[];
     selectedTahun?: string;
+    selectedTahunQuery?: string;
     selectedSatuanKerja?: string;
     searchValue?: string;
     onTahunChange?: (value: string) => void;
+    onTahunQueryChange?: (value: string) => void;
     onSatuanKerjaChange?: (value: string) => void;
     onSearchChange?: (value: string) => void;
     className?: string;
@@ -26,13 +29,19 @@ export default function TableHeader({
     showTambah = true,
     showHapus = false,
     selectedTahun = '',
+    selectedTahunQuery = '',
     selectedSatuanKerja = '',
     searchValue = '',
     onTahunChange,
+    onTahunQueryChange,
     onSatuanKerjaChange,
     onSearchChange,
     className,
     tahunOptions = [],
+    tahunOptionQuery = [
+        { text: '2024' },
+        { text: '2025' }
+    ],
     satuanKerjaOptions = [],
     type = "ppk"
 }: TableHeaderProps) {
@@ -74,6 +83,21 @@ export default function TableHeader({
                                 ))}
                             </select>
                         </>
+                    )}
+
+                    {type === 'pokja' && (
+                        <select
+                            value={selectedTahunQuery}
+                            onChange={(e) => onTahunQueryChange?.(e.target.value)}
+                            className="text-xs sm:text-sm px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular hover:border-gray-400 w-full sm:w-40"
+                        >
+                            <option value="" disabled>Pilih Tahun</option>
+                            {tahunOptionQuery.map((item, index) => (
+                                <option key={index} value={item.text}>
+                                    {item.text}
+                                </option>
+                            ))}
+                        </select>
                     )}
 
                     <div className="relative w-full md:w-72">

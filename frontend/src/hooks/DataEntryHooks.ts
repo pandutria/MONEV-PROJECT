@@ -141,9 +141,9 @@ export default function useDataEntryHooks() {
         fetchDataEntryPengadaanById();
     }, [selectedId]);
 
-    const handleEntryPenjabatPengadaanPost = async (data: NewTenderProps, type: string) => {
+    const handleEntryPenjabatPengadaanPost = async (data: any, type: string) => {
         try {
-            if (!data.kd_tender || !type) {
+            if (!data.kd_rup || !type) {
                 SwalMessage({
                     title: "Gagal!",
                     text: "Kode Tender wajib diisi!",
@@ -153,52 +153,89 @@ export default function useDataEntryHooks() {
             }
 
             const formData = new FormData();
-            if (type == "Pengadaan Langsung" || type == "E-Purchasing V5" || type == "E-Purchasing V6") {
-                if (type == "Pengadaan Langsung") {
-                    formData.append("procurement_type", String(data.jenis_pengadaan));
-                    formData.append("selected_ppk_id", selectedPPK ? selectedPPK : (0).toString());
-                } else {
-                    formData.append("package_status", null as any);
-                    formData.append("delivery_status", null as any);
-                }
-
-                formData.append("type", "penjabat");
-            } else {
-                formData.append("procurement_type", String(data.jenis_pengadaan));
-                formData.append("type", "kelompok");
+            if (type == "Pengadaan Langsung") {
+                formData.append("jenis_pengadaan", data.jenis_pengadaan);
+                formData.append("tipe", "Penjabat");
             }
 
-            formData.append("tender_code", data.kd_tender as any);
-            formData.append("rup_code", data.kd_rup as any);
-            formData.append("fiscal_year", String(data.tahun_anggaran));
-            formData.append("satker_name", data.nama_satker as any);
-            formData.append("contract_date", String(data?.tgl_buat_paket) as any);
-            formData.append("funding_source", data.sumber_dana as any);
-            formData.append("bid_value", data.nilai_penawaran as any);
+            if (type == "E-Purchasing V5" || type == "E-Purchasing V6") {
+                formData.append("status_paket", data.status_paket);
+                formData.append("status_pengiriman", data.status_pengiriman);
+                formData.append("tipe", "Penjabat");
+            }
 
-            formData.append("budget_value", data.pagu ? String(data.pagu) : null as any);
-            formData.append("hps_value", data.hps ? String(data.hps) : null as any);
+            formData.append("metode_pengadaan", type);
+            formData.append("kode_paket", data.kd_nontender);
+            formData.append("kode_rup", data.kd_rup);
+            formData.append("tahun_anggaran", data.tahun_anggaran);
+            formData.append("satuan_kerja", data.nama_satker);
+            formData.append("nama_paket", data.nama_paket);
+            formData.append("sumber_dana", data.sumber_dana);
 
-            formData.append("contract_number", data.no_kontrak ? data.no_kontrak.toString() : null as any);
-            formData.append("contract_date", data.tgl_kontrak ? data.tgl_kontrak.toString() : null as any);
-            formData.append("ppk_name", data.nama_ppk ? data.nama_ppk : null as any);
-            formData.append("ppk_position", data.jabatan_ppk ? data.jabatan_ppk : null as any);
-            formData.append("company_leader", data.wakil_sah_penyedia ? data.wakil_sah_penyedia : null as any);
-            formData.append("leader_position", data.jabatan_wakil_penyedia ? data.jabatan_wakil_penyedia : null as any);
-            formData.append("winner_name", data.nama_penyedia ? data.nama_penyedia : null as any);
-            formData.append("negotiation_value", data.nilai_negosiasi ? data.nilai_negosiasi.toString() : null as any);
-            formData.append("phone", null as any);
-            formData.append("email", null as any);
-            formData.append("contract_initial", data.nilai_kontrak ? data.nilai_kontrak.toString() : null as any);
-            formData.append("npwp", data.npwp_penyedia ? data.npwp_penyedia : null as any);
-            formData.append("winner_address", null as any);
-            formData.append("work_location", data.lokasi_pekerjaan ? data.lokasi_pekerjaan : null as any);
-            formData.append("procurement_method", type);
-            formData.append("package_name", data.nama_paket ? data.nama_paket : null as any);
-            formData.append("note", note);
+            if (data.pagu) {
+                formData.append("nilai_pagu", data.pagu);
+            }
+            if (data.hps) {
+                formData.append("nilai_hps", data.hps);
+            }
 
+            if (data.no_kontrak) {
+                formData.append("nomor_kontrak", data.no_kontrak);
+            }
+            if (data.tgl_kontrak) {
+                formData.append("tanggal_kontrak", data.tgl_kontrak);
+            }
+            if (data.nama_ppk) {
+                formData.append("nama_ppk", data.nama_ppk);
+            }
+            if (data.jabatan_ppk) {
+                formData.append("jabatan_ppk", data.jabatan_ppk);
+            }
+
+            if (data.nama_pimpinan) {
+                formData.append("nama_pimpinan_perusahaan", data.nama_pimpinan);
+            }
+            if (data.jabatan_pimpinan) {
+                formData.append("jabatan_pimpinan", data.jabatan_pimpinan);
+            }
+
+            if (data.nama_penyedia) {
+                formData.append("pemenang", data.nama_penyedia);
+            }
+            if (data.nilai_penawaran) {
+                formData.append("nilai_penawaran", data.nilai_penawaran);
+            }
+            if (data.nilai_penawaran) {
+                formData.append("nilai_penawaran", data.nilai_penawaran);
+            }
+            if (data.nilai_negosiasi) {
+                formData.append("nilai_negosiasi", data.nilai_negosiasi);
+            }
+            if (data.nomor_telp) {
+                formData.append("nomor_telp", data.nomor_telp);
+            }
+            if (data.email) {
+                formData.append("email", data.email);
+            }
+            if (data.npwp_penyedia) {
+                formData.append("npwp", data.npwp_penyedia);
+            }
+
+            if (data.alamat_pemenang) {
+                formData.append("alamat_pemenang", data.alamat_pemenang);
+            }
+            if (data.lokasi_pekerjaan) {
+                formData.append("lokasi_pekerjaan", data.lokasi_pekerjaan);
+            }
+
+            if (data.catatan) {
+                formData.append("catatan", data.catatan);
+            }
             if (evidenceFile) {
-                formData.append("evidence_file", evidenceFile);
+                formData.append("bukti_file", evidenceFile);
+            }
+            if (selectedPPK) {
+                formData.append("selected_ppk_id", selectedPPK);
             }
 
             SwalLoading();

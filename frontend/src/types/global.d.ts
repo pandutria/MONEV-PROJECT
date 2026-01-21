@@ -176,54 +176,49 @@ declare global {
 
   export interface DataEntryProps {
     id: number;
-    type: string | null;
-    procurement_method: string | null;
-    tender_code: string;
-    rup_code: string;
-    fiscal_year: number;
-    satker_code: string;
-    satker_name: string;
-    package_name: string | null;
-    funding_source: string;
-    procurement_type: string | null;
-    budget_value: number | null;
-    hps_value: number | null;
-    shipping_fee: number;
-    contract_number: string | null;
-    contact_initial: string | null;
-    contract_date: string | null;
-    ppk_name: string | null;
-    ppk_position: string | null;
-    company_leader: string | null;
-    leader_position: string | null;
-    winner_name: string | null;
-    bid_value: number | null;
-    negotiation_value: number | null;
-    phone: string | null;
+    
+    metode_pengadaan: string | null;
+    kode_paket: string | null;
+    kode_rup: string | null;
+    tahun_anggaran: string | null;
+    satuan_kerja: string | null;
+    nama_paket: string | null;
+    sumber_dana: string | null;
+
+    realisasi_paket: string | null;
+    status_paket: string | null;
+    status_pengiriman: string | null;
+
+    nilai_pagu: string | null;
+    nilai_hps: string | null;
+
+    nomor_kontrak: string | null;
+    tanggal_kontrak: string | null;
+    nama_ppk: string | null;
+    jabatan_ppk: string | null;
+
+    nama_pimpinan_perusahaan: string | null;
+    jabatan_pimpinan: string | null;
+
+    pemenang: string | null;
+    nilai_penawaran: string | null;
+    nilai_total: string | null;
+    nilai_negosiasi: string | null;
+    nomor_telp: string | null;
     email: string | null;
     npwp: string | null;
-    winner_address: string | null;
-    work_location: string | null;
-    evidence_file: string | null;
-    note: string | null;
-    realization_status: string | null;
-    package_status: string;
-    delivery_status: string;
-    total_value: number;
-    account_code: string;
-    klpd_code: string;
-    rup_description: string;
-    rup_name: string;
-    order_date: string;
-    order_id: string;
-    vendor_id: number;
-    total_quantity: number;
-    count_product: number;
+
+    alamat_pemenang: string | null;
+    lokasi_pekerjaan: string | null;
+
+    bukti_file: string | null;
+    catatan: string | null;
+
     selected_ppk_id: number | null;
+    selected_ppk?: UserProps | null;
+
     user_id: number;
-    selected_ppk_id: number;
-    selected_ppk: UserProps;
-    user: UserProps;
+    user?: UserProps | null;
   }
 
   export interface RABProps {

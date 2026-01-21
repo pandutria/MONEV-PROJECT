@@ -3,12 +3,12 @@ import MONEV_API from "../server/MonevAPI";
 
 export default function NonTenderData() {
   const [nonTenderData, setNonTenderData] = useState<NonTenderDataProps[]>([]);
-  const [tahun, setTahun] = useState<string>("2025");
+  const [nonTenderTahun, setNonTenderTahun] = useState<string>("2025");
   
   useEffect(() => {
     const fetchNonTenderData = async () => {
       try {
-        const response = await MONEV_API.get(`/nontenderselesai?tahun=${tahun}`);
+        const response = await MONEV_API.get(`/nontenderselesai?tahun=${nonTenderTahun}`);
         setNonTenderData(response.data.data);
       } catch (error) {
         console.error(error);
@@ -16,10 +16,11 @@ export default function NonTenderData() {
     }
 
     fetchNonTenderData()
-  }, [tahun]);
+  }, [nonTenderTahun]);
 
   return {
     nonTenderData,
-    setTahun
+    nonTenderTahun,
+    setNonTenderTahun
   }
 }

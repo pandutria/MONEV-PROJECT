@@ -1,9 +1,10 @@
 import axios from "axios";
 
+const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Njg5ODY0MjcsInNjcCI6ImFwaS12MTpyZWFkIiwic3ViIjoiYWRtaW4iLCJ0eXAiOiJzZXJ2aWNlIiwiaWF0IjoxNzY4OTg2NDI3LCJleHAiOjE3Njg5ODczMjd9.2Zw15KKCbCE2Nyrl5dgtg3ABubfREFTH_Nn3z9lPLGA";
 const MONEV_API = axios.create({
     baseURL: "https://malutprov.lpse.info/api2/v1",
     headers: {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Njg4OTcxMzQsInNjcCI6ImFwaS12MTpyZWFkIiwic3ViIjoiYWRtaW4iLCJ0eXAiOiJzZXJ2aWNlIiwiaWF0IjoxNzY4ODk3MTM0LCJleHAiOjE3Njg4OTgwMzR9.s14Q3ZeWIO5ELfAyh_ZISoj2y3WDhJSfEIzYS0Zl4eM"
+        Authorization: `Bearer ${key}`
     }
 });
 
