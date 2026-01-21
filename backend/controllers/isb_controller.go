@@ -140,7 +140,7 @@ func GetAllPaketPurchasing(c *gin.Context) {
 	var data []models.PaketPurchasing
 
 	if kd_paket != "" {
-		config.DB.Where("tahun_anggaran", year).Where("kd_paket = ?", kd_paket).Find(&data)
+		config.DB.Where("tahun_anggaran = ?", year).Where("kd_paket = ?", kd_paket).Find(&data)
 	} else {
 		config.DB.Find(&data)
 	}
