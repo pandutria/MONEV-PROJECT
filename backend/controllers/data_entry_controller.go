@@ -122,7 +122,6 @@ func CreateDataEntry(c *gin.Context) {
 
 		Pemenang:       req.Pemenang,
 		NilaiPenawaran: req.NilaiPenawaran,
-		NilaiTotal:     req.NilaiTotal,
 		NilaiNegosiasi: req.NilaiNegosiasi,
 		NomorTelp:      req.NomorTelp,
 		Email:          req.Email,

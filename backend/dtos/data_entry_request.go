@@ -27,7 +27,6 @@ type CreateDataEntryRequest struct {
 
 	Pemenang       *string `form:"pemenang"`
 	NilaiPenawaran *string `form:"nilai_penawaran"`
-	NilaiTotal     *string `form:"nilai_total"`
 	NilaiNegosiasi *string `form:"nilai_negosiasi"`
 	NomorTelp      *string `form:"nomor_telp"`
 	Email          *string `form:"email"`

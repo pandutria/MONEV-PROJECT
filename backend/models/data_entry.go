@@ -29,7 +29,6 @@ type DataEntry struct {
 
 	Pemenang       *string `json:"pemenang"`
 	NilaiPenawaran *string `json:"nilai_penawaran"`
-	NilaiTotal     *string `json:"nilai_total"`
 	NilaiNegosiasi *string `json:"nilai_negosiasi"`
 	NomorTelp      *string `json:"nomor_telp"`
 	Email          *string `json:"email"`
