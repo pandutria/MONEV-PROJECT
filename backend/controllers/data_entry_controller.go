@@ -16,7 +16,11 @@ import (
 
 func GetAllDataEntry(c *gin.Context) {
 	var data []models.DataEntry
-	config.DB.Find(&data)
+	config.DB.
+		Preload("User").
+		Preload("User.Role").
+		Preload("SelectedPpk.Role").
+		Find(&data)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
@@ -31,7 +35,8 @@ func GetDataEntryById(c *gin.Context) {
 	var data models.DataEntry
 	result := config.DB.
 		Preload("User").
-		Preload("SelectedPpk").
+		Preload("User.Role").
+		Preload("SelectedPpk.Role").
 		First(&data, idParam)
 
 	if result.Error != nil {
@@ -48,7 +53,7 @@ func GetDataEntryById(c *gin.Context) {
 }
 
 func CreateDataEntry(c *gin.Context) {
-	var req dtos.CreateAndUpdateDataEntryRequest
+	var req dtos.CreateDataEntryRequest
 	userId, isNull := c.Get("user_id")
 
 	if !isNull {
@@ -69,7 +74,7 @@ func CreateDataEntry(c *gin.Context) {
 		return
 	}
 
-	EvidenceFile, _ := c.FormFile("evidence_file")
+	BuktiFile, _ := c.FormFile("bukti_file")
 
 	uploadDir := "uploads/entry"
 	_ = os.MkdirAll(uploadDir, os.ModePerm)
@@ -88,50 +93,45 @@ func CreateDataEntry(c *gin.Context) {
 		return &path
 	}
 
-	EvidencePath := saveUpload(EvidenceFile)
+	BuktiPath := saveUpload(BuktiFile)
 
 	data := models.DataEntry{
-		Type:              req.Type,
-		ProcurementMethod: req.ProcurementMethod,
-		TenderCode:        req.TenderCode,
-		RupCode:           req.RupCode,
-		FiscalYear:        req.FiscalYear,
-		SatkerCode:        req.SatkerCode,
-		SatkerName:        req.SatkerName,
-		PackageName:       req.PackageName,
-		FundingSource:     req.FundingSource,
-		ProcurementType:   req.ProcurementType,
+		MetodePengadaan: req.MetodePengadaan,
+		KodePaket:       req.KodePaket,
+		KodeRup:         req.KodeRup,
+		TahunAnggaran:   req.TahunAnggaran,
+		SatuanKerja:     req.SatuanKerja,
+		NamaPaket:       req.NamaPaket,
+		SumberDana:      req.SumberDana,
 
-		BudgetValue: req.BudgetValue,
-		HpsValue:    req.HpsValue,
-		ShippingFee: req.ShippingFee,
+		RealisasiPaket:   req.RealisasiPaket,
+		StatusPaket:      req.StatusPaket,
+		StatusPengiriman: req.StatusPengiriman,
 
-		ContractNumber:  req.ContractNumber,
-		ContractDate:    req.ContractDate,
-		ContractInitial: req.ContractInitial,
-		ContractFinal:   req.ContractFinal,
-		PpkName:         req.PpkName,
-		PpkPosition:     req.PpkPosition,
-		CompanyLeader:   req.CompanyLeader,
-		LeaderPosition:  req.LeaderPosition,
+		NilaiPagu: req.NilaiPagu,
+		NilaiHps:  req.NilaiHps,
 
-		WinnerName:       req.WinnerName,
-		BidValue:         req.BidValue,
-		NegotiationValue: req.NegotiationValue,
-		Phone:            req.Phone,
-		Email:            req.Email,
-		Npwp:             req.Npwp,
+		NomorKontrak:   req.NomorKontrak,
+		TanggalKontrak: req.TanggalKontrak,
+		NamaPpk:        req.NamaPpk,
+		JabatanPpk:     req.JabatanPpk,
 
-		WinnerAddress: req.WinnerAddress,
-		WorkLocation:  req.WorkLocation,
+		NamaPimpinanPerusahaan: req.NamaPimpinanPerusahaan,
+		JabatanPimpinan:        req.JabatanPimpinan,
 
-		RealizationStatus: req.RealizationStatus,
-		PackageStatus:     req.PackageStatus,
-		DeliveryStatus:    req.DeliveryStatus,
-		TotalValue:        req.TotalValue,
-		EvidenceFile:      EvidencePath,
+		Pemenang:       req.Pemenang,
+		NilaiPenawaran: req.NilaiPenawaran,
+		NilaiTotal:     req.NilaiTotal,
+		NilaiNegosiasi: req.NilaiNegosiasi,
+		NomorTelp:      req.NomorTelp,
+		Email:          req.Email,
+		Npwp:           req.Npwp,
 
-		Note: req.Note,
+		AlamatPemenang:  req.AlamatPemenang,
+		LokasiPekerjaan: req.LokasiPekerjaan,
+
+		BuktiFile: BuktiPath,
+		Catatan:   req.Catatan,
 
 		SelectedPpkId: req.SelectedPpkId,
 		UserId:        user.Id,
@@ -153,10 +153,10 @@ func CreateDataEntry(c *gin.Context) {
 }
 
 func UpdateDataEntry(c *gin.Context) {
-	var req dtos.CreateAndUpdateDataEntryRequest
+	var req dtos.UpdateDataEntryRequest
 	id := c.Param("id")
 
-	err := c.ShouldBind(&req)
+	err := c.ShouldBindWith(&req, binding.FormMultipart)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": err.Error(),
@@ -164,7 +164,11 @@ func UpdateDataEntry(c *gin.Context) {
 		return
 	}
 
-		EvidenceFile, _ := c.FormFile("evidence_file")
+	// if req.SelectedPpkId != nil && *req.SelectedPpkId == 0 {
+	// 	req.SelectedPpkId = nil
+	// }
+
+	BuktiFile, _ := c.FormFile("bukti_file")
 
 	uploadDir := "uploads/entry"
 	_ = os.MkdirAll(uploadDir, os.ModePerm)
@@ -183,27 +187,34 @@ func UpdateDataEntry(c *gin.Context) {
 		return &path
 	}
 
-	EvidencePath := saveUpload(EvidenceFile)
+	BuktiPath := saveUpload(BuktiFile)
 
 	var data models.DataEntry
 	config.DB.First(&data, id)
 
-	if req.Note != nil {
-		data.Note = req.Note
+	if req.Catatan != nil && *req.Catatan != "" {
+		data.Catatan = req.Catatan
+	} else {
+		data.Catatan = nil
 	}
 
 	if req.SelectedPpkId != nil {
 		data.SelectedPpkId = req.SelectedPpkId
+	} else {
+		data.SelectedPpkId = nil
 	}
 
-	if EvidencePath != nil {
-		data.EvidenceFile = EvidencePath
+	if BuktiPath != nil && *BuktiPath != "" {
+		data.BuktiFile = BuktiPath
+	} else {
+		data.BuktiFile = nil
 	}
 
 	err = config.DB.Save(&data).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "mengubah data gagal!",
+			"error":   err.Error(),
 		})
 		return
 	}
@@ -223,6 +234,7 @@ func DeleteDataEntry(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Mengahapus dara gagal!",
+			"error": err.Error(),
 		})
 		return
 	}

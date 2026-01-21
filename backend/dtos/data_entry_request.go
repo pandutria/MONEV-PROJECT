@@ -1,49 +1,49 @@
 package dtos
 
-type CreateAndUpdateDataEntryRequest struct {
-	Type              *string `json:"type" form:"type"`
-	ProcurementMethod *string `json:"procurement_method" form:"procurement_method"`
-	TenderCode        *string `json:"kd_temd" form:"tender_code"`
-	RupCode           *string `json:"rup_code" form:"rup_code"`
-	FiscalYear        *string `json:"fiscal_year" form:"fiscal_year"`
-	SatkerCode        *string `json:"satker_code" form:"satker_code"`
-	SatkerName        *string `json:"satker_name" form:"satker_name"`
-	PackageName       *string `json:"package_name" form:"package_name"`
-	FundingSource     *string `json:"funding_source" form:"funding_source"`
-	ProcurementType   *string `json:"procurement_type" form:"procurement_type"`
 
-	BudgetValue *string `json:"budget_value" form:"budget_value"`
-	HpsValue    *string `json:"hps_value" form:"hps_value"`
-	ShippingFee *string `json:"shipping_fee" form:"shipping_fee"`
+type CreateDataEntryRequest struct {
+	MetodePengadaan *string `form:"metode_pengadaan"`
+	KodePaket       *string `form:"kode_paket"`
+	KodeRup         *string `form:"kode_rup"`
+	TahunAnggaran   *string `form:"tahun_anggaran"`
+	SatuanKerja     *string `form:"satuan_kerja"`
+	NamaPaket       *string `form:"nama_paket"`
+	SumberDana      *string `form:"sumber_dana"`
 
-	ContractNumber  *string `json:"contract_number" form:"contract_number"`
-	ContractDate    *string `json:"contract_date" form:"contract_date"`
-	ContractInitial *string `json:"contract_initial" form:"contract_initial"`
-	ContractFinal   *string `json:"contract_final" form:"contract_final"`
+	RealisasiPaket   *string `form:"realisasi_paket"`
+	StatusPaket      *string `form:"status_paket"`
+	StatusPengiriman *string `form:"status_pengiriman"`
 
-	PpkName     *string `json:"ppk_name" form:"ppk_name"`
-	PpkPosition *string `json:"ppk_position" form:"ppk_position"`
+	NilaiPagu *string `form:"nilai_pagu"`
+	NilaiHps  *string `form:"nilai_hps"`
 
-	CompanyLeader  *string `json:"company_leader" form:"company_leader"`
-	LeaderPosition *string `json:"leader_position" form:"leader_position"`
+	NomorKontrak   *string `form:"nomor_kontrak"`
+	TanggalKontrak *string `form:"tanggal_kontrak"`
+	NamaPpk        *string `form:"nama_ppk"`
+	JabatanPpk     *string `form:"jabatan_ppk"`
 
-	WinnerName       *string `json:"winner_name" form:"winner_name"`
-	BidValue         *string `json:"bid_value" form:"bid_value"`
-	NegotiationValue *string `json:"negotiation_value" form:"negotiation_value"`
+	NamaPimpinanPerusahaan *string `form:"nama_pimpinan_perusahaan"`
+	JabatanPimpinan        *string `form:"jabatan_pimpinan"`
 
-	Phone *string `json:"phone" form:"phone"`
-	Email *string `json:"email" form:"email"`
-	Npwp  *string `json:"npwp" form:"npwp"`
+	Pemenang       *string `form:"pemenang"`
+	NilaiPenawaran *string `form:"nilai_penawaran"`
+	NilaiTotal     *string `form:"nilai_total"`
+	NilaiNegosiasi *string `form:"nilai_negosiasi"`
+	NomorTelp      *string `form:"nomor_telp"`
+	Email          *string `form:"email"`
+	Npwp           *string `form:"npwp"`
 
-	WinnerAddress *string `json:"winner_address" form:"winner_address"`
-	WorkLocation  *string `json:"work_location" form:"work_location"`
+	AlamatPemenang  *string `form:"alamat_pemenang"`
+	LokasiPekerjaan *string `form:"lokasi_pekerjaan"`
 
-	RealizationStatus *string `json:"realization_status" form:"realization_status"`
-	PackageStatus     *string `json:"package_status" form:"package_status"`
-	DeliveryStatus    *string `json:"delivery_status" form:"delivery_status"`
-	TotalValue        *string `json:"total_value" form:"total_value"`
+	Catatan        *string `form:"catatan"`
+	DitujukanKePpk *string `form:"ditujukan_ke_ppk"`
 
-	Note         *string `json:"note" form:"note"`
+	SelectedPpkId *uint `form:"selected_ppk_id"`
+	UserId        uint  `form:"user_id"`
+}
 
-	SelectedPpkId *uint `json:"selected_ppk_id" form:"selected_ppk_id"`
+type UpdateDataEntryRequest struct {
+	Catatan         *string `form:"catatan"`
+	SelectedPpkId *uint `form:"selected_ppk_id"`
 }
