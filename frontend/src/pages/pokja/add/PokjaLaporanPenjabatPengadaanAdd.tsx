@@ -103,7 +103,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         SwalMessage({
             type: "warning",
             title: "Peringatan!",
-            text: "Harap pilih kode tender / paket kembali!"
+            text: "Pilih kode tender / paket!"
         })
 
         setSelectedTender(null);
@@ -212,6 +212,8 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
     if (!user || user.role.name != "pokja") {
         return <Navigate to="/" replace />
     }
+
+    console.log(selectedTender)
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />

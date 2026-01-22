@@ -111,11 +111,14 @@ export default function useDataEntryHooks() {
                 const mappingData = data.map((item: DataEntryProps) => ({
                     ...item,
                     opd: "Tidak Ada",
+                    nomor_kontrak: item.nomor_kontrak ?? "-",
+                    nama_pimpinan_perusahaan: item.nama_pimpinan_perusahaan ?? "-",
+                    nomor_telp: item.nomor_telp ?? "-",
                     nilai_pagu: item.nilai_pagu ?? "Tidak Ada",
                     nilai_hps: item.nilai_hps ?? "Tidak Ada",
                     nilai_penawaran: FormatRupiah(Number(item.nilai_penawaran)) ?? "-",
                     nilai_negosiasi: FormatRupiah(Number(item.nilai_negosiasi)) ?? "-",
-                    tanggal_masuk: "-",
+                    tanggal_masuk: FormatDate(item.updated_at),
                     // efisience: FormatRupiah(Number(item.budget_value) - Number(item.contract_initial)),
                     // presentation: Number(item.budget_value) > 0 ? (((Number(item.budget_value) - Number(item.contract_initial)) / Number(item.budget_value)) * 100).toFixed(2) + "%" : "0%"
                 }));

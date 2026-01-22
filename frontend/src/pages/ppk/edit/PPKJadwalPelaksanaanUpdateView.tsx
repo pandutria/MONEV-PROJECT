@@ -7,7 +7,6 @@ import BackButton from '../../../ui/BackButton';
 import ShowTableForm from '../../../ui/ShowTableForm';
 import FormInput from '../../../ui/FormInput';
 import SubmitButton from '../../../ui/SubmitButton';
-import useRABHooks from '../../../hooks/RABHooks';
 import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
@@ -17,9 +16,8 @@ import useScheduleHooks from '../../../hooks/ScheduleHooks';
 export default function PPKJadwalPelaksanaanUpdateView() {
   const [showTender, setShowTender] = useState(false);
   const [search, setSearch] = useState("");
-  const [tenderDataFilter, setTenderDataFilter] = useState<NewTenderProps[]>([]);
   const [selectedRab, setSelectedRab] = useState<RABProps | null>(null);
-  const { rabData } = useRABHooks();
+
   const {
     setSelectedId,
     scheduleDataById,
@@ -58,19 +56,6 @@ export default function PPKJadwalPelaksanaanUpdateView() {
 
     fetchSelected();
   }, [showTender, selectedRab, location, isDisabled, id, setSelectedId, scheduleDataById]);
-
-  useEffect(() => {
-    const filteringDataTender = () => {
-      const filter = rabData?.filter((item: any) => {
-        const data = item?.tender_code?.toLowerCase().includes(search.toLowerCase());
-        return data;
-      });
-
-      setTenderDataFilter(filter as any);
-    }
-
-    filteringDataTender();
-  }, [search, rabData]);
 
   const columns = [
     {
@@ -128,7 +113,7 @@ export default function PPKJadwalPelaksanaanUpdateView() {
             <div className="overflow-y-auto max-h-[70vh] w-full">
               <TableContent
                 columns={columns}
-                data={tenderDataFilter}
+                data={rab}
                 isSelect={false}
                 showEdit={false}
                 showPreview={false}

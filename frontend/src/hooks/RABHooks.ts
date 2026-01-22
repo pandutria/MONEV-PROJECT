@@ -9,7 +9,6 @@ import { SortDescById } from "../utils/SortDescById";
 export default function useRABHooks() {
     const token = localStorage.getItem("token");
     const [program, setProgram] = useState("");
-    const [activity, setActivity] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [rabData, setRabData] = useState<RABProps[]>([]);
@@ -20,16 +19,16 @@ export default function useRABHooks() {
     const navigate = useNavigate();
     const [revisionCount, setRevisionCount] = useState<any[]>([]);
 
-    const buildTahunOptions = (data: { tahun_anggaran?: number | null }[]) => {
+    const buildTahunOptions = (data: any) => {
         const uniqueYears = Array.from(
             new Set(
                 data
-                    .map(item => item.tahun_anggaran)
-                    .filter((v): v is number => typeof v === "number")
+                    .map((item: any) => item.tahun_anggaran)
+                    .filter((v: any): v is number => typeof v === "number")
             )
-        ).sort((a, b) => b - a);
+        ).sort((a: any, b: any) => b - a);
 
-        return uniqueYears.map(tahun => ({
+        return uniqueYears.map((tahun: any) => ({
             id: tahun.toString(),
             text: tahun.toString()
         }));
@@ -63,19 +62,23 @@ export default function useRABHooks() {
                     if (!item.rab_group_id) return;
 
                     const existing = latestRabMap.get(item.rab_group_id);
-                    if (!existing || item.revision > existing.revision) {
+                    if (!existing || item.alasan_count > existing.alasan_count) {
                         latestRabMap.set(item.rab_group_id, item);
                     }
                 });
 
                 const mappingData = Array.from(latestRabMap.values()).map(item => ({
                     ...item,
-                    fiscal_year: item.tahun_anggaran?.toString() || ""
+                    tahun_anggaran: item.data_entry.tahun_anggaran?.toString(),
+                    satuan_kerja: item.data_entry.satuan_kerja?.toString(),
+                    kode_rup: item.data_entry.kode_rup?.toString(),
+                    kode_paket: item.data_entry.kode_paket?.toString(),
+                    nama_paket: item.data_entry.nama_paket?.toString(),
                 }));
 
                 const revisions = data.map(item => ({
                     rab_id: item.id,
-                    revisi: item.revision
+                    alasan_count: item.alasan_count
                 })).sort((a: any, b: any) => a - b)
 
                 const tahunOpts = buildTahunOptions(data);
@@ -104,9 +107,9 @@ export default function useRABHooks() {
         fetchRabById();
     }, [selectedId]);
 
-    const handleRABPost = async (dataRabHead: NewTenderProps, dataRabDetail: RABDetailProps[]) => {
+    const handleRABPost = async (dataEntryId: number, dataRabDetail: RABDetailProps[]) => {
         try {
-            if (!dataRabHead || !dataRabDetail) {
+            if (!dataEntryId || !dataRabDetail) {
                 SwalMessage({
                     type: "error",
                     title: "Gagal!",
@@ -118,16 +121,10 @@ export default function useRABHooks() {
 
             SwalLoading();
             const responseRabHeader = await API.post("/rab/create", {
-                tahun_anggaran: Number(dataRabHead.tahun_anggaran),
-                satuan_kerja: dataRabHead.nama_satker?.toString(),
-                kode_rup: dataRabHead.kd_rup?.toString(),
-                kode_tender: dataRabHead.kd_tender?.toString(),
-                nama_paket: dataRabHead.nama_paket?.toString(),
-                lokasi_pekerjaan: dataRabHead.lokasi_pekerjaan?.toString(),
+                data_entry_id: dataEntryId,
                 program: program?.toString(),
-                activity: activity?.toString(),
-                start_date: startDate?.toString(),
-                end_date: endDate?.toString()
+                tanggal_mulai: startDate?.toString(),
+                tanggal_akhir: endDate?.toString()
 
             }, {
                 headers: {
@@ -168,36 +165,19 @@ export default function useRABHooks() {
                     type: "error"
                 })
             }
-            console.error(error)
         }
     }
 
-    const handleRABPut = async (dataRabHead: NewTenderProps, groupRabHeader: RABProps, reason: string) => {
+    const handleRABPut = async (dataEntry: any, groupRabHeader: any, reason: string) => {
         try {
-            if (!dataRabHead) {
-                SwalMessage({
-                    type: "error",
-                    title: "Gagal!",
-                    text: "Belum ada data yang diubah!"
-                });
-
-                return;
-            }
-
             SwalLoading();
             const responseRabHeader = await API.post("/rab/create", {
                 rab_group_id: groupRabHeader.rab_group_id,
-                tahun_anggaran: Number(dataRabHead.tahun_anggaran),
-                satuan_kerja: dataRabHead.nama_satker?.toString(),
-                kode_rup: dataRabHead.kd_rup?.toString(),
-                kode_tender: dataRabHead.kd_tender?.toString(),
-                nama_paket: dataRabHead.nama_paket?.toString(),
-                lokasi_pekerjaan: dataRabHead.lokasi_pekerjaan?.toString(),
-                program: program?.toString(),
-                activity: activity?.toString(),
-                start_date: startDate?.toString(),
-                end_date: endDate?.toString(),
-                revision_text: reason,
+                data_entry_id: dataEntry.id,
+                program: program ? program.toString() : groupRabHeader?.program,
+                tanggal_mulai: startDate ? startDate?.toString() : groupRabHeader?.tanggal_mulai,
+                tanggal_akhir: endDate ? endDate?.toString() : groupRabHeader?.tanggal_akhir,
+                alasan_text: reason,
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -238,13 +218,13 @@ export default function useRABHooks() {
                     type: "error"
                 })
             }
+            console.error(error)
         }
     }
 
     const handleChangeRAB = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         if (name == "program") return setProgram(value);
-        if (name == "activity") return setActivity(value);
         if (name == "start") return setStartDate(value);
         if (name == "end") return setEndDate(value);
     }
@@ -261,9 +241,6 @@ export default function useRABHooks() {
                 return;
             }
 
-            const rabDetailAll = await API.get(`/rab/detail`);
-            const rabDetailAllData = rabDetailAll?.data?.data;
-
             const result = await SwalMessage({
                 type: "warning",
                 title: "Konfirmasi!",
@@ -274,17 +251,8 @@ export default function useRABHooks() {
                 let response;
                 SwalLoading();
 
-                for (let index = 0; index < ids.length; index++) {
-                    const id = ids[index];
-
-                     for (let index = 0; index < rabDetailAllData.length; index++) {
-                        const rabDetail = rabDetailAllData[index];
-
-                        if (rabDetail.rab_header_id === id) {
-                            await API.delete(`/rab/detail/delete/${rabDetail.id}`);
-                        }
-                     }
-
+                for (let index = 0; index < ids.length; index++) {    
+                    const id = ids[index];            
                     response = await API.delete(`/rab/delete/${id}`);
                 }
 
@@ -314,7 +282,6 @@ export default function useRABHooks() {
         handleRABPost,
         handleChangeRAB,
         program,
-        activity,
         startDate,
         endDate,
         rabData,

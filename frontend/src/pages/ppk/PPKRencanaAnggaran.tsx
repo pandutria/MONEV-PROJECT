@@ -15,10 +15,12 @@ export default function PPKRencanaAnggaran() {
     const [tahun, setTahun] = useState('');
     const [satuanKerja, setSatuanKerja] = useState('');
     const [search, setSearch] = useState('');
+
     const [selectRevisi, setSelectRevisi] = useState<RABProps | null>(null);
     const [showRevisi, setShowRevisi] = useState(false);
     const [selectPreview, setSelectPreview] = useState<any>(null);
     const [selectedRemove, setSelectedRemove] = useState<number[]>([]);
+
     const { user, loading } = useAuth();
     const { 
         rabData,
@@ -33,9 +35,9 @@ export default function PPKRencanaAnggaran() {
     useEffect(() => {
         const filteringDataRab = () => {
             const dataFilter = rabData?.filter((item: RABProps) => {
-                const tahunFilter = tahun ? item?.tahun_anggaran?.toString().includes(tahun) : true;
-                const searchFilter = search ? item?.kode_tender?.toLowerCase().includes(search.toLowerCase()) : true;
-                const satuanKerjaFilter = satuanKerja ? item.satuan_kerja?.toLowerCase().includes(satuanKerja.toLowerCase()) : true;
+                const tahunFilter = tahun ? item?.data_entry?.tahun_anggaran?.toString().includes(tahun) : true;
+                const searchFilter = search ? item?.data_entry?.kode_paket?.toLowerCase().includes(search.toLowerCase()) : true;
+                const satuanKerjaFilter = satuanKerja ? item.data_entry?.satuan_kerja?.toLowerCase().includes(satuanKerja.toLowerCase()) : true;
 
                 return tahunFilter && searchFilter && satuanKerjaFilter;
             });
@@ -64,7 +66,7 @@ export default function PPKRencanaAnggaran() {
             label: 'Kode RUP'
         },
         {
-            key: 'kode_tender',
+            key: 'kode_paket',
             label: 'kode Tender'
         },
         {
@@ -72,7 +74,7 @@ export default function PPKRencanaAnggaran() {
             label: 'Nama Paket'
         },
         {
-            key: 'revision',
+            key: 'alasan_count',
             label: 'Revisi'
         },
     ];

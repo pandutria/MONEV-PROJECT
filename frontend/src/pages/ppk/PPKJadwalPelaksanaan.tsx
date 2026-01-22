@@ -50,19 +50,19 @@ export default function PPKJadwalPelaksanaan() {
             label: 'Tahun Anggaran'
         },
         {
-            key: 'satker_name',
+            key: 'satuan_kerja',
             label: 'Satuan Kerja'
         },
         {
-            key: 'rup_code',
+            key: 'kode_rup',
             label: 'Kode RUP'
         },
         {
-            key: 'tender_code',
+            key: 'kode_paket',
             label: 'kode Tender'
         },
         {
-            key: 'package_name',
+            key: 'nama_paket',
             label: 'Nama Paket'
         },
         {
@@ -159,7 +159,7 @@ export default function PPKJadwalPelaksanaan() {
                     selectedSatuanKerja={satuanKerja}
                     onSatuanKerjaChange={setSatuanKerja}
                     showHapus={false}
-                    onTambahClick={() => navigate("/ppk/rencana-anggaran/tambah")}
+                    onTambahClick={() => navigate("/ppk/jadwal-pelaksanaan/tambah")}
                 />
                 <div className="p-6">
                     <TableContent

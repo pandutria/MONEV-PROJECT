@@ -29,19 +29,19 @@ export default function PokjaHasilKelompokKerja() {
             label: 'OPD'
         },
         {
-            key: 'package_name',
+            key: 'nama_paket',
             label: 'Nama Paket'
         },
         {
-            key: 'procurement_method',
+            key: 'metode_pengadaan',
             label: 'Metode Pengadaan'
         },
         {
-            key: 'budget_value',
+            key: 'nilai_pagu',
             label: 'Nilai Pagu'
         },
         {
-            key: 'hps_value',
+            key: 'nilai_hps',
             label: 'Nilai HPS'
         },
         {
@@ -53,31 +53,31 @@ export default function PokjaHasilKelompokKerja() {
             label: 'Jumlah Pemasukkan PNW'
         },
         {
-            key: 'winner_name',
+            key: 'pemenang',
             label: 'Pemenang'
         },
         {
-            key: 'contract_number',
+            key: 'nomor_kontrak',
             label: 'Nomor Kontrak'
         },
         {
-            key: 'bid_value',
+            key: 'nilai_penawaran',
             label: 'Nilai Penawaran'
         },
         {
-            key: 'negotiation_value',
+            key: 'nilai_negosiasi',
             label: 'Nilai Negosiasi'
         },
         {
-            key: 'ppk_name',
+            key: 'nama_ppk',
             label: 'Nama PPK'
         },
         {
-            key: 'company_leader',
+            key: 'nama_pimpinan_perusahaan',
             label: 'Nama Direktur'
         },
         {
-            key: 'phone',
+            key: 'nomor_telp',
             label: 'No Telepon Pemenang'
         },
         {
@@ -85,19 +85,19 @@ export default function PokjaHasilKelompokKerja() {
             label: 'NPWP'
         },
         {
-            key: 'winner_address',
+            key: 'pemenang',
             label: 'Alamat Pemenang'
         },
         {
-            key: 'work_location',
+            key: 'lokasi_pekerjaan',
             label: 'Lokasi Pekerjaan'
         },
         {
-            key: 'efisience',
+            key: 'efisiensi',
             label: 'Efisiensi Nilai Pagu-Kontrak'
         },
         {
-            key: 'presentation',
+            key: 'presentase',
             label: 'presentase'
         },
     ];
@@ -105,17 +105,17 @@ export default function PokjaHasilKelompokKerja() {
     useEffect(() => {
         const filteringDataEntry = () => {
             const dataFilter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
-                const filterType = item?.type?.includes("kelompok");
+                const filterType = item?.tipe?.includes("Kelompok");
                 const tahunFilter = tahun
-                    ? item?.fiscal_year?.toString().includes(tahun)
+                    ? item?.tahun_anggaran?.toString().includes(tahun)
                     : true;
 
                 const metodeFilter = metodePengadaan
-                    ? item?.procurement_method === metodePengadaan
+                    ? item?.metode_pengadaan === metodePengadaan
                     : true;
 
                 const sumberDanaFilter = sumberDana
-                    ? item?.funding_source === sumberDana
+                    ? item?.sumber_dana === sumberDana
                     : true;
 
                 return filterType && tahunFilter && metodeFilter && sumberDanaFilter;;
@@ -273,7 +273,7 @@ export default function PokjaHasilKelompokKerja() {
     if (!user || user.role.name != "pokja") {
         return <Navigate to="/" replace />
     }
-
+    
     return (
         <div>
             <Navbar />
@@ -302,7 +302,7 @@ export default function PokjaHasilKelompokKerja() {
                         isSelect={false}
                         showEdit={false}
                         showPreview={false}
-                        idKey="no"
+                        idKey="id"
                     />
                 </div>
             </div>

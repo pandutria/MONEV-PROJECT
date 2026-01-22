@@ -123,9 +123,11 @@ export default function PPKJadwalPelaksanaanAdd() {
   const [showDetail, setShowDetail] = useState(false);
   const [showTender, setShowTender] = useState(false);
   const [search, setSearch] = useState("");
+
   const [tenderDataFilter, setTenderDataFilter] = useState<TenderProps[]>([]);
   const [selectedRab, setSelectedRab] = useState<TenderProps | null>(null);
   const [totalMinggu, setTotalMinggu] = useState<number>(1);
+
   const { rabData } = useRABHooks();
   const { handleSchedulePost } = useScheduleHooks();
   const { user, loading } = useAuth();
@@ -198,24 +200,25 @@ export default function PPKJadwalPelaksanaanAdd() {
 
   useEffect(() => {
     const filteringDataTender = () => {
-      const filter = rabData?.filter((item: any) => {
-        const data = item?.tender_code?.toLowerCase().includes(search.toLowerCase());
+      const filter = rabData?.filter((item: RABProps) => {
+        const data = item?.data_entry?.kode_paket?.toLowerCase().includes(search.toLowerCase());
         return data;
       });
 
       setTenderDataFilter(filter as any);
     }
 
-    filteringDataTender();
+    filteringDataTender();  
   }, [search, rabData]);
 
+  console.log(rabData)
   const columns = [
     {
       key: 'id',
       label: 'No'
     },
     {
-      key: 'fiscal_year',
+      key: 'tahun_anggaran',
       label: 'Tahun Anggaran'
     },
     {

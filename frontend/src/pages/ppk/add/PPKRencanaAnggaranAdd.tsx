@@ -16,7 +16,7 @@ import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate } from 'react-router-dom';
 import TableHeader from '../../../ui/TableHeader';
 import FormatRupiah from '../../../utils/FormatRupiah';
-import useNewTenderInaprocHooks from '../../../hooks/NewTenderInaprocHooks';
+import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 
 const parseRABExcel = (
   worksheet: XLSX.WorkSheet,
@@ -58,16 +58,18 @@ export default function PPKRencanaAnggaranAdd() {
   const [showDetail, setShowDetail] = useState(false);
   const [showTender, setShowTender] = useState(false);
   const [search, setSearch] = useState("");
-  const [tenderDataFilter, setTenderDataFilter] = useState<NewTenderProps[]>([]);
+
+  const [tenderDataFilter, setTenderDataFilter] = useState<DataEntryProps[]>([]);
   const [selectedTender, setSelectedTender] = useState<NewTenderProps | any>(null);
-  const { newTenderInaprocHooks } = useNewTenderInaprocHooks();
+
+  const { dataEntryPengadaan } = useDataEntryHooks();
   const {
     handleRABPost,
     handleChangeRAB,
     program,
-    activity,
     startDate,
-    endDate
+    endDate,
+    rabData
   } = useRABHooks();
   const { user, loading } = useAuth();
 
@@ -136,9 +138,15 @@ export default function PPKRencanaAnggaranAdd() {
     }
 
     const filteringDataTender = () => {
-      const filter = newTenderInaprocHooks?.filter((item: NewTenderProps) => {
-        const data = item?.kd_tender?.toString().toLowerCase().includes(search.toLowerCase());
-        return data;
+      const filter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
+        const data = item?.kode_paket?.toString().toLowerCase().includes(search.toLowerCase());
+        const getByUser = item.selected_ppk_id == user?.id;
+
+        const isExisting = rabData.some(
+          rab => rab.data_entry.kode_paket == item.kode_paket
+        );
+
+        return data && getByUser && !isExisting;
       });
 
       setTenderDataFilter(filter);
@@ -146,7 +154,7 @@ export default function PPKRencanaAnggaranAdd() {
 
     filteringDataTender();
     renderShowtender();
-  }, [showTender, selectedTender, search, newTenderInaprocHooks]);
+  }, [showTender, selectedTender, search, dataEntryPengadaan, user, rabData]);
 
   const columns = [
     {
@@ -158,15 +166,15 @@ export default function PPKRencanaAnggaranAdd() {
       label: 'Tahun Anggaran'
     },
     {
-      key: 'nama_satker',
+      key: 'satuan_kerja',
       label: 'Satuan Kerja'
     },
     {
-      key: 'kd_rup',
+      key: 'kode_rup',
       label: 'Kode RUP'
     },
     {
-      key: 'kd_tender',
+      key: 'kode_paket',
       label: 'kode Tender'
     },
     {
@@ -175,7 +183,7 @@ export default function PPKRencanaAnggaranAdd() {
     },
   ];
 
-  if (loading || newTenderInaprocHooks.length === 0) {
+  if (loading || dataEntryPengadaan.length === 0) {
     return <LoadingSpinner />
   }
 
@@ -198,6 +206,7 @@ export default function PPKRencanaAnggaranAdd() {
               type='pokja'
               showHapus={false}
               showTambah={false}
+              showTahunQuery={false}
               searchValue={search}
               onSearchChange={(item) => setSearch(item)}
             />
@@ -229,7 +238,7 @@ export default function PPKRencanaAnggaranAdd() {
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-poppins-regular">
-              <ShowTableForm tenderCode={selectedTender?.kd_tender} onClick={() => {
+              <ShowTableForm tenderCode={selectedTender?.kode_paket} onClick={() => {
                 setShowTender(true);
                 setSelectedTender(null);
               }} />
@@ -244,14 +253,14 @@ export default function PPKRencanaAnggaranAdd() {
               <FormInput
                 title='Satuan Kerja'
                 placeholder='Masukkan tahun satuan kerja (otomatis)'
-                value={selectedTender?.nama_satker}
+                value={selectedTender?.satuan_kerja}
                 disabled={true}
               />
 
               <FormInput
                 title='Kode RUP'
                 placeholder='Masukkan tahun kode RUP (otomatis)'
-                value={selectedTender?.kd_rup}
+                value={selectedTender?.kode_rup}
                 disabled={true}
               />
 
@@ -273,10 +282,9 @@ export default function PPKRencanaAnggaranAdd() {
 
               <FormInput
                 title='Kegiatan'
-                placeholder='Masukkan kegiatan'
-                value={activity}
-                name='activity'
-                onChange={handleChangeRAB}
+                placeholder='Masukkan kegiatan (otomatis)'
+                value={selectedTender?.nama_paket}
+                disabled={true}
               />
 
               <FormInput
@@ -300,7 +308,6 @@ export default function PPKRencanaAnggaranAdd() {
               <FormInput
                 title='Alasan'
                 placeholder='Alasan'
-                // value={selectedTender.alasan}
                 disabled={true}
                 type='textarea'
               />
@@ -310,7 +317,7 @@ export default function PPKRencanaAnggaranAdd() {
           </div>
 
           {showDetail && (
-            <FormGenerateExcel handleSave={() => handleRABPost(selectedTender, dataFile)} title='RAB' handleFileChange={handleFileChange} handleDownloadTemplate={handleDownloadTemplate} />
+            <FormGenerateExcel handleSave={() => handleRABPost(selectedTender.id, dataFile)} title='RAB' handleFileChange={handleFileChange} handleDownloadTemplate={handleDownloadTemplate} />
           )}
 
           <div className="bg-white rounded-lg shadow-md overflow-hidden">

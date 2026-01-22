@@ -36,7 +36,7 @@ export default function PokjaLaporanKelompok() {
             label: 'Nama Paket'
         },
         {
-            key: 'tanggal_kontrak',
+            key: 'tanggal_masuk',
             label: 'Tanggal Masuk/Perubahan'
         },
     ];    
