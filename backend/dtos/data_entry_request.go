@@ -7,6 +7,7 @@ type CreateDataEntryRequest struct {
 	KodePaket       *string `form:"kode_paket"`
 	KodeRup         *string `form:"kode_rup"`
 	TahunAnggaran   *string `form:"tahun_anggaran"`
+	TanggalMasuk    *string `json:"tanggal_masuk"`
 	SatuanKerja     *string `form:"satuan_kerja"`
 	NamaPaket       *string `form:"nama_paket"`
 	SumberDana      *string `form:"sumber_dana"`

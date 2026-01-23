@@ -82,7 +82,7 @@ func CreateScheduleHeader(c *gin.Context) {
 		}
 	}
 
-	var lastRevision int
+	lastRevision := -1
 	if req.ScheduleGroupId != nil {
 		err := config.DB.
 			Model(&models.ScheduleHeader{}).
@@ -103,9 +103,7 @@ func CreateScheduleHeader(c *gin.Context) {
 	schedule := models.ScheduleHeader{
 		ScheduleGroupId: 0, 
 		RabId:           req.RabId,
-		StartDate:       req.StartDate,
-		EndDate:         req.EndDate,
-		RevisionCount:  &revision,
+		AlasanCount:  &revision,
 		CreatedById:    user.Id,
 	}
 
@@ -183,7 +181,7 @@ func DeleteSchedule(c *gin.Context) {
 
 	if len(itemIDs) > 0 {
 		if err := config.DB.
-			Where("schedule_item_id IN ?", itemIDs).
+			Where("schedule_item_id = ?", itemIDs).
 			Delete(&models.ScheduleWeek{}).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "Gagal menghapus schedule week",

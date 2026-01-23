@@ -431,14 +431,14 @@ type PencatatanNonTenderIsb struct {
 	NilaiPdnPct    *float64 `db:"nilai_pdn_pct" json:"nilai_pdn_pct"`
 	NilaiUmkPct    *float64 `db:"nilai_umk_pct" json:"nilai_umk_pct"`
 
-	SumberDana        *string `db:"sumber_dana" json:"sumber_dana"`
+	SumberDana       *string `db:"sumber_dana" json:"sumber_dana"`
 	UraianPekerjaan  *string `db:"uraian_pekerjaan" json:"uraian_pekerjaan"`
 	InformasiLainnya *string `db:"informasi_lainnya" json:"informasi_lainnya"`
 
 	KategoriPengadaan *string `db:"kategori_pengadaan" json:"kategori_pengadaan"`
 	MtdPemilihan      *string `db:"mtd_pemilihan" json:"mtd_pemilihan"`
 
-	BuktiPembayaran        *string `db:"bukti_pembayaran" json:"bukti_pembayaran"`
+	BuktiPembayaran       *string `db:"bukti_pembayaran" json:"bukti_pembayaran"`
 	StatusNontenderPct    *string `db:"status_nontender_pct" json:"status_nontender_pct"`
 	StatusNontenderPctKet *string `db:"status_nontender_pct_ket" json:"status_nontender_pct_ket"`
 
@@ -482,9 +482,9 @@ type RupPaketPenyedia struct {
 	AsalDanaKlpd   *string `db:"asal_dana_klpd" json:"asal_dana_klpd"`
 	AsalDanaSatker *string `db:"asal_dana_satker" json:"asal_dana_satker"`
 
-	StatusAktifRup     *string `db:"status_aktif_rup" json:"status_aktif_rup"`
-	StatusDeleteRup    *string `db:"status_delete_rup" json:"status_delete_rup"`
-	StatusUmumkanRup   *string `db:"status_umumkan_rup" json:"status_umumkan_rup"`
+	StatusAktifRup   *string `db:"status_aktif_rup" json:"status_aktif_rup"`
+	StatusDeleteRup  *string `db:"status_delete_rup" json:"status_delete_rup"`
+	StatusUmumkanRup *string `db:"status_umumkan_rup" json:"status_umumkan_rup"`
 
 	TahunAnggaranDana *string `db:"tahun_anggaran_dana" json:"tahun_anggaran_dana"`
 }
@@ -558,15 +558,15 @@ type RupPenyediaTerumumkan struct {
 	UraianPekerjaan *string `db:"urarian_pekerjaan" json:"urarian_pekerjaan"`
 	Spesifikasi     *string `db:"spesifikasi_pekerjaan" json:"spesifikasi_pekerjaan"`
 
-	TglAwalPemilihan   *string `db:"tgl_awal_pemilihan" json:"tgl_awal_pemilihan"`
-	TglAkhirPemilihan  *string `db:"tgl_akhir_pemilihan" json:"tgl_akhir_pemilihan"`
-	TglAwalKontrak     *string `db:"tgl_awal_kontrak" json:"tgl_awal_kontrak"`
-	TglAkhirKontrak    *string `db:"tgl_akhir_kontrak" json:"tgl_akhir_kontrak"`
-	TglAwalPemanfaatan *string `db:"tgl_awal_pemanfaatan" json:"tgl_awal_pemanfaatan"`
+	TglAwalPemilihan    *string `db:"tgl_awal_pemilihan" json:"tgl_awal_pemilihan"`
+	TglAkhirPemilihan   *string `db:"tgl_akhir_pemilihan" json:"tgl_akhir_pemilihan"`
+	TglAwalKontrak      *string `db:"tgl_awal_kontrak" json:"tgl_awal_kontrak"`
+	TglAkhirKontrak     *string `db:"tgl_akhir_kontrak" json:"tgl_akhir_kontrak"`
+	TglAwalPemanfaatan  *string `db:"tgl_awal_pemanfaatan" json:"tgl_awal_pemanfaatan"`
 	TglAkhirPemanfaatan *string `db:"tgl_akhir_pemanfaatan" json:"tgl_akhir_pemanfaatan"`
 
-	TglBuatPaket        *string `db:"tgl_buat_paket" json:"tgl_buat_paket"`
-	TglPengumumanPaket  *string `db:"tgl_pengumuman_paket" json:"tgl_pengumuman_paket"`
+	TglBuatPaket       *string `db:"tgl_buat_paket" json:"tgl_buat_paket"`
+	TglPengumumanPaket *string `db:"tgl_pengumuman_paket" json:"tgl_pengumuman_paket"`
 
 	NipPpk      *string `db:"nip_ppk" json:"nip_ppk"`
 	NamaPpk     *string `db:"nama_ppk" json:"nama_ppk"`
@@ -575,4 +575,244 @@ type RupPenyediaTerumumkan struct {
 	StatusAktifRup   *string `db:"status_aktif_rup" json:"status_aktif_rup"`
 	StatusDeleteRup  *string `db:"status_delete_rup" json:"status_delete_rup"`
 	StatusUmumkanRup *string `db:"status_umumkan_rup" json:"status_umumkan_rup"`
+}
+
+type KatalogV5 struct {
+	ID uint `gorm:"primaryKey" json:"id"`
+
+	AlamatSatker  string  `gorm:"column:alamat_satker" json:"alamat_satker"`
+	CatatanProduk string  `gorm:"column:catatan_produk" json:"catatan_produk"`
+	Deskripsi     *string `gorm:"column:deskripsi" json:"deskripsi"`
+
+	EmailUserPokja string `gorm:"column:email_user_pokja" json:"email_user_pokja"`
+
+	HargaSatuan    string `gorm:"column:harga_satuan" json:"harga_satuan"`
+	JabatanPpk     string `gorm:"column:jabatan_ppk" json:"jabatan_ppk"`
+	JmlJenisProduk string `gorm:"column:jml_jenis_produk" json:"jml_jenis_produk"`
+
+	KdKlpd                string `gorm:"column:kd_klpd" json:"kd_klpd"`
+	KdKomoditas           string `gorm:"column:kd_komoditas" json:"kd_komoditas"`
+	KdPaket               string `gorm:"column:kd_paket" json:"kd_paket"`
+	KdPenyedia            string `gorm:"column:kd_penyedia" json:"kd_penyedia"`
+	KdPenyediaDistributor string `gorm:"column:kd_penyedia_distributor" json:"kd_penyedia_distributor"`
+	KdProduk              string `gorm:"column:kd_produk" json:"kd_produk"`
+	KdRup                 string `gorm:"column:kd_rup" json:"kd_rup"`
+
+	KdUserPokja string `gorm:"column:kd_user_pokja" json:"kd_user_pokja"`
+	KdUserPpk   string `gorm:"column:kd_user_ppk" json:"kd_user_ppk"`
+
+	KodeAnggaran string `gorm:"column:kode_anggaran" json:"kode_anggaran"`
+	Kuantitas    string `gorm:"column:kuantitas" json:"kuantitas"`
+
+	NamaPaket  string  `gorm:"column:nama_paket" json:"nama_paket"`
+	NamaSatker *string `gorm:"column:nama_satker" json:"nama_satker"`
+
+	NamaSumberDana string `gorm:"column:nama_sumber_dana" json:"nama_sumber_dana"`
+	NoPaket        string `gorm:"column:no_paket" json:"no_paket"`
+
+	NoTelpUserPokja string `gorm:"column:no_telp_user_pokja" json:"no_telp_user_pokja"`
+	NpwpSatker      string `gorm:"column:npwp_satker" json:"npwp_satker"`
+
+	OngkosKirim string `gorm:"column:ongkos_kirim" json:"ongkos_kirim"`
+
+	PaketStatusStr string `gorm:"column:paket_status_str" json:"paket_status_str"`
+	PpkNip         string `gorm:"column:ppk_nip" json:"ppk_nip"`
+
+	SatkerId string `gorm:"column:satker_id" json:"satker_id"`
+
+	StatusPaket string `gorm:"column:status_paket" json:"status_paket"`
+
+	TahunAnggaran    string `gorm:"column:tahun_anggaran" json:"tahun_anggaran"`
+	TanggalBuatPaket string `gorm:"column:tanggal_buat_paket" json:"tanggal_buat_paket"`
+	TanggalEditPaket string `gorm:"column:tanggal_edit_paket" json:"tanggal_edit_paket"`
+
+	Total      *string `gorm:"column:total" json:"total"`
+	TotalHarga string  `gorm:"column:total_harga" json:"total_harga"`
+}
+
+type KatalogV5Cache struct {
+	Data []KatalogV5 `json:"data"`
+}
+
+type KatalogV6 struct {
+	ID uint `gorm:"primaryKey" json:"id"`
+
+	JenisInstansi *string `gorm:"column:jenis_instansi" json:"jenis_instansi"`
+
+	JmlJenisProduk int `gorm:"column:jml_jenis_produk" json:"jml_jenis_produk"`
+	JmlProduk      int `gorm:"column:jml_produk" json:"jml_produk"`
+
+	KdKlpd  string `gorm:"column:kd_klpd" json:"kd_klpd"`
+	KdPaket string `gorm:"column:kd_paket" json:"kd_paket"`
+
+	KdPenyediaSikap int    `gorm:"column:kd_penyedia_sikap" json:"kd_penyedia_sikap"`
+	KdPenyediaV6    string `gorm:"column:kd_penyedia_v6" json:"kd_penyedia_v6"`
+
+	KdRup string `gorm:"column:kd_rup" json:"kd_rup"`
+
+	KdSatkerStr string `gorm:"column:kd_satker_str" json:"kd_satker_str"`
+	Mak         string `gorm:"column:mak" json:"mak"`
+
+	NamaInstansi *string `gorm:"column:nama_instansi" json:"nama_instansi"`
+	NamaSatker   string  `gorm:"column:nama_satker" json:"nama_satker"`
+
+	Ongkir int64 `gorm:"column:ongkir" json:"ongkir"`
+
+	ProductIds *string `gorm:"column:product_ids" json:"product_ids"`
+
+	RupNamaPkt string `gorm:"column:rup_nama_pkt" json:"rup_nama_pkt"`
+
+	StatusPengiriman string `gorm:"column:status_pengiriman" json:"status_pengiriman"`
+	StatusPkt        string `gorm:"column:status_pkt" json:"status_pkt"`
+
+	SumberDana string `gorm:"column:sumber_dana" json:"sumber_dana"`
+
+	TahunAnggaran int `gorm:"column:tahun_anggaran" json:"tahun_anggaran"`
+
+	TglOrder time.Time `gorm:"column:tgl_order" json:"tgl_order"`
+
+	TotalHarga int64 `gorm:"column:total_harga" json:"total_harga"`
+}
+
+type KatalogV6Cache struct {
+	Data []KatalogV6 `json:"data"`
+}
+
+type NonTenderSelesai struct {
+	ID uint `gorm:"primaryKey" json:"id"`
+
+	Hps float64 `gorm:"column:hps" json:"hps"`
+
+	JenisKlpd      string `gorm:"column:jenis_klpd" json:"jenis_klpd"`
+	JenisPengadaan string `gorm:"column:jenis_pengadaan" json:"jenis_pengadaan"`
+
+	KdKlpd string `gorm:"column:kd_klpd" json:"kd_klpd"`
+
+	KdLpse int `gorm:"column:kd_lpse" json:"kd_lpse"`
+	LpseId int `gorm:"column:lpse_id" json:"lpse_id"`
+
+	KdNontender int64 `gorm:"column:kd_nontender" json:"kd_nontender"`
+
+	KdPaketDce *string `gorm:"column:kd_paket_dce" json:"kd_paket_dce"`
+
+	KdPenyedia int64 `gorm:"column:kd_penyedia" json:"kd_penyedia"`
+
+	KdRup string `gorm:"column:kd_rup" json:"kd_rup"`
+
+	KdSatker    string `gorm:"column:kd_satker" json:"kd_satker"`
+	KdSatkerStr string `gorm:"column:kd_satker_str" json:"kd_satker_str"`
+
+	KontrakPembayaran string `gorm:"column:kontrak_pembayaran" json:"kontrak_pembayaran"`
+	KualifikasiPaket  string `gorm:"column:kualifikasi_paket" json:"kualifikasi_paket"`
+
+	Mak string `gorm:"column:mak" json:"mak"`
+
+	MtdPemilihan string `gorm:"column:mtd_pemilihan" json:"mtd_pemilihan"`
+
+	NamaKlpd string `gorm:"column:nama_klpd" json:"nama_klpd"`
+	NamaLpse string `gorm:"column:nama_lpse" json:"nama_lpse"`
+
+	NamaPaket    string `gorm:"column:nama_paket" json:"nama_paket"`
+	NamaPenyedia string `gorm:"column:nama_penyedia" json:"nama_penyedia"`
+	NamaSatker   string `gorm:"column:nama_satker" json:"nama_satker"`
+
+	NilaiKontrak    float64 `gorm:"column:nilai_kontrak" json:"nilai_kontrak"`
+	NilaiNegosiasi  float64 `gorm:"column:nilai_negosiasi" json:"nilai_negosiasi"`
+	NilaiPdnKontrak float64 `gorm:"column:nilai_pdn_kontrak" json:"nilai_pdn_kontrak"`
+	NilaiPenawaran  float64 `gorm:"column:nilai_penawaran" json:"nilai_penawaran"`
+	NilaiTerkoreksi float64 `gorm:"column:nilai_terkoreksi" json:"nilai_terkoreksi"`
+	NilaiUmkKontrak float64 `gorm:"column:nilai_umk_kontrak" json:"nilai_umk_kontrak"`
+
+	Npwp16Penyedia *string `gorm:"column:npwp_16_penyedia" json:"npwp_16_penyedia"`
+	NpwpPenyedia   string  `gorm:"column:npwp_penyedia" json:"npwp_penyedia"`
+
+	Pagu int64 `gorm:"column:pagu" json:"pagu"`
+
+	StatusNontender string `gorm:"column:status_nontender" json:"status_nontender"`
+	SumberDana      string `gorm:"column:sumber_dana" json:"sumber_dana"`
+
+	TahunAnggaran int `gorm:"column:tahun_anggaran" json:"tahun_anggaran"`
+
+	TglPenarikan *time.Time `gorm:"column:tgl_penarikan" json:"tgl_penarikan"`
+
+	TglPengumumanNontender time.Time `gorm:"column:tgl_pengumuman_nontender" json:"tgl_pengumuman_nontender"`
+	TglSelesaiNontender    time.Time `gorm:"column:tgl_selesai_nontender" json:"tgl_selesai_nontender"`
+
+	UrlLpse string `gorm:"column:url_lpse" json:"url_lpse"`
+}
+
+type NonTenderSelesaiCahce struct {
+	Data []NonTenderSelesai `json:"data"`
+}
+type Tender struct {
+	ID uint `gorm:"primaryKey" json:"id"`
+
+	EventDate *time.Time `gorm:"column:_event_date" json:"_event_date"`
+
+	Hps int64 `gorm:"column:hps" json:"hps"`
+
+	JenisKlpd      string `gorm:"column:jenis_klpd" json:"jenis_klpd"`
+	JenisPengadaan string `gorm:"column:jenis_pengadaan" json:"jenis_pengadaan"`
+
+	KdKlpd string `gorm:"column:kd_klpd" json:"kd_klpd"`
+
+	KdLpse int `gorm:"column:kd_lpse" json:"kd_lpse"`
+
+	KdPktDce int64 `gorm:"column:kd_pkt_dce" json:"kd_pkt_dce"`
+	KdTender int64 `gorm:"column:kd_tender" json:"kd_tender"`
+
+	KdRup string `gorm:"column:kd_rup" json:"kd_rup"`
+
+	KdSatker    string `gorm:"column:kd_satker" json:"kd_satker"`
+	KdSatkerStr string `gorm:"column:kd_satker_str" json:"kd_satker_str"`
+
+	KetDitutup *string `gorm:"column:ket_ditutup" json:"ket_ditutup"`
+	KetDiulang *string `gorm:"column:ket_diulang" json:"ket_diulang"`
+
+	KontrakPembayaran string `gorm:"column:kontrak_pembayaran" json:"kontrak_pembayaran"`
+	KualifikasiPaket  string `gorm:"column:kualifikasi_paket" json:"kualifikasi_paket"`
+
+	ListTahunAnggaran string `gorm:"column:list_tahun_anggaran" json:"list_tahun_anggaran"`
+
+	LokasiPekerjaan string `gorm:"column:lokasi_pekerjaan" json:"lokasi_pekerjaan"`
+
+	MaxLlsAuditupdate *time.Time `gorm:"column:max_lls_auditupdate" json:"max_lls_auditupdate"`
+
+	MtdEvaluasi     string `gorm:"column:mtd_evaluasi" json:"mtd_evaluasi"`
+	MtdKualifikasi  string `gorm:"column:mtd_kualifikasi" json:"mtd_kualifikasi"`
+	MtdPemilihan    string `gorm:"column:mtd_pemilihan" json:"mtd_pemilihan"`
+
+	NamaKlpd string `gorm:"column:nama_klpd" json:"nama_klpd"`
+	NamaLpse string `gorm:"column:nama_lpse" json:"nama_lpse"`
+
+	NamaPaket string `gorm:"column:nama_paket" json:"nama_paket"`
+
+	NamaPokja string `gorm:"column:nama_pokja" json:"nama_pokja"`
+	NamaPpk   string `gorm:"column:nama_ppk" json:"nama_ppk"`
+
+	NamaSatker string `gorm:"column:nama_satker" json:"nama_satker"`
+
+	NipPokja string `gorm:"column:nip_pokja" json:"nip_pokja"`
+	NipPpk   string `gorm:"column:nip_ppk" json:"nip_ppk"`
+
+	Pagu int64 `gorm:"column:pagu" json:"pagu"`
+
+	StatusTender string `gorm:"column:status_tender" json:"status_tender"`
+	SumberDana   string `gorm:"column:sumber_dana" json:"sumber_dana"`
+
+	TahunAnggaran int `gorm:"column:tahun_anggaran" json:"tahun_anggaran"`
+
+	TanggalStatus time.Time `gorm:"column:tanggal_status" json:"tanggal_status"`
+
+	TglBuatPaket time.Time `gorm:"column:tgl_buat_paket" json:"tgl_buat_paket"`
+	TglKolektifKolegial time.Time `gorm:"column:tgl_kolektif_kolegial" json:"tgl_kolektif_kolegial"`
+	TglPengumumanTender time.Time `gorm:"column:tgl_pengumuman_tender" json:"tgl_pengumuman_tender"`
+
+	UrlLpse string `gorm:"column:url_lpse" json:"url_lpse"`
+
+	VersiTender string `gorm:"column:versi_tender" json:"versi_tender"`
+}
+
+type TenderCache struct {
+	Data []Tender `json:"data"`
 }
