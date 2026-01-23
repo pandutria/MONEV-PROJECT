@@ -8,10 +8,8 @@ type ScheduleHeader struct {
 	Rab   *RabHeader `gorm:"foreignKey:RabId" json:"rab,omitempty"`
 	ScheduleGroupId uint `gorm:"index" json:"schedule_group_id"`
 
-	StartDate     *string `json:"start_date"`
-	EndDate       *string `json:"end_date"`
-	RevisionCount *int        `json:"revision_count"`
-	RevisionText  *string    `json:"revision_text"`
+	AlasanCount *int        `json:"alasan_count"`
+	AlasanText  *string    `json:"alasan_text"`
 
 	CreatedById uint      `json:"created_by_id"`
 	CreatedBy   *User     `gorm:"foreignKey:CreatedById" json:"created_by,omitempty"`

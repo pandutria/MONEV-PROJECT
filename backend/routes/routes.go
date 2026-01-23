@@ -30,10 +30,10 @@ func SetupRoutes(r *gin.Engine) {
 		public.PUT("/pokja-group/user/update/:id", controllers.UpdateUserPokja)
 		public.DELETE("/pokja-group/user/delete/:id", controllers.DeleteUserPokja)
 
-		public.GET("/tender", controllers.GetAllTender)
-		public.GET("/tender/:id", controllers.GetTenderById)
-		public.PUT("/tender/update/:id", controllers.UpdateTender)
-		public.DELETE("/tender/delete/:id", controllers.DeleteTender)
+		// public.GET("/tender", controllers.GetAllTender)
+		// public.GET("/tender/:id", controllers.GetTenderById)
+		// public.PUT("/tender/update/:id", controllers.UpdateTender)
+		// public.DELETE("/tender/delete/:id", controllers.DeleteTender)
 
 		public.GET("/dataentry", controllers.GetAllDataEntry)
 		public.GET("/dataentry/:id", controllers.GetDataEntryById)
@@ -93,6 +93,11 @@ func SetupRoutes(r *gin.Engine) {
 		public.GET("/rup_paket_penyedia", controllers.GetAllRupPaketPenyedia)
 		public.GET("/rup_paket_swakelola", controllers.GetAllRupPaketSwakelola)
 		public.GET("/rup_penyedia_terumumkan", controllers.GetAllRupPenyediaTerumumkan)
+
+		public.GET("/katalogv5", controllers.GetKatalogV5)
+		public.GET("/katalogv6", controllers.GetKatalogV6)
+		public.GET("/non-tender-selesai", controllers.GetNonTenderSelesai)
+		public.GET("/tenders", controllers.GetTender)
 	}
 
 	private := r.Group("/api")

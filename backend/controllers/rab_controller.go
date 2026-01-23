@@ -41,103 +41,103 @@ func GetRabHeaderGroup(c *gin.Context) {
 	})
 }
 
-func CreateRabHeader(c *gin.Context) {
-	var req dtos.CreateRabHeaderRequest
-	userId, isNull := c.Get("user_id")
+	func CreateRabHeader(c *gin.Context) {
+		var req dtos.CreateRabHeaderRequest
+		userId, isNull := c.Get("user_id")
 
-	if !isNull {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "Pengguna harus login terlebih dahulu!",
-		})
-		return
-	}
+		if !isNull {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"message": "Pengguna harus login terlebih dahulu!",
+			})
+			return
+		}
 
-	err := c.ShouldBindBodyWithJSON(&req)
-	if err != nil {
-		c.JSON(http.StatusConflict, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
+		err := c.ShouldBindBodyWithJSON(&req)
+		if err != nil {
+			c.JSON(http.StatusConflict, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
 
-	if req.RabGroupId != nil {
-		var exists bool
-		err := config.DB.
-			Model(&models.RabHeader{}).
-			Select("count(1) > 0").
-			Where("rab_group_id = ?", *req.RabGroupId).
-			Scan(&exists).Error
+		if req.RabGroupId != nil {
+			var exists bool
+			err := config.DB.
+				Model(&models.RabHeader{}).
+				Select("count(1) > 0").
+				Where("rab_group_id = ?", *req.RabGroupId).
+				Scan(&exists).Error
 
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"message": "Gagal validasi RabGroupId",
+					"error":   err.Error(),
+				})
+				return
+			}
+
+			if !exists {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"message": "RabGroupId tidak ditemukan",
+				})
+				return
+			}
+		}
+
+		lastRevision := -1
+		if req.RabGroupId != nil {
+			err := config.DB.
+				Model(&models.RabHeader{}).
+				Where("rab_group_id = ?", *req.RabGroupId).
+				Select("COALESCE(MAX(alasan_count), 0)").
+				Scan(&lastRevision).Error
+
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"message": "Gagal mengambil alasan terakhir",
+					"error":   err.Error(),
+				})
+				return
+			}
+		}
+
+		revision := lastRevision + 1
+
+		var user models.User
+		config.DB.First(&user, userId)
+
+		header := models.RabHeader{
+			RabGroupId:   req.RabGroupId,
+			AlasanCount:  &revision,
+			AlasanText: req.AlasanText,
+			Program:      req.Program,
+			TanggalMulai: req.TanggalMulai,
+			TanggalAkhir: req.TanggalAkhir,	
+			DataEntryId: req.DataEntryId,
+			CreatedById:  user.Id,
+		}
+
+		err = config.DB.Create(&header).Error
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": "Gagal validasi RabGroupId",
+				"message": "Membuat data gagal",
 				"error":   err.Error(),
 			})
 			return
 		}
 
-		if !exists {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "RabGroupId tidak ditemukan",
-			})
-			return
+		if req.RabGroupId == nil {
+			config.DB.Model(&header).
+				Update("rab_group_id", header.Id)
 		}
-	}
 
-	var lastRevision int
-	if req.RabGroupId != nil {
-		err := config.DB.
-			Model(&models.RabHeader{}).
-			Where("rab_group_id = ?", *req.RabGroupId).
-			Select("COALESCE(MAX(revision_count), 0)").
-			Scan(&lastRevision).Error
+		config.DB.Preload("RabDetails").Preload("CreatedBy.Role").Find(&header)
 
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": "Gagal mengambil revision terakhir",
-				"error":   err.Error(),
-			})
-			return
-		}
-	}
-
-	revision := lastRevision + 1
-
-	var user models.User
-	config.DB.First(&user, userId)
-
-	header := models.RabHeader{
-		RabGroupId:   req.RabGroupId,
-		AlasanCount:  &revision,
-		AlasanText: req.AlasanText,
-		Program:      req.Program,
-		TanggalMulai: req.TanggalMulai,
-		TanggalAkhir: req.TanggalAkhir,
-		DataEntryId: req.DataEntryId,
-		CreatedById:  user.Id,
-	}
-
-	err = config.DB.Create(&header).Error
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Membuat data gagal",
-			"error":   err.Error(),
+		c.JSON(http.StatusCreated, gin.H{
+			"message": "Membuat data berhasil",
+			"data":    &header,
 		})
-		return
 	}
-
-	if req.RabGroupId == nil {
-		config.DB.Model(&header).
-			Update("rab_group_id", header.Id)
-	}
-
-	config.DB.Preload("RabDetails").Preload("CreatedBy.Role").Find(&header)
-
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "Membuat data berhasil",
-		"data":    &header,
-	})
-}
 
 // func UpdateRabHeader(c *gin.Context) {
 // 	id := c.Param("id")
@@ -173,26 +173,29 @@ func DeleteRabHeader(c *gin.Context) {
 	config.DB.First(&header, id)
 
 	var detail []models.RabDetail
-	err := config.DB.Where("rab_header_id = ?", id).Find(&detail).Error
+	err := config.DB.Where("rab_header_id = ?", id).Delete(&detail).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Menghapus data gagal!",
+			"eror": err.Error(),
 		})
 		return
 	}
 
-	err = config.DB.Delete(&detail).Error
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Menghapus data gagal!",
-		})
-		return
-	}
+	// err = config.DB.Delete(&detail).Error
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"message": "Menghapus data gagal!",
+	// 		"eror": err.Error(),
+	// 	})
+	// 	return
+	// }
 
 	err = config.DB.Delete(&header).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Menghapus data gagal!",
+			"eror": err.Error(),
 		})
 		return
 	}

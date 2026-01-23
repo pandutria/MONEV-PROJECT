@@ -96,12 +96,13 @@ func CreateDataEntry(c *gin.Context) {
 	BuktiPath := saveUpload(BuktiFile)
 
 	data := models.DataEntry{
-		Tipe: req.Tipe,
-		JenisPengadaan: req.JenisPengadaan,
+		Tipe:            req.Tipe,
+		JenisPengadaan:  req.JenisPengadaan,
 		MetodePengadaan: req.MetodePengadaan,
 		KodePaket:       req.KodePaket,
 		KodeRup:         req.KodeRup,
 		TahunAnggaran:   req.TahunAnggaran,
+		TanggalMasuk:    req.TanggalMasuk,
 		SatuanKerja:     req.SatuanKerja,
 		NamaPaket:       req.NamaPaket,
 		SumberDana:      req.SumberDana,
@@ -234,7 +235,7 @@ func DeleteDataEntry(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Mengahapus dara gagal!",
-			"error": err.Error(),
+			"error":   err.Error(),
 		})
 		return
 	}
