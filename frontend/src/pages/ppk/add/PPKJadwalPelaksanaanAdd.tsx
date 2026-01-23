@@ -16,6 +16,7 @@ import { Navigate } from 'react-router-dom';
 import TableHeader from '../../../ui/TableHeader';
 import useScheduleHooks from '../../../hooks/ScheduleHooks';
 import WeekScheduleTable from '../../../ui/WeekScheduleTable';
+import useRABHooks from '../../../hooks/RABHooks';
 
 const WEEK_START_COL = 'P';
 
@@ -109,6 +110,7 @@ export default function PPKJadwalPelaksanaanAdd() {
   const [selectedRab, setSelectedRab] = useState<RABProps | null>(null);
   const [totalMinggu, setTotalMinggu] = useState<number>(1);
 
+  const { rabData } = useRABHooks();
   const { handleSchedulePost, scheduleData } = useScheduleHooks();
   const { user, loading } = useAuth();
 
@@ -180,10 +182,10 @@ export default function PPKJadwalPelaksanaanAdd() {
 
   useEffect(() => {
     const filteringDataTender = () => {
-      const filter = scheduleData?.filter((item: ScheduleProps) => {
-        const data = item?.rab?.data_entry?.kode_paket?.toLowerCase().includes(search.toLowerCase());
+      const filter = rabData?.filter((item: RABProps) => {
+        const data = item?.data_entry?.kode_paket?.toLowerCase().includes(search.toLowerCase());
         const isExisting = scheduleData.some(
-          schedule => schedule?.rab?.data_entry?.kode_paket == item?.rab?.data_entry.kode_paket
+          schedule => schedule?.rab?.data_entry?.kode_paket == item?.data_entry.kode_paket
         );
         return data && !isExisting;
       });
@@ -192,7 +194,7 @@ export default function PPKJadwalPelaksanaanAdd() {
     }
 
     filteringDataTender();
-  }, [search, scheduleData]);
+  }, [search, rabData, scheduleData]);
 
   const columns = [
     {
@@ -246,6 +248,7 @@ export default function PPKJadwalPelaksanaanAdd() {
               showTambah={false}
               searchValue={search}
               onSearchChange={(item) => setSearch(item)}
+              showTahunQuery={false}
             />
             <div className="overflow-y-auto max-h-[70vh] w-full">
               <TableContent

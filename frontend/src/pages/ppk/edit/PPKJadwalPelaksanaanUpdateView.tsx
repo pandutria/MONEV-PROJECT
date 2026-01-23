@@ -14,6 +14,7 @@ import TableHeader from '../../../ui/TableHeader';
 import useScheduleHooks from '../../../hooks/ScheduleHooks';
 import useRABHooks from '../../../hooks/RABHooks';
 import WeekScheduleTable from '../../../ui/WeekScheduleTable';
+import FormSelect from '../../../ui/FormSelect';
 
 export default function PPKJadwalPelaksanaanUpdateView() {
   const [showTender, setShowTender] = useState(false);
@@ -21,11 +22,14 @@ export default function PPKJadwalPelaksanaanUpdateView() {
   const [tahun, setTahun] = useState('');
   const [satuanKerja, setSatuanKerja] = useState('');
   const [selectedRab, setSelectedRab] = useState<any>(null);
+  const [selectedRevision, setSelectedRevision] = useState<any>(null);
 
   const {
     setSelectedId,
     scheduleDataById,
-    handleSchedulePut
+    handleSchedulePut,
+    scheduleData,
+    revisionCount
   } = useScheduleHooks();
   const { rabData } = useRABHooks();
   const [rabDataFilter, setRabDataFilter] = useState<RABProps[]>([]);
@@ -52,24 +56,22 @@ export default function PPKJadwalPelaksanaanUpdateView() {
         setIsDisabled(true);
       }
 
-      if (id) {
+      if (selectedRevision) {
+        setSelectedId(Number(selectedRevision))
+      } else {
         setSelectedId(id)
-      }
-
-      if (!selectedRab) {
-        setSelectedRab(scheduleDataById?.rab)
       }
     }
 
     fetchSelected();
-  }, [showTender, selectedRab, location, isDisabled, id, setSelectedId, scheduleDataById]);
+  }, [showTender, selectedRab, location, isDisabled, id, setSelectedId, scheduleDataById, selectedRevision]);
 
   useEffect(() => {
     const filteringDataRab = () => {
       const dataFilter = rabData?.filter((item: RABProps) => {
         const searchFilter = search ? item?.data_entry?.nama_paket?.toString().toLowerCase().includes(search.toLowerCase()) : true;
-        const isExisting = rabData.some(
-          schedule => schedule?.data_entry?.kode_paket == item?.data_entry.kode_paket
+        const isExisting = scheduleData.some(
+          schedule => schedule?.rab?.data_entry?.kode_paket == item?.data_entry.kode_paket
         );
 
         return searchFilter && !isExisting;
@@ -79,7 +81,7 @@ export default function PPKJadwalPelaksanaanUpdateView() {
     }
 
     filteringDataRab();
-  }, [search, satuanKerja, tahun, rabData]);
+  }, [search, satuanKerja, tahun, rabData, scheduleData]);
 
   const columns = [
     {
@@ -135,6 +137,7 @@ export default function PPKJadwalPelaksanaanUpdateView() {
               onTahunChange={(item) => setTahun(item)}
               onSatuanKerjaChange={(item) => setSatuanKerja(item)}
               onSearchChange={(item) => setSearch(item)}
+              showTahunQuery={false}
             />
             <div className="overflow-y-auto max-h-[70vh] w-full">
               <TableContent
@@ -241,10 +244,17 @@ export default function PPKJadwalPelaksanaanUpdateView() {
                 disabled={true}
                 type='textarea'
               />
-              <p className='font-poppins-medium text-gray-600 text-[14px]'></p>
+
+              {isDisabled && (
+                <FormSelect value={selectedRevision} onChange={(e) => setSelectedRevision(e.target.value)} title={`Revisi ke - ${revisionCount[revisionCount.length - 1]?.alasan_count}`}>
+                  {revisionCount.map((item, index) => (
+                    <option key={index} value={item.rab_id}>{item?.alasan_count}</option>
+                  ))}
+                </FormSelect>
+              )}
             </div>
             {!isDisabled && (
-              <SubmitButton text='Ubah Jadwal' onClick={() => handleSchedulePut(selectedRab as any, scheduleDataById.schedule_group_id, reason)} />
+              <SubmitButton text='Ubah Jadwal' onClick={() => handleSchedulePut(selectedRab as any, scheduleDataById.schedule_group_id, scheduleDataById.items as any, reason)} />
             )}
           </div>
 

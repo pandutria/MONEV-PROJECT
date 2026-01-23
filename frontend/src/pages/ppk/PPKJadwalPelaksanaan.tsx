@@ -19,10 +19,11 @@ export default function PPKJadwalPelaksanaan() {
     const [showRevisi, setShowRevisi] = useState(false);
     const [selectPreview, setSelectPreview] = useState<any>(null);
     const { user, loading } = useAuth();
-    const { scheduleData, tahunData, satkerData } = useScheduleHooks();
+    const { scheduleData, tahunData, satkerData, handleScheduleDelete } = useScheduleHooks();
     const [scheduleDataFilter, setScheduleDataFilter] = useState<any[]>([]);
     const [reason, setReason] = useState("");
     const navigate = useNavigate();
+    const [selectedRemove, setSelectedRemove] = useState<number[]>([]);
 
     useEffect(() => {
         const filteringDataRab = () => {
@@ -158,16 +159,18 @@ export default function PPKJadwalPelaksanaan() {
                     onTahunChange={setTahun}
                     selectedSatuanKerja={satuanKerja}
                     onSatuanKerjaChange={setSatuanKerja}
-                    showHapus={false}
+                    showHapus={true}
+                    onHapusClick={() => handleScheduleDelete(selectedRemove)}
                     onTambahClick={() => navigate("/ppk/jadwal-pelaksanaan/tambah")}
                 />
                 <div className="p-6">
                     <TableContent
                         columns={columns}
                         data={scheduleDataFilter}
-                        isSelect={false}
+                        isSelect={true}
                         showEdit={true}
-                        showPreview={true}                    
+                        showPreview={true}
+                        onSelectedIdsChange={(item) => setSelectedRemove(item)}                
                         onEdit={(item) => setSelectRevisi(item)}
                         onPreview={(item) => setSelectPreview(item)} 
                     />

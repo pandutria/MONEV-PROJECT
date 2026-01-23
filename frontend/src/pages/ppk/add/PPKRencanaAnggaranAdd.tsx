@@ -140,20 +140,19 @@ export default function PPKRencanaAnggaranAdd() {
     const filteringDataTender = () => {
       const filter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
         const data = item?.kode_paket?.toString().toLowerCase().includes(search.toLowerCase());
-        const getByUser = item.selected_ppk_id == user?.id;
-
-        const isExisting = rabData.some(
-          rab => rab.data_entry.kode_paket == item.kode_paket
+        const isGroup = item.tipe.includes("Kelompok");
+        const isExisting = rabData?.some(
+          rab => String(rab?.data_entry?.kode_paket).trim() == String(item?.kode_paket)
         );
 
-        return data && getByUser && !isExisting;
+        return data && isGroup && !isExisting;
       });
 
       setTenderDataFilter(filter);
     }
 
-    filteringDataTender();
     renderShowtender();
+    filteringDataTender();
   }, [showTender, selectedTender, search, dataEntryPengadaan, user, rabData]);
 
   const columns = [

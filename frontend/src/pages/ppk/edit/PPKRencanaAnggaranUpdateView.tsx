@@ -57,14 +57,14 @@ export default function PPKRencanaAnggaranUpdateView() {
 
     const filteringDataTender = () => {
       const filter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
+        const isGroup = item.tipe.includes("Kelompok");
         const data = item?.kode_paket?.toString().toLowerCase().includes(search.toLowerCase());
-        const getByUser = item.selected_ppk_id == user?.id;
 
-        const isExisting = rabData.some(
-          rab => rab.data_entry.kode_paket == item. kode_paket
+        const isExisting = rabData?.some(
+          rab => String(rab?.data_entry?.kode_paket) == String(item?.kode_paket)
         );
 
-        return data && getByUser && !isExisting;
+        return data && !isExisting && isGroup;
       }); 
 
       setTenderDataFilter(filter);
