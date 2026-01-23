@@ -12,9 +12,9 @@ import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../ui/LoadingSpinner';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 import TableHeader from '../../../ui/TableHeader';
-import FormatRupiah from '../../../utils/FormatRupiah';
 import FormSelect from '../../../ui/FormSelect';
 import useDataEntryHooks from '../../../hooks/DataEntryHooks';
+import RabDetailTable from '../../../ui/RabDetailTable';
 
 export default function PPKRencanaAnggaranUpdateView() {
   const [showTender, setShowTender] = useState(false);
@@ -271,66 +271,11 @@ export default function PPKRencanaAnggaranUpdateView() {
             )}
           </div>
 
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-primary/10 border-b border-gray-200">
-                  <tr>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Keterangan
-                    </th>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Satuan
-                    </th>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Volume
-                    </th>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Harga Satuan
-                    </th>
-                    <th className="px-6 py-4 text-left font-poppins-semibold text-sm text-gray-700 uppercase tracking-wider">
-                      Total
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {rabDataByid?.rab_details?.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={6}
-                        className="px-6 py-8 text-center font-poppins text-gray-500"
-                      >
-                        Tidak ada data
-                      </td>
-                    </tr>
-                  ) : (
-                    rabDataByid?.rab_details?.map((item: RABDetailProps, index: any) => (
-                      <tr
-                        key={index}
-                        className="hover:bg-gray-50 transition-colors duration-150"
-                      >
-                        <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {item.description}
-                        </td>
-                        <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {item.unit}
-                        </td>
-                        <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {item.volume}
-                        </td>
-                        <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {FormatRupiah(item.unit_price)}
-                        </td>
-                        <td className="px-6 py-4 font-poppins text-sm text-gray-700">
-                          {FormatRupiah(item.total)}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <RabDetailTable
+            dataFile={rabDataByid?.rab_details as any}
+            handleDeleteRow={null as any}
+            showDelete={false}
+          />
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { SortDescById } from "../utils/SortDescById";
 
 export default function useScheduleHooks() {
-    const [schedule, setSchedule] = useState<ScheduleProps[]>([]);
+    const [scheduleData, setScheduleData] = useState<ScheduleProps[]>([]);
     const [tahunData, setTahunData] = useState<any>([]);
     const [satkerData, setSatkerData] = useState<any>([]);
     const token = localStorage.getItem("token");
@@ -19,20 +19,16 @@ export default function useScheduleHooks() {
         const fetcSchedule = async () => {
             try {
                 const response = await API.get("/schedule");
-                const mappingData = response.data.data.map((item: ScheduleProps | any) => ({
-                    id: item.id,
-                    fiscal_year: item.rab?.tender?.fiscal_year,
-                    satker_name: item.rab?.tender?.satker_name,
-                    rup_code: item.rab?.tender?.rup_code,
-                    tender_code: item.rab?.tender?.tender_code,
-                    package_name: item.rab?.tender?.package_name ? item.rab?.package_name : "Tidak Ada",
-                    revisi: item.revision_count,
-                    program: item.program,
-                    activity: item.activity,
-                    start_date: item.start_date,
-                    end_date: item.end_date,
-                    revision_text: item.revision_text,
-                    revision_count: item.revision_count
+                const mappingData = response.data.data.map((item: ScheduleProps) => ({
+                    ...item,
+                    tahun_anggaran: item.rab?.data_entry.tahun_anggaran,
+                    satuan_kerja: item.rab?.data_entry.satuan_kerja,
+                    kode_rup: item.rab?.data_entry?.satuan_kerja,
+                    kode_paket: item.rab?.data_entry?.kode_paket,
+                    nama_paket: item.rab?.data_entry?.nama_paket,
+                    program: item.rab?.program,
+                    tanggal_mulai: item.rab?.tanggal_mulai,
+                    tanggal_akhir: item.rab?.tanggal_akhir,
                 }));
 
                 const tahunUnique = Array.from(
@@ -64,7 +60,7 @@ export default function useScheduleHooks() {
                     }))
                 ];
 
-                setSchedule(SortDescById(mappingData));
+                setScheduleData(SortDescById(mappingData));
                 setTahunData(tahunOptions);
                 setSatkerData(satkerOptions);
             } catch (error) {
@@ -78,25 +74,7 @@ export default function useScheduleHooks() {
                 const response = await API.get(`/schedule/${selectedId}`);
 
                 const data = response.data.data;
-                const responseResource = {
-                    id: data.id,
-                    schedule_details: data.items.map((details: ScheduleItemProps) => ({
-                        id: details.id,
-                        description: details.description,
-                        number: details.number,
-                        total_price: details.total_price,
-                        weight: details.weight,
-                        schedule_weeks: details.schedule_weeks?.map((week: ScheduleWeekProps) => (
-                            week.value
-                        ))
-                    })),
-                    rab: data.rab,
-                    revision_count: data.revision_count,
-                    revision_text: data.revision_text
-                }
-                
-                console.log(responseResource);
-                setScheduleDataById(responseResource as any);
+                setScheduleDataById(data);
             } catch (error) {
                 console.error(error);
             }
@@ -106,7 +84,7 @@ export default function useScheduleHooks() {
         fetcScheduleById();
     }, [selectedId]);
 
-    const handleSchedulePost = async (dataTenderByRab: RABProps, dataItem: any[]) => {
+    const handleSchedulePost = async (dataTenderByRab: RABProps, dataItem: ScheduleItemProps[]) => {
         try {
             if (dataItem.length < 0) {
                 SwalMessage({
@@ -138,8 +116,8 @@ export default function useScheduleHooks() {
                     total_price: Number(scheduleItem?.total_price)
                 });
 
-                for (let index = 0; index < scheduleItem.minggu.length; index++) {
-                    const scheduleWeek = scheduleItem.minggu[index];
+                for (let index = 0; index < scheduleItem.schedule_weeks.length; index++) {
+                    const scheduleWeek = scheduleItem.schedule_weeks[index];
 
                     await API.post('/schedule/week/create', {
                         schedule_item_id: responseScheduleItem.data.data?.id,
@@ -152,6 +130,7 @@ export default function useScheduleHooks() {
             SwalMessage({
                 type: "success",
                 title: "Berhasil!",
+                text: "Jadwal Pelaksanaan berhasil ditambahkan!"
             });
 
             setTimeout(() => {
@@ -165,23 +144,36 @@ export default function useScheduleHooks() {
                     text: "Terjadi Kesalahan!"
                 });
             }
-
-            console.error(error);
         }
     }
 
-    const handleSchedulePut = async (dataTenderByRab: RABProps, reason: string) => {
+    const handleSchedulePut = async (dataTenderByRab: RABProps, scheduleGroupId: number, dataItem: ScheduleItemProps[], reason: string) => {
         try {
+            if (dataItem.length < 0) {
+                SwalMessage({
+                    type: "error",
+                    title: "Gagal!",
+                    text: "Harap isi field yang telah kami sediakan!"
+                });
+
+                return;
+            }
+
             SwalLoading();
-            const response = await API.put(`/schedule/update/${selectedId}`, {
+            const response = await API.post("/schedule/create", {
                 rab_id: dataTenderByRab.id,
-                revision_text: reason
-            });            
-                                    
+                rab_group_id: scheduleGroupId,
+                alasan_text: reason,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
             SwalMessage({
                 type: "success",
                 title: "Berhasil!",
-                text: response.data.message,
+                text: response.data.message
             });
 
             setTimeout(() => {
@@ -195,14 +187,12 @@ export default function useScheduleHooks() {
                     text: "Terjadi Kesalahan!"
                 });
             }
-
-            console.error(error);
         }
     }
 
     return {
         handleSchedulePost,
-        schedule,
+        scheduleData,
         tahunData,
         satkerData,
         setSelectedId,

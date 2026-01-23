@@ -19,17 +19,17 @@ export default function PPKJadwalPelaksanaan() {
     const [showRevisi, setShowRevisi] = useState(false);
     const [selectPreview, setSelectPreview] = useState<any>(null);
     const { user, loading } = useAuth();
-    const { schedule, tahunData, satkerData } = useScheduleHooks();
-    const [scheduleDataFilter, setScheduleDataFilter] = useState<TenderProps[]>([]);
+    const { scheduleData, tahunData, satkerData } = useScheduleHooks();
+    const [scheduleDataFilter, setScheduleDataFilter] = useState<any[]>([]);
     const [reason, setReason] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         const filteringDataRab = () => {
-            const dataFilter = schedule?.filter((item: TenderProps | any) => {
-                const tahunFilter = tahun ? item?.fiscal_year.toString().includes(tahun) : true;
-                const searchFilter = search ? item?.tender_code.toLowerCase().includes(search.toLowerCase()) : true;
-                const satuanKerjaFilter = satuanKerja ? item.satker_name.toLowerCase().includes(satuanKerja.toLowerCase()) : true;
+            const dataFilter = scheduleData?.filter((item: any) => {
+                const tahunFilter = tahun ? item?.tahun_anggaran.toString().includes(tahun) : true;
+                const searchFilter = search ? item?.kode_paket.toLowerCase().includes(search.toLowerCase()) : true;
+                const satuanKerjaFilter = satuanKerja ? item.satuan_kerja.toLowerCase().includes(satuanKerja.toLowerCase()) : true;
 
                 return tahunFilter && searchFilter && satuanKerjaFilter;
             });
@@ -38,7 +38,7 @@ export default function PPKJadwalPelaksanaan() {
         }
 
         filteringDataRab();
-    }, [search, satuanKerja, tahun, schedule]);
+    }, [search, satuanKerja, tahun, scheduleData]);
 
     const columns = [
         {
@@ -46,7 +46,7 @@ export default function PPKJadwalPelaksanaan() {
             label: 'No'
         },
         {
-            key: 'fiscal_year',
+            key: 'tahun_anggaran',
             label: 'Tahun Anggaran'
         },
         {
@@ -66,7 +66,7 @@ export default function PPKJadwalPelaksanaan() {
             label: 'Nama Paket'
         },
         {
-            key: 'revisi',
+            key: 'alasan_count',
             label: 'Revisi'
         },
     ];

@@ -303,14 +303,13 @@ declare global {
   interface ScheduleProps {
     id: number;
     rab_id: number;
-    rab?: RabHeaderProps | null;
+    rab?: RABProps;
 
-    start_date?: string | null;
-    end_date?: string | null;
-    revision_count: number;
-    revision_text?: string | null;
+    alasan_count: number;
+    alasan_text?: string | null;
 
-    schedule_details?: ScheduleItemProps;
+    items?: ScheduleItemProps[];
+    schedule_group_id: number;
 
     created_by_id: number;
     created_by?: UserProps | null;
@@ -324,15 +323,15 @@ declare global {
     schedule_header_id: number;
     schedule_header?: ScheduleHeaderProps | null;
 
-    number?: string | null;
-    description?: string | null;
-    total_price?: number | null;
-    weight?: number | null;
+    number?: string;
+    description: string;
+    total_price: number;
+    weight: number;
 
     created_at: string;
     updated_at: string;
 
-    schedule_weeks?: ScheduleWeekProps[];
+    schedule_weeks: ScheduleWeekProps[];
   }
 
   interface ScheduleWeekProps {

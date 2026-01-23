@@ -1,4 +1,4 @@
-export default function formatRupiah(value: number) {
+export default function FormatRupiah(value: number) {
     return new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
