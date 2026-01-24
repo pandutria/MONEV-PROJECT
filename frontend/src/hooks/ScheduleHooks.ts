@@ -53,9 +53,8 @@ export default function useScheduleHooks() {
 
                 const tahunOptions = tahunUnique.map((tahun, index) => ({
                     id: index + 1,
-                    tahun: tahun?.toString()
+                    text: tahun?.toString()
                 }));
-
 
                 const satkerUnique = Array.from(
                     new Set(

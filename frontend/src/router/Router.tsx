@@ -5,7 +5,6 @@ import PPKRencanaAnggaran from "../pages/ppk/PPKRencanaAnggaran"
 import PPKRencanaAnggaranAdd from "../pages/ppk/add/PPKRencanaAnggaranAdd"
 import PPKJadwalPelaksanaan from "../pages/ppk/PPKJadwalPelaksanaan"
 import PPKJadwalPelaksanaanAdd from "../pages/ppk/add/PPKJadwalPelaksanaanAdd"
-import PPKRealisasiPekerjaan from "../pages/ppk/PPKRealisasiPekerjaan"
 import PokjaLaporanPenjabatPengadaan from "../pages/pokja/PokjaLaporanPenjabatPengadaan"
 import PokjaLaporanPenjabatPengadaanAdd from "../pages/pokja/add/PokjaLaporanPenjabatPengadaanAdd"  
 import KepalaRencanaAnggaran from "../pages/kepala/laporan/KepalaRencanaAnggaran"
@@ -23,6 +22,9 @@ import PokjaLaporanKelompokAdd from "../pages/pokja/add/PokjaLaporanKelompokAdd"
 import PokjaLaporanKelompokUpdateView from "../pages/pokja/edit/PokjaLaporanKelompokUpdateView"
 import PPKRencanaAnggaranUpdateView from "../pages/ppk/edit/PPKRencanaAnggaranUpdateView"
 import PPKJadwalPelaksanaanUpdateView from "../pages/ppk/edit/PPKJadwalPelaksanaanUpdateView"
+import PPKRealisasiAdd from "../pages/ppk/add/PPKRealisasiAdd"
+import PPKRealisasi from "../pages/ppk/PPKRealisasi"
+import PPKRealisasiUpdateView from "../pages/ppk/edit/PPKRealisasiUpdateView"
 
 export default function Router() {
   return (
@@ -46,7 +48,10 @@ export default function Router() {
         <Route path="/ppk/jadwal-pelaksanaan/lihat/:id" element={<PPKJadwalPelaksanaanUpdateView/>}/>
         <Route path="/ppk/jadwal-pelaksanaan/ubah/:id" element={<PPKJadwalPelaksanaanUpdateView/>}/>
 
-        <Route path="/ppk/realisasi-pekerjaan" element={<PPKRealisasiPekerjaan/>}/>
+        <Route path="/ppk/realisasi-pekerjaan" element={<PPKRealisasi/>}/>
+        <Route path="/ppk/realisasi-pekerjaan/tambah" element={<PPKRealisasiAdd/>}/>
+        <Route path="/ppk/realisasi-pekerjaan/ubah/:id" element={<PPKRealisasiUpdateView/>}/>
+        <Route path="/ppk/realisasi-pekerjaan/lihat/:id" element={<PPKRealisasiUpdateView/>}/>
 
         {/* Pokja */}
         <Route path="/pokja/data-entry-penjabat-pengadaan" element={<PokjaLaporanPenjabatPengadaan/>}/>
