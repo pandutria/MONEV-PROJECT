@@ -64,16 +64,19 @@ func SetupRoutes(r *gin.Engine) {
 		public.POST("/schedule/week/create", controllers.CreateWeekSchedule)
 
 		public.GET("/realisasi", controllers.GetAllRealisasi)
+		public.GET("/realisasi/:id", controllers.GetRealisasiById)
 		// public.PUT("/realisasi/update/:id", controllers.UpdateRealisasi)
 		public.DELETE("/realisasi/delete/:id", controllers.DeleteRealisasi)
 
-		public.GET("/realisasi/item", controllers.GetRealisasiItemByHeader)
-		public.POST("/realisasi/item/create", controllers.CreateRealisasiItem)
-		public.DELETE("/realisasi/item/delete/:id", controllers.DeleteRealisasiItem)
+		public.POST("/realisasi/detail/create", controllers.CreateRealisasiDetail)
 
-		public.GET("/realisasi/week", controllers.GetAllRealisasiWeek)
-		public.POST("/realisasi/week/create", controllers.CreateRealisasiWeek)
-		public.DELETE("/realisasi/week/delete/:id", controllers.DeleteRealisasiWeek)
+		// public.GET("/realisasi/item", controllers.GetRealisasiItemByHeader)
+		// public.POST("/realisasi/item/create", controllers.CreateRealisasiItem)
+		// public.DELETE("/realisasi/item/delete/:id", controllers.DeleteRealisasiItem)
+
+		// public.GET("/realisasi/week", controllers.GetAllRealisasiWeek)
+		// public.POST("/realisasi/week/create", controllers.CreateRealisasiWeek)
+		// public.DELETE("/realisasi/week/delete/:id", controllers.DeleteRealisasiWeek)
 
 		// Inaproc
 		public.GET("/inaproc/cache", controllers.GetInaProcCache)
