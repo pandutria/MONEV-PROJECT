@@ -353,3 +353,42 @@ func GetTender(c *gin.Context) {
 		"data": result,
 	})
 }
+
+func GetTenderSelesai(c *gin.Context) {
+	tahun := c.Query("tahun")
+
+	var cache models.TenderSelesaiCache
+
+	bytes, err := os.ReadFile("cache/tenderselesai.json")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Gagal membaca cache katalog",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	if err := json.Unmarshal(bytes, &cache); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Gagal parse cache katalog",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	result := make([]models.TenderSelesai, 0)
+
+	if tahun != "" {
+		for _, item := range cache.Data {
+			if strconv.Itoa(item.TahunAnggaran) == tahun {
+				result = append(result, item)
+			}
+		}
+	} else {
+		result = cache.Data
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
+	})
+}

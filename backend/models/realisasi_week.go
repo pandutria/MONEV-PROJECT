@@ -5,6 +5,6 @@ type RealisasiWeek struct {
 	RealisasiItemId uint `gorm:"not null" json:"realisasi_item_id"`
 
 	WeekNumber int     `form:"week_number"`
-	Value      float64 `form:"value"`
+	Value      float64 `form:"value"`	
 	Evidence   *string `form:"evidence,omitempty"`
 }

@@ -5,7 +5,7 @@ type CreateScheduleRequest struct {
 	ScheduleGroupId *uint `json:"schedule_group_id"`
 	StartDate *string `json:"start_date"`
 	EndDate   *string `json:"end_date"`
-	RevisionText *string `json:"revision_text"`
+	AlasanText *string `json:"alasan_text"`
 }
 
 type UpdateScheduleRequest struct {

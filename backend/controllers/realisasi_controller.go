@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
 	"github.com/optimus/backend/config"
 	"github.com/optimus/backend/dtos"
@@ -17,7 +18,7 @@ func GetAllRealisasi(c *gin.Context) {
 	var header []models.RealisasiHeader
 	config.DB.Find(&header)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Membuat data berhasil",
+		"message": "Mengambil data berhasil",
 		"data": header,
 	})
 }
@@ -33,10 +34,31 @@ func CreateRealisasi(c *gin.Context) {
 		return
 	}
 
+	BuktiFile, _ := c.FormFile("bukti_file")
+
+	uploadDir := "uploads/realisasi"
+	_ = os.MkdirAll(uploadDir, os.ModePerm)
+
+	saveUpload := func(file *multipart.FileHeader) *string {
+		if file == nil {
+			return nil
+		}
+
+		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
+		path := filepath.Join(uploadDir, filename)
+
+		if err := c.SaveUploadedFile(file, path); err != nil {
+			return nil
+		}
+		return &path
+	}
+
+	BuktiPath := saveUpload(BuktiFile)
+
 	var user models.User
 	config.DB.First(&user, userId)
 
-	err := c.ShouldBindBodyWithJSON(&req)
+	err := c.ShouldBindWith(&req, binding.FormMultipart)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": err.Error(),
@@ -47,13 +69,16 @@ func CreateRealisasi(c *gin.Context) {
 	header := models.RealisasiHeader{
 		ScheduleHeaderId: req.ScheduleHeaderId,
 		CreatedById: user.Id,
-		RevisionCount: 0,
+		WeekNumber: req.WeekNumber,
+		Value: req.Value,
+		BuktiFile: BuktiPath,
 	}
 
 	err = config.DB.Create(&header).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Membuat data gagal!",
+			"error": err.Error(),
 		})
 		return
 	}
@@ -64,36 +89,36 @@ func CreateRealisasi(c *gin.Context) {
 	})
 }
 
-func UpdateRealisasi(c *gin.Context) {
-	id := c.Param("id")
-	var req dtos.UpdateRealisasiRequest
+// func UpdateRealisasi(c *gin.Context) {
+// 	id := c.Param("id")
+// 	var req dtos.UpdateRealisasiRequest
 
-	err := c.ShouldBindBodyWithJSON(&req)
-	if err!= nil {
-		c.JSON(http.StatusConflict, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
+// 	err := c.ShouldBindBodyWithJSON(&req)
+// 	if err!= nil {
+// 		c.JSON(http.StatusConflict, gin.H{
+// 			"message": err.Error(),
+// 		})
+// 		return
+// 	}
 
-	var header models.RealisasiHeader
-	config.DB.First(&header, id)
-	header.RevisionText = req.RevisionText
-	header.RevisionCount += 1
+// 	var header models.RealisasiHeader
+// 	config.DB.First(&header, id)
+// 	header.RevisionText = req.RevisionText
+// 	header.RevisionCount += 1
 
-	err = config.DB.Save(&header).Error
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Memperbarui data gagal!",
-		})
-		return
-	}
+// 	err = config.DB.Save(&header).Error
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"message": "Memperbarui data gagal!",
+// 		})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Membuat data berhasil",
-		"data": header,
-	})
-}
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "Membuat data berhasil",
+// 		"data": header,
+// 	})
+// }
 
 func DeleteRealisasi(c *gin.Context) {
 	id := c.Param("id")

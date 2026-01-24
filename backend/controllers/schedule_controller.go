@@ -11,31 +11,32 @@ import (
 
 func GetAllScheduleHeader(c *gin.Context) {
 	var header []models.ScheduleHeader
-	config.DB.Preload("CreatedBy.Role").Preload("Rab.RabDetails").Preload("Rab.Tender").Preload("Items.Weeks").Find(&header)
+	config.DB.Preload("CreatedBy.Role").Preload("Rab.RabDetails").Preload("Rab.DataEntry").Preload("Items.Weeks").Find(&header)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Get data success",
-		"data": header,
+		"data":    header,
 	})
 }
 
 func GetScheduleById(c *gin.Context) {
 	id := c.Param("id")
 	var header models.ScheduleHeader
-	config.DB.Preload("CreatedBy.Role").Preload("Rab.RabDetails").Preload("Items.Weeks").First(&header, id)
+	config.DB.Preload("CreatedBy.Role").Preload("Rab.RabDetails").Preload("Rab.DataEntry").Preload("Items.Weeks").First(&header, id)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Get data success",
-		"data": header,
+		"data":    header,
 	})
 }
 
 func GetScheduleByGroup(c *gin.Context) {
 	groupId := c.Param("id")
+
 	var header []models.ScheduleHeader
 	config.DB.Where("schedule_group_id = ?", groupId).Preload("CreatedBy.Role").Preload("Rab.RabDetails").Preload("Items.Weeks").Find(&header)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Get data success",
-		"data": header,
+		"data":    header,
 	})
 }
 
@@ -87,12 +88,13 @@ func CreateScheduleHeader(c *gin.Context) {
 		err := config.DB.
 			Model(&models.ScheduleHeader{}).
 			Where("schedule_group_id = ?", *req.ScheduleGroupId).
-			Select("COALESCE(MAX(revision_count), 0)").
+			Select("COALESCE(MAX(alasan_count), 0)").
 			Scan(&lastRevision).Error
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "Gagal mengambil revision terakhir",
+				"error": err.Error(),
 			})
 			return
 		}
@@ -101,20 +103,18 @@ func CreateScheduleHeader(c *gin.Context) {
 	revision := lastRevision + 1
 
 	schedule := models.ScheduleHeader{
-		ScheduleGroupId: 0, 
+		ScheduleGroupId: req.ScheduleGroupId,
 		RabId:           req.RabId,
-		AlasanCount:  &revision,
-		CreatedById:    user.Id,
-	}
-
-	if req.ScheduleGroupId != nil {
-		schedule.ScheduleGroupId = *req.ScheduleGroupId
+		AlasanCount:     &revision,
+		AlasanText:      req.AlasanText,
+		CreatedById:     user.Id,
 	}
 
 	err := config.DB.Create(&schedule).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Create data failed",
+			"error": err.Error(),
 		})
 		return
 	}
@@ -133,7 +133,6 @@ func CreateScheduleHeader(c *gin.Context) {
 		"data":    schedule,
 	})
 }
-
 
 // func UpdateSchedule(c *gin.Context) {
 // 	id := c.Param("id")
@@ -181,10 +180,11 @@ func DeleteSchedule(c *gin.Context) {
 
 	if len(itemIDs) > 0 {
 		if err := config.DB.
-			Where("schedule_item_id = ?", itemIDs).
+			Where("schedule_item_id IN ?", itemIDs).
 			Delete(&models.ScheduleWeek{}).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "Gagal menghapus schedule week",
+				"error": err.Error(),
 			})
 			return
 		}
@@ -194,6 +194,7 @@ func DeleteSchedule(c *gin.Context) {
 		Delete(&models.ScheduleItem{}).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Gagal menghapus schedule item",
+			"error": err.Error(),
 		})
 		return
 	}
@@ -202,13 +203,14 @@ func DeleteSchedule(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Menghapus data gagal!",
+			"error": err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Menghapus data berhasil",
-		"data": schedule,
+		"data":    schedule,
 	})
 }
 
@@ -217,7 +219,7 @@ func GetAllScheduleItem(c *gin.Context) {
 	config.DB.Preload("Weeks").Order("number ASC").Find(&item)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
-		"data": item,
+		"data":    item,
 	})
 }
 
@@ -234,13 +236,13 @@ func CreateScheduleItem(c *gin.Context) {
 
 	item := models.ScheduleItem{
 		ScheduleHeaderId: req.ScheduleHeaderId,
-		Number: req.Number,
-		Description: req.Description,
-		TotalPrice: req.TotalPrice,
-		Weight: req.Weight,
+		Number:           req.Number,
+		Description:      req.Description,
+		TotalPrice:       req.TotalPrice,
+		Weight:           req.Weight,
 	}
 
-	err = config.DB.Create(&item).Error 
+	err = config.DB.Create(&item).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Membuat data gagal!",
@@ -250,7 +252,7 @@ func CreateScheduleItem(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Membuat data berhasil",
-		"data": item,
+		"data":    item,
 	})
 }
 
@@ -260,11 +262,11 @@ func DeleteScheduleItem(c *gin.Context) {
 	config.DB.First(&item, id)
 
 	var week []models.ScheduleWeek
-	err := config.DB.Where("ScheduleItemId = ?", id).Delete(&week).Error 
+	err := config.DB.Where("ScheduleItemId = ?", id).Delete(&week).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Menghapus data gagal!",
-			"error": err.Error(),
+			"error":   err.Error(),
 		})
 		return
 	}
@@ -273,14 +275,14 @@ func DeleteScheduleItem(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Menghapus data gagal!",
-			"error": err.Error(),
+			"error":   err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Menghapus data berhasil",
-		"data": item,
+		"data":    item,
 	})
 }
 
@@ -297,8 +299,8 @@ func GetAllWeek(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
-		"data": week,
-	})	
+		"data":    week,
+	})
 }
 
 func CreateWeekSchedule(c *gin.Context) {
@@ -314,8 +316,8 @@ func CreateWeekSchedule(c *gin.Context) {
 
 	week := models.ScheduleWeek{
 		ScheduleItemId: req.ScheduleItemId,
-		WeekNumber: req.WeekNumber,
-		Value: req.Value,
+		WeekNumber:     req.WeekNumber,
+		Value:          req.Value,
 	}
 
 	err = config.DB.Create(&week).Error
@@ -324,10 +326,10 @@ func CreateWeekSchedule(c *gin.Context) {
 			"message": "Membuat data gagal!",
 		})
 		return
-	} 
+	}
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Membuat data berhasil",
-		"data": week,
+		"data":    week,
 	})
 }
