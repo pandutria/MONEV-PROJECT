@@ -3,15 +3,16 @@ package models
 import "time"
 
 type RealisasiHeader struct {
-	Id               uint `gorm:"primaryKey" json:"id"`
-	ScheduleHeaderId uint `gorm:"not null" json:"schedule_header_id"`
+	Id               uint `gorm:"primaryKey"`
+    ScheduleHeaderId uint `json:"schedule_header_id"`
 
-	RevisionCount int     `json:"revision_count"`
-	RevisionText  *string `json:"revision_text"`
-	Status        *string `json:"status"`
+    WeekNumber *int     `json:"week_number"` 
+    Value      *float64 `json:"value"`       
+    BuktiFile   *string `json:"bukti_file"`
 
-	CreatedById uint      `json:"created_by_id"`
-	CreatedAt   time.Time `json:"created_at"`
+    // Status       *string
+    // RevisionText *string
 
-	Items []RealisasiItem `gorm:"foreignKey:RealisasiHeaderId" json:"items,omitempty"`
+    CreatedById uint
+    CreatedAt   time.Time
 }

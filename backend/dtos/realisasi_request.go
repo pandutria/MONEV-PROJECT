@@ -1,9 +1,9 @@
 package dtos 
 
 type CreateRealisasiRequest struct {
-	ScheduleHeaderId uint    `json:"schedule_header_id" binding:"required"`
-	RevisionText     *string `json:"revision_text"`
-	Status           string  `json:"status" binding:"required"`
+	ScheduleHeaderId uint     `form:"schedule_header_id"`
+	WeekNumber       *int     `form:"week_number"`
+	Value            *float64 `form:"value"`
 }
 
 type UpdateRealisasiRequest struct {

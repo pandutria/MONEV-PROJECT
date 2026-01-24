@@ -64,7 +64,7 @@ func SetupRoutes(r *gin.Engine) {
 		public.POST("/schedule/week/create", controllers.CreateWeekSchedule)
 
 		public.GET("/realisasi", controllers.GetAllRealisasi)
-		public.PUT("/realisasi/update/:id", controllers.UpdateRealisasi)
+		// public.PUT("/realisasi/update/:id", controllers.UpdateRealisasi)
 		public.DELETE("/realisasi/delete/:id", controllers.DeleteRealisasi)
 
 		public.GET("/realisasi/item", controllers.GetRealisasiItemByHeader)
@@ -98,6 +98,7 @@ func SetupRoutes(r *gin.Engine) {
 		public.GET("/katalogv6", controllers.GetKatalogV6)
 		public.GET("/non-tender-selesai", controllers.GetNonTenderSelesai)
 		public.GET("/tenders", controllers.GetTender)
+		public.GET("/tender-selesai", controllers.GetTenderSelesai)
 	}
 
 	private := r.Group("/api")
