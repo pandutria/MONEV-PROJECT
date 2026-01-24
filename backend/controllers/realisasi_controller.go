@@ -16,10 +16,33 @@ import (
 
 func GetAllRealisasi(c *gin.Context) {
 	var header []models.RealisasiHeader
-	config.DB.Find(&header)
+	config.DB.
+		Preload("Details").
+		Preload("ScheduleHeader").
+		Preload("ScheduleHeader.CreatedBy.Role").
+		Preload("ScheduleHeader.Rab.DataEntry").
+		Preload("ScheduleHeader.Items.Weeks").
+		Find(&header)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
-		"data": header,
+		"data":    header,
+	})
+}
+
+func GetRealisasiById(c *gin.Context) {
+	id := c.Param("id")
+
+	var header models.RealisasiHeader
+	config.DB.
+		Preload("Details").
+		Preload("ScheduleHeader").
+		Preload("ScheduleHeader.CreatedBy.Role").
+		Preload("ScheduleHeader.Rab.DataEntry").
+		Preload("ScheduleHeader.Items.Weeks").
+		First(&header, id)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Mengambil data berhasil",
+		"data":    header,
 	})
 }
 
@@ -33,6 +56,40 @@ func CreateRealisasi(c *gin.Context) {
 		})
 		return
 	}
+
+	var user models.User
+	config.DB.First(&user, userId)
+
+	err := c.ShouldBind(&req)
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	header := models.RealisasiHeader{
+		ScheduleHeaderId: req.ScheduleHeaderId,
+		CreatedById:      user.Id,
+	}
+
+	err = config.DB.Create(&header).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Membuat data gagal!",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Membuat data berhasil",
+		"data":    header,
+	})
+}
+
+func CreateRealisasiDetail(c *gin.Context) {
+	var req dtos.CreateRealisasiDetailRequest
 
 	BuktiFile, _ := c.FormFile("bukti_file")
 
@@ -55,9 +112,6 @@ func CreateRealisasi(c *gin.Context) {
 
 	BuktiPath := saveUpload(BuktiFile)
 
-	var user models.User
-	config.DB.First(&user, userId)
-
 	err := c.ShouldBindWith(&req, binding.FormMultipart)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
@@ -66,26 +120,25 @@ func CreateRealisasi(c *gin.Context) {
 		return
 	}
 
-	header := models.RealisasiHeader{
-		ScheduleHeaderId: req.ScheduleHeaderId,
-		CreatedById: user.Id,
+	detail := models.RealisasiDetail{
+		RealisasiHeaderId: req.RealisasiHeaderId,
 		WeekNumber: req.WeekNumber,
 		Value: req.Value,
 		BuktiFile: BuktiPath,
 	}
 
-	err = config.DB.Create(&header).Error
+	err = config.DB.Create(&detail).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Membuat data gagal!",
-			"error": err.Error(),
+			"error":   err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Membuat data berhasil",
-		"data": header,
+		"data":    detail,
 	})
 }
 
@@ -136,157 +189,155 @@ func DeleteRealisasi(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Membuat data berhasil",
-		"data": header,
+		"data":    header,
 	})
 }
 
-func GetRealisasiItemByHeader(c *gin.Context) {
-	id := c.Query("headerId")
+// func GetRealisasiItemByHeader(c *gin.Context) {
+// 	id := c.Query("headerId")
 
-	var week models.RealisasiItem
-	err := config.DB.Where("realisasi_header_id = ?", id).Find(&week).Error
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Membuat data gagal!",
-		})
-		return
-	}
+// 	var week models.RealisasiItem
+// 	err := config.DB.Where("realisasi_header_id = ?", id).Find(&week).Error
+// 	if err != nil {
+// 		c.JSON(http.StatusOK, gin.H{
+// 			"message": "Membuat data gagal!",
+// 		})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Membuat data berhasil",
-		"data": week,
-	})
-}
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "Membuat data berhasil",
+// 		"data":    week,
+// 	})
+// }
 
-func CreateRealisasiItem(c *gin.Context) {
-	var req dtos.CreateRealisasiItemRequest
+// func CreateRealisasiItem(c *gin.Context) {
+// 	var req dtos.CreateRealisasiItemRequest
 
-	err := c.ShouldBindBodyWithJSON(&req)
-	if err != nil {
-		c.JSON(http.StatusConflict, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
+// 	err := c.ShouldBindBodyWithJSON(&req)
+// 	if err != nil {
+// 		c.JSON(http.StatusConflict, gin.H{
+// 			"message": err.Error(),
+// 		})
+// 		return
+// 	}
 
-	item := models.RealisasiItem{
-		RealisasiHeaderId: req.RealisasiHeaderId,
-		ScheduleItemId: req.ScheduleItemId,
-	}
+// 	item := models.RealisasiItem{
+// 		RealisasiHeaderId: req.RealisasiHeaderId,
+// 		ScheduleItemId:    req.ScheduleItemId,
+// 	}
 
-	err = config.DB.Create(&item).Error
-	if err != nil {
-		c.JSON(http.StatusConflict, gin.H{
-			"message": "Membuat data gagal!",
-		})
-		return
-	}
+// 	err = config.DB.Create(&item).Error
+// 	if err != nil {
+// 		c.JSON(http.StatusConflict, gin.H{
+// 			"message": "Membuat data gagal!",
+// 		})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Membuat data berhasil",
-		"data": item,
-	})
-}
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "Membuat data berhasil",
+// 		"data":    item,
+// 	})
+// }
 
-func DeleteRealisasiItem(c *gin.Context) {
-	id := c.Param("id")
+// func DeleteRealisasiItem(c *gin.Context) {
+// 	id := c.Param("id")
 
-	var item models.RealisasiItem
-	config.DB.First(&item, id)
+// 	var item models.RealisasiItem
+// 	config.DB.First(&item, id)
 
-	err := config.DB.Delete(&item).Error
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Mengahapus data gagal!",
-		})
-		return
-	}
+// 	err := config.DB.Delete(&item).Error
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"message": "Mengahapus data gagal!",
+// 		})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Mengahapus data berhasil",
-		"data": item,
-	})
-}
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "Mengahapus data berhasil",
+// 		"data":    item,
+// 	})
+// }
 
-func GetAllRealisasiWeek(c *gin.Context) {
-	var week []models.RealisasiWeek
-	config.DB.Find(&week)
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Mengambil data berhasil",
-		"data": week,
-	})
-}
+// func GetAllRealisasiWeek(c *gin.Context) {
+// 	var week []models.RealisasiWeek
+// 	config.DB.Find(&week)
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "Mengambil data berhasil",
+// 		"data":    week,
+// 	})
+// }
 
-func CreateRealisasiWeek(c *gin.Context) {
-	var req dtos.CreateRealisasiWeekRequest
+// func CreateRealisasiWeek(c *gin.Context) {
+// 	var req dtos.CreateRealisasiWeekRequest
 
-	err := c.ShouldBind(&req)
-	if err != nil {
-		c.JSON(http.StatusConflict, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
+// 	err := c.ShouldBind(&req)
+// 	if err != nil {
+// 		c.JSON(http.StatusConflict, gin.H{
+// 			"message": err.Error(),
+// 		})
+// 		return
+// 	}
 
-	EvidenceFile, _ := c.FormFile("evidence")
-	uploadDir := "uploads/realisasi"
-	_ = os.MkdirAll(uploadDir, os.ModePerm)
+// 	EvidenceFile, _ := c.FormFile("evidence")
+// 	uploadDir := "uploads/realisasi"
+// 	_ = os.MkdirAll(uploadDir, os.ModePerm)
 
-	saveUploaded := func(file *multipart.FileHeader) *string {
-		if file == nil {
-			return nil
-		}
+// 	saveUploaded := func(file *multipart.FileHeader) *string {
+// 		if file == nil {
+// 			return nil
+// 		}
 
-		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
-		path := filepath.Join(uploadDir, filename)
+// 		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
+// 		path := filepath.Join(uploadDir, filename)
 
-		if err := c.SaveUploadedFile(file, path); err != nil {
-			return nil
-		}
-		return &path
-	}
+// 		if err := c.SaveUploadedFile(file, path); err != nil {
+// 			return nil
+// 		}
+// 		return &path
+// 	}
 
-	EvidencePath := saveUploaded(EvidenceFile)
+// 	EvidencePath := saveUploaded(EvidenceFile)
 
-	week := models.RealisasiWeek{
-		RealisasiItemId: req.RealisasiItemId,
-		WeekNumber: req.WeekNumber,
-		Value: req.Value,
-		Evidence: EvidencePath,
-	}
+// 	week := models.RealisasiWeek{
+// 		RealisasiItemId: req.RealisasiItemId,
+// 		WeekNumber:      req.WeekNumber,
+// 		Value:           req.Value,
+// 		Evidence:        EvidencePath,
+// 	}
 
-	err = config.DB.Create(&week).Error
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Membuat data gagal!",
-		})
-		return
-	}
+// 	err = config.DB.Create(&week).Error
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"message": "Membuat data gagal!",
+// 		})
+// 		return
+// 	}
 
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "Membuat data berhasil",
-		"data": week,
-	})
-}
+// 	c.JSON(http.StatusCreated, gin.H{
+// 		"message": "Membuat data berhasil",
+// 		"data":    week,
+// 	})
+// }
 
+// func DeleteRealisasiWeek(c *gin.Context) {
+// 	id := c.Param("id")
 
-func DeleteRealisasiWeek(c *gin.Context) {
-	id := c.Param("id")
+// 	var week models.RealisasiWeek
+// 	config.DB.First(&week, id)
 
-	var week models.RealisasiWeek
-	config.DB.First(&week, id)
+// 	err := config.DB.Delete(&week).Error
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"message": "Membuat data gagal!",
+// 		})
+// 		return
+// 	}
 
-	err := config.DB.Delete(&week).Error
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Membuat data gagal!",
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Menmbuat data berhasil",
-		"data": week,
-	})
-}
-
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "Menmbuat data berhasil",
+// 		"data":    week,
+// 	})
+// }
