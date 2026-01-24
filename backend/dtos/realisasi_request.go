@@ -1,15 +1,13 @@
 package dtos
 
 type CreateRealisasiRequest struct {
-	ScheduleHeaderId uint     `form:"schedule_header_id"`
-	WeekNumber       *int     `form:"week_number"`
-	Value            *float64 `form:"value"`
+	ScheduleHeaderId uint     `json:"schedule_header_id"`
 }
 
 type CreateRealisasiDetailRequest struct {
 	RealisasiHeaderId uint     `form:"realisasi_header_id"`
-	WeekNumber        *int     `form:"week_number"`
-	Value             *float64 `form:"value"`
+	WeekNumber        *string     `form:"week_number"`
+	Value             *string `form:"value"`
 }
 
 type UpdateRealisasiRequest struct {

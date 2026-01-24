@@ -60,7 +60,7 @@ func CreateRealisasi(c *gin.Context) {
 	var user models.User
 	config.DB.First(&user, userId)
 
-	err := c.ShouldBind(&req)
+	err := c.ShouldBindBodyWithJSON(&req)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": err.Error(),
@@ -138,6 +138,60 @@ func CreateRealisasiDetail(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Membuat data berhasil",
+		"data":    detail,
+	})
+}
+
+func UpdateRealisasiDetail(c *gin.Context) {
+	var req dtos.CreateRealisasiDetailRequest
+	id := c.Param("id")
+
+	BuktiFile, _ := c.FormFile("bukti_file")
+
+	uploadDir := "uploads/realisasi"
+	_ = os.MkdirAll(uploadDir, os.ModePerm)
+
+	saveUpload := func(file *multipart.FileHeader) *string {
+		if file == nil {
+			return nil
+		}
+
+		filename := uuid.New().String() + "_" + filepath.Base(file.Filename)
+		path := filepath.Join(uploadDir, filename)
+
+		if err := c.SaveUploadedFile(file, path); err != nil {
+			return nil
+		}
+		return &path
+	}
+
+	BuktiPath := saveUpload(BuktiFile)
+
+	err := c.ShouldBindWith(&req, binding.FormMultipart)
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	var detail models.RealisasiDetail
+	config.DB.First(&detail, id)
+	detail.WeekNumber = req.WeekNumber
+	detail.Value = req.Value
+	detail.BuktiFile = BuktiPath
+
+	err = config.DB.Save(&detail).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Mengubah data gagal!",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Mengubah data berhasil",
 		"data":    detail,
 	})
 }
