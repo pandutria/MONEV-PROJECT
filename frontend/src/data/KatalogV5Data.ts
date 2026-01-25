@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import MONEV_API from "../server/MonevAPI";
+// import MONEV_API from "../server/MonevAPI";
+import API from "../server/API";
 
 export default function KatalogV5Data() {
   const [katalogv5Data, setKatalogV5Data] = useState<KatalogV5DataProps[]>([]);
@@ -8,7 +9,8 @@ export default function KatalogV5Data() {
   useEffect(() => {
     const fetchKatalogV5Data = async () => {
       try {
-        const response = await MONEV_API.get(`/katalogv5?tahun=${katalogv5Tahun}`);
+        // const response = await MONEV_API.get(`/katalogv5?tahun=${katalogv5Tahun}`);
+        const response = await API.get(`/katalogv5?tahun=${katalogv5Tahun}`);
         setKatalogV5Data(response.data.data);
       } catch (error) {
         console.error(error);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import MONEV_API from "../server/MonevAPI";
+// import MONEV_API from "../server/MonevAPI";
+import API from "../server/API";
 
 export default function KatalogV6Data() {
   const [katalogv6Data, setKatalogV6Data] = useState<KatalogV6DataProps[]>([]);
@@ -8,7 +9,8 @@ export default function KatalogV6Data() {
   useEffect(() => {
     const fetchKatalogV6Data = async () => {
       try {
-        const response = await MONEV_API.get(`/katalogv6?tahun=${katalogv6Tahun}`);
+        // const response = await MONEV_API.get(`/katalogv6?tahun=${katalogv6Tahun}`);
+        const response = await API.get(`/katalogv6?tahun=${katalogv6Tahun}`);
         setKatalogV6Data(response.data.data);
       } catch (error) {
         console.error(error);

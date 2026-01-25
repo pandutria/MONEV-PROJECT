@@ -262,7 +262,7 @@ declare global {
     catatan: string | null;
 
     selected_ppk_id: number | null;
-    selected_ppk?: UserProps | null;
+    user?: UserProps | null;
 
     user_id: number;
     user?: UserProps | null;

@@ -69,17 +69,11 @@ export default function useScheduleHooks() {
                         id: index + 2,
                         text: satker
                     }))
-                ];
-
-                const revisions = data.map((item : ScheduleProps) => ({
-                    rab_id: item.id,
-                    alasan_count: item.alasan_count
-                })).sort((a: any, b: any) => a - b)
+                ];                
 
                 setScheduleData(SortDescById(mappingData));
                 setTahunData(tahunOptions);
-                setSatkerData(satkerOptions);
-                setRevisionCount(revisions)
+                setSatkerData(satkerOptions);                
             } catch (error) {
                 console.error(error);
             }
@@ -88,10 +82,23 @@ export default function useScheduleHooks() {
         const fetcScheduleById = async () => {
             try {
                 if (!selectedId) return;
+                const responseData = await API.get("/schedule");
                 const response = await API.get(`/schedule/${selectedId}`);
+                const data: ScheduleProps[] = responseData.data.data;
 
-                const data = response.data.data;
-                setScheduleDataById(data);
+                const revisions = data?.filter(item => {
+                    const filter = item?.schedule_group_id == selectedId;
+                    return filter;
+                })
+                    .map(item => ({
+                        rab_id: item?.id,
+                        rab_group_id: item?.schedule_group_id,
+                        alasan_count: item?.alasan_count
+                    }))
+                    .sort((a, b) => a.rab_id - b.rab_id);
+
+                setRevisionCount(revisions)
+                setScheduleDataById(response.data.data);
             } catch (error) {
                 console.error(error);
             }

@@ -60,7 +60,7 @@ export default function PPKRencanaAnggaranAdd() {
   const [search, setSearch] = useState("");
 
   const [tenderDataFilter, setTenderDataFilter] = useState<DataEntryProps[]>([]);
-  const [selectedTender, setSelectedTender] = useState<NewTenderProps | any>(null);
+  const [selectedTender, setSelectedTender] = useState<DataEntryProps | any>(null);
 
   const { dataEntryPengadaan } = useDataEntryHooks();
   const {
@@ -140,12 +140,13 @@ export default function PPKRencanaAnggaranAdd() {
     const filteringDataTender = () => {
       const filter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
         const data = item?.kode_paket?.toString().toLowerCase().includes(search.toLowerCase());
-        const isGroup = item.tipe.includes("Kelompok");
+        const isGroup = item?.tipe?.includes("Kelompok");
+        const isUser = item?.selected_ppk_id === user?.id;
         const isExisting = rabData?.some(
           rab => String(rab?.data_entry?.kode_paket).trim() == String(item?.kode_paket)
         );
 
-        return data && isGroup && !isExisting;
+        return data && isGroup && !isExisting && isUser;
       });
 
       setTenderDataFilter(filter);

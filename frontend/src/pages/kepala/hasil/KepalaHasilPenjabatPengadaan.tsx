@@ -1,38 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Navbar from "../../../components/Navbar";
 import TableHeaderReport from "../../../ui/TableHeaderReport";
 import TableContent from "../../../ui/TableContent";
 import html2pdf from "html2pdf.js";
 import * as XLSX from "xlsx";
+import useDataEntryHooks from "../../../hooks/DataEntryHooks";
+import { useAuth } from "../../../context/AuthContext";
+import LoadingSpinner from "../../../ui/LoadingSpinner";
+import { Navigate } from "react-router-dom";
 
-export default function KepalaHasilPenjabatPengadaan() {
+export default function PokjaHasilPenjabatPengadaan() {
     const [tahun, setTahun] = useState('');
     const [metodePengadaan, setMetodePengadaan] = useState('');
     const [sumberDana, setSumberDana] = useState('');
     const tableRef = useRef<HTMLDivElement>(null);
-
-    const tahunOptions = [
-        { id: '2023', tahun: '2023' },
-        { id: '2024', tahun: '2024' },
-        { id: '2025', tahun: '2025' }
-    ];
-
-    const metodePengadaanOptions = [
-        { id: '1', text: 'Pengadaan Langsung' },
-        { id: '2', text: 'E-Purchasing V5' },
-        { id: '3', text: 'E-Purchasing V6' }
-    ];
-
-    const sumberDanaOptions = [
-        { id: '1', text: 'APBN' },
-        { id: '2', text: 'APBD' },
-        { id: '3', text: 'Hibah' }
-    ];
+    const { dataEntryPengadaan, sumberDanaOptions, metodePengadaanOptions, tahunOptions } = useDataEntryHooks();
+    const [dataEntryFilter, setDataEntryFilter] = useState<DataEntryProps[]>([]);
+    const { user, loading } = useAuth();
 
     const columns = [
         {
-            key: 'no',
+            key: 'id',
             label: 'No'
         },
         {
@@ -40,19 +29,19 @@ export default function KepalaHasilPenjabatPengadaan() {
             label: 'OPD'
         },
         {
-            key: 'namaPaket',
+            key: 'nama_paket',
             label: 'Nama Paket'
         },
         {
-            key: 'pengadaan',
+            key: 'metode_pengadaan',
             label: 'Metode Pengadaan'
         },
         {
-            key: 'pagu',
+            key: 'nilai_pagu',
             label: 'Nilai Pagu'
         },
         {
-            key: 'hps',
+            key: 'nilai_hps',
             label: 'Nilai HPS'
         },
         {
@@ -60,71 +49,51 @@ export default function KepalaHasilPenjabatPengadaan() {
             label: 'Pemenang'
         },
         {
-            key: 'penawaran',
+            key: 'nilai_penawaran',
             label: 'Nilai Penawaran'
         },
         {
-            key: 'negosiasi',
+            key: 'nilai_negosiasi',
             label: 'Nilai Negosiasi'
         },
         {
-            key: 'tanggal',
+            key: 'tanggal_masuk',
             label: 'No & Tanggal'
         },
         {
-            key: 'efisiensi',
+            key: 'efisience',
             label: 'Efisiensi Nilai Pagu-Kontrak'
         },
         {
-            key: 'presentase',
+            key: 'presentation',
             label: 'presentase'
         },
     ];
 
-    const data = [
-        {
-            no: 1,
-            opd: "Dinas Pekerjaan Umum",
-            namaPaket: "Rekonstruksi/Peningkatan Jalan Wawongole - Teteona (Duriaasi)",
-            pengadaan: "Pengadaan Langsung",
-            pagu: "Rp 1.500.000.000",
-            hps: "Rp 1.450.000.000",
-            pemenang: "CV Maju Jaya Konstruksi",
-            penawaran: "Rp 1.420.000.000",
-            negosiasi: "Rp 1.400.000.000",
-            tanggal: "SPK-01 / 30 Desember 2024",
-            efisiensi: "Rp 100.000.000",
-            presentase: "6,67%"
-        },
-        {
-            no: 2,
-            opd: "Dinas Perhubungan",
-            namaPaket: "Perbaikan Jembatan Sungai Tawa",
-            pengadaan: "E-Purchasing V5",
-            pagu: "Rp 850.000.000",
-            hps: "Rp 830.000.000",
-            pemenang: "PT Sarana Infrastruktur",
-            penawaran: "Rp 820.000.000",
-            negosiasi: "Rp 800.000.000",
-            tanggal: "SPK-02 / 23 Januari 2025",
-            efisiensi: "Rp 50.000.000",
-            presentase: "5,88%"
-        },
-        {
-            no: 3,
-            opd: "Dinas Pendidikan",
-            namaPaket: "Pengadaan Meubel Sekolah Dasar",
-            pengadaan: "E-Purchasing V6",
-            pagu: "Rp 500.000.000",
-            hps: "Rp 490.000.000",
-            pemenang: "CV Sumber Rezeki",
-            penawaran: "Rp 480.000.000",
-            negosiasi: "Rp 470.000.000",
-            tanggal: "SPK-03 / 10 Februari 2025",
-            efisiensi: "Rp 30.000.000",
-            presentase: "6,00%"
+    useEffect(() => {
+        const filteringDataEntry = () => {
+            const dataFilter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
+                const filterType = item?.tipe?.includes("Penjabat");
+                const tahunFilter = tahun
+                    ? item?.tahun_anggaran?.toString().includes(tahun)
+                    : true;
+
+                const metodeFilter = metodePengadaan
+                    ? item?.metode_pengadaan === metodePengadaan
+                    : true;
+
+                const sumberDanaFilter = sumberDana
+                    ? item?.sumber_dana === sumberDana
+                    : true;
+
+                return filterType && tahunFilter && metodeFilter && sumberDanaFilter;;
+            });
+
+            setDataEntryFilter(dataFilter);
         }
-    ];
+
+        filteringDataEntry();
+    }, [dataEntryPengadaan, tahun, metodePengadaan, sumberDana]);
 
     const generateTableHTML = () => {
         const thead = `
@@ -133,7 +102,7 @@ export default function KepalaHasilPenjabatPengadaan() {
         </tr>
     `;
 
-        const tbody = data.map(row => `
+        const tbody = dataEntryFilter.map(row => `
         <tr>
             ${columns.map(col => `<td>${(row as Record<string, any>)[col.key] ?? ""}</td>`).join("")}
         </tr>
@@ -229,7 +198,7 @@ export default function KepalaHasilPenjabatPengadaan() {
     const handleSaveExcel = () => {
         const worksheetData = [
             columns.map(col => col.label),
-            ...data.map(row => columns.map(col => (row as Record<string, any>)[col.key] ?? "")),
+            ...dataEntryFilter.map(row => columns.map(col => (row as Record<string, any>)[col.key] ?? "")),
         ];
 
         const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -265,13 +234,21 @@ export default function KepalaHasilPenjabatPengadaan() {
         XLSX.writeFile(workbook, "laporan-penjabat-pengadaan.xlsx");
     };
 
+    if (loading) {
+        return <LoadingSpinner />
+    }
+
+    if (!user || (user.role.name != "kepala bagian" && user.role.name != "kepala biro")) {
+        return <Navigate to="/" replace />
+    }
+
     return (
         <div>
-            <Navbar type="kepala" />
+            <Navbar />
 
             <div className="pt-24" data-aos="fade-up" data-aos-duration="1000">
                 <TableHeaderReport
-                    title="DAFTAR PAKET PROSES PEMILIHAN PENYEDIA BARANG/JASA"
+                    title="DAFTAR PAKET PROSES PEMILIHAN PENYEDIA BARANG/JASA PENJABAT PENGADAAN"
                     tahunOptions={tahunOptions}
                     metodePengadaanOptions={metodePengadaanOptions}
                     sumberDanaOptions={sumberDanaOptions}
@@ -281,8 +258,6 @@ export default function KepalaHasilPenjabatPengadaan() {
                     onTahunChange={setTahun}
                     onMetodePengadaanChange={setMetodePengadaan}
                     onSumberDanaChange={setSumberDana}
-                    onBuatReport={() => console.log('Buat Report')}
-                    isKepala={true}
                     onPrint={() => handlePrint()}
                     onSavePDF={() => handleSavePDF()}
                     onSaveExcel={() => handleSaveExcel()}
@@ -290,11 +265,11 @@ export default function KepalaHasilPenjabatPengadaan() {
                 <div className="p-6" ref={tableRef}>
                     <TableContent
                         columns={columns}
-                        data={data}
+                        data={dataEntryFilter}
                         isSelect={false}
                         showEdit={false}
                         showPreview={false}
-                        idKey="no"
+                        idKey="id"
                     />
                 </div>
             </div>

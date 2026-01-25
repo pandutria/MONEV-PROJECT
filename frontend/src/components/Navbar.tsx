@@ -20,7 +20,7 @@ export default function Navbar() {
     { label: 'Rencana Anggaran', path: '/ppk/rencana-anggaran' },
     { label: 'Jadwal Pelaksanaan', path: '/ppk/jadwal-pelaksanaan' },
     { label: 'Realisasi Pekerjaan', path: '/ppk/realisasi-pekerjaan' },
-    { label: 'Project Progress (Kurva S)', path: '/laporan/kurva-s' }
+    { label: 'Project Progress (Kurva S)', path: '/ppk/project-kurva-s' }
   ];
 
   const pokjaLaporanItems = [
@@ -37,7 +37,7 @@ export default function Navbar() {
     { label: 'Rencana Anggaran', path: '/kepala/rencana-anggaran' },
     { label: 'Jadwal Pelaksanaan', path: '/kepala/jadwal-pelaksanaan' },
     { label: 'Realisasi Pekerjaan', path: '/kepala/realisasi-pekerjaan' },
-    { label: 'Project Progress (Kurva S)', path: '/kepala/kurva-s' }
+    { label: 'Project Progress (Kurva S)', path: '/kepala/project-kurva-s' }
   ];
 
   const kepalaHasilItems = [
@@ -169,7 +169,7 @@ export default function Navbar() {
             </div>
           )}
 
-          {type === 'kepala' && (
+          {(type === 'kepala bagian'  || type === 'kepala biro') && (
             <div className="hidden md:flex items-center gap-2">
               <button
                 className="font-poppins-medium text-black hover:text-primary text-sm md:text-base px-4 md:px-6 py-2 transition-colors duration-200 rounded-lg cursor-pointer hover:bg-primary/10"
@@ -593,7 +593,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {type === 'kepala' && (
+      {(type === 'kepala bagian'  || type === 'kepala biro') && (
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out
             ${isMenuOpen ? 'max-h-125 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}

@@ -47,17 +47,17 @@ export default function useDataEntryHooks() {
         const uniqueMap = new Map<string, string>();
 
         data.forEach(item => {
-            if (typeof item.jenis_pengadaan === "string") {
-                uniqueMap.set(item.jenis_pengadaan, item.jenis_pengadaan);
+            if (typeof item.metode_pengadaan === "string") {
+                uniqueMap.set(item.metode_pengadaan, item.metode_pengadaan);
             }
 
             if (
-                typeof item.jenis_pengadaan === "object" &&
-                item.jenis_pengadaan
+                typeof item.metode_pengadaan === "object" &&
+                item.metode_pengadaan
             ) {
                 uniqueMap.set(
-                    String(item.jenis_pengadaan.id),
-                    item.jenis_pengadaan.name
+                    String(item.metode_pengadaan.id),
+                    item.metode_pengadaan.name
                 );
             }
         });
@@ -110,7 +110,7 @@ export default function useDataEntryHooks() {
 
                 const mappingData = data.map((item: DataEntryProps) => ({
                     ...item,
-                    opd: "Tidak Ada",
+                    opd: item.user?.opd_organization ?? "Tidak Ada",
                     nomor_kontrak: item.nomor_kontrak ?? "-",
                     nama_pimpinan_perusahaan: item.nama_pimpinan_perusahaan ?? "-",
                     nomor_telp: item.nomor_telp ?? "-",
@@ -338,10 +338,11 @@ export default function useDataEntryHooks() {
             if (error) {
                 SwalMessage({
                     title: "Gagal!",
-                    text: "Pastikan kode paket/tender terisi!",
+                    text: "Terjadi Kesalahan!",
                     type: "error"
                 })
             }
+            console.error(error)
         }
     }
 

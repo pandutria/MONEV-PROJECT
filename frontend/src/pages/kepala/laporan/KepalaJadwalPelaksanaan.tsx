@@ -1,128 +1,115 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Navbar from "../../../components/Navbar";
 import TableContent from "../../../ui/TableContent";
 import TableHeader from "../../../ui/TableHeader";
 import { useEffect, useState } from 'react';
+import { useAuth } from "../../../context/AuthContext";
+import LoadingSpinner from "../../../ui/LoadingSpinner";
+import useScheduleHooks from "../../../hooks/ScheduleHooks";
 
 export default function KepalaJadwalPelaksanaan() {
-    // const [tahun, setTahun] = useState('');
-    // const [satuanKerja, setSatuanKerja] = useState('');
-    // const [search, setSearch] = useState('');
-    const [selectedItems, setSelectedItems] = useState([]);
+    const [tahun, setTahun] = useState('');
+    const [satuanKerja, setSatuanKerja] = useState('');
+    const [search, setSearch] = useState('');
     const [selectPreview, setSelectPreview] = useState<any>(null);
+    const { user, loading } = useAuth();
+    const { scheduleData, tahunData, satkerData } = useScheduleHooks();
+    const [scheduleDataFilter, setScheduleDataFilter] = useState<any[]>([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const filteringDataRab = () => {
+            const dataFilter = scheduleData?.filter((item: any) => {
+                const tahunFilter = tahun ? item?.tahun_anggaran.toString().includes(tahun) : true;
+                const searchFilter = search ? item?.kode_paket.toLowerCase().includes(search.toLowerCase()) : true;
+                const satuanKerjaFilter = satuanKerja ? item.satuan_kerja.toLowerCase().includes(satuanKerja.toLowerCase()) : true;
+
+                return tahunFilter && searchFilter && satuanKerjaFilter;
+            });
+
+            setScheduleDataFilter(dataFilter as any);
+        }
+
+        filteringDataRab();
+    }, [search, satuanKerja, tahun, scheduleData]);
 
     const columns = [
         {
-            key: 'no',
+            key: 'id',
             label: 'No'
         },
         {
-            key: 'tahun',
+            key: 'tahun_anggaran',
             label: 'Tahun Anggaran'
         },
         {
-            key: 'satuan',
+            key: 'satuan_kerja',
             label: 'Satuan Kerja'
         },
         {
-            key: 'rup',
+            key: 'kode_rup',
             label: 'Kode RUP'
         },
         {
-            key: 'tender',
+            key: 'kode_paket',
             label: 'kode Tender'
         },
         {
-            key: 'paket',
+            key: 'nama_paket',
             label: 'Nama Paket'
         },
         {
-            key: 'revisi',
+            key: 'alasan_count',
             label: 'Revisi'
-        },
-    ];
-
-    const data = [
-        {
-            no: 1,
-            tahun: '2025',
-            satuan: 'DINAS PEKERJAAN UMUM DAN PENATAAN RUANG',
-            rup: '60986116',
-            tender: '10093144000',
-            paket: "Rekonstruksi/Peningkatan Jalan Wawongole - Teteona (Duriaasi)",
-            revisi: "3"
-        },
-        {
-            no: 2,
-            tahun: '2024',
-            satuan: 'DEWAN PERWAKILAN RAKYAT DAERAH (DPRD)',
-            rup: '61328060',
-            tender: '10094830000',
-            paket: "Pemasangan Vaving blok Kantor DPRD Kab. Konawe",
-            revisi: "0"
-        },
-    ];
-
-    const tahunData = [
-        {
-            id: 1,
-            tahun: '2025'
-        },
-        {
-            id: 2,
-            tahun: '2028'
-        },
-    ]
-
-    const satuanKerjaData = [
-        {
-            id: 1,
-            text: "Semua Satuan Kerja"
-        },
-        {
-            id: 2,
-            text: "Satuan Kerja 1"
-        },
-        {
-            id: 3,
-            text: "Satuan Kerja 2"
         },
     ];
 
     useEffect(() => {
         const fetchPreview = () => {
             if (selectPreview) {
-                const no = selectPreview?.no;
-                navigate(`/ppk/jadwal-pelaksanaan/${no}`);
+                const id = selectPreview?.id;
+                navigate(`/kepala/jadwal-pelaksanaan/lihat/${id}`);
             }
         }
 
         fetchPreview();
     }, [selectPreview, navigate]);
+
+    if (loading) {
+        return <LoadingSpinner/>
+    }
+
+    if (!user || (user.role.name != "kepala bagian" && user.role.name != "kepala biro")) {
+        return <Navigate to="/" replace/>
+    }
+
     return (
         <div>
-            <Navbar type="kepala" />
-
+            <Navbar/>            
+ 
             <div className="lg:pt-32 pt-28" data-aos="fade-up" data-aos-duration="1000">
                 <TableHeader 
-                    title="Jadwal Pelaksanaan" 
+                    title="Daftar Jadwal Pelaksanaan" 
                     tahunOptions={tahunData} 
-                    satuanKerjaOptions={satuanKerjaData} 
+                    satuanKerjaOptions={satkerData} 
+                    searchValue={search}
+                    onSearchChange={setSearch}
+                    selectedTahun={tahun}
+                    onTahunChange={setTahun}
+                    selectedSatuanKerja={satuanKerja}
+                    onSatuanKerjaChange={setSatuanKerja}
                     showHapus={false}
                     showTambah={false}
                 />
                 <div className="p-6">
                     <TableContent
                         columns={columns}
-                        data={data}
+                        data={scheduleDataFilter}
                         isSelect={false}
                         showEdit={false}
                         showPreview={true}
-                        idKey="no"
-                        onPreview={(item) => setSelectPreview(item)}
-                        onSelectedChange={(selected) => setSelectedItems(selected as any)}
+                        onPreview={(item) => setSelectPreview(item)} 
                     />
                 </div>
             </div>

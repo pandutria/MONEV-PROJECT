@@ -8,7 +8,6 @@ import PPKJadwalPelaksanaanAdd from "../pages/ppk/add/PPKJadwalPelaksanaanAdd"
 import PokjaLaporanPenjabatPengadaan from "../pages/pokja/PokjaLaporanPenjabatPengadaan"
 import PokjaLaporanPenjabatPengadaanAdd from "../pages/pokja/add/PokjaLaporanPenjabatPengadaanAdd"  
 import KepalaRencanaAnggaran from "../pages/kepala/laporan/KepalaRencanaAnggaran"
-import KepalaJadwalPelaksanaan from "../pages/kepala/laporan/KepalaJadwalPelaksanaan"
 import PokjaHasilKelompokKerja from "../pages/pokja/PokjaHasilKelompokKerja"
 import PokjaHasilPenjabatPengadaan from "../pages/pokja/PokjaHasilPenjabatPengadaan"
 import KepalaHasilPenjabatPengadaan from "../pages/kepala/hasil/KepalaHasilPenjabatPengadaan"
@@ -25,6 +24,13 @@ import PPKJadwalPelaksanaanUpdateView from "../pages/ppk/edit/PPKJadwalPelaksana
 import PPKRealisasiAdd from "../pages/ppk/add/PPKRealisasiAdd"
 import PPKRealisasi from "../pages/ppk/PPKRealisasi"
 import PPKRealisasiUpdateView from "../pages/ppk/edit/PPKRealisasiUpdateView"
+import ProjectKurvaS from "../pages/ppk/ProjectKurvaS"
+import KepalaRencanaAnggaranView from "../pages/kepala/laporan/show/KepalaRencanaAnggaranView"
+import KepalaJadwalPelaksanaan from "../pages/kepala/laporan/KepalaJadwalPelaksanaan"
+import KepalaJadwalPelaksanaanView from "../pages/kepala/laporan/show/kepalaJadwalPelaksanaanView"
+import KepalaRealisasi from "../pages/kepala/laporan/KepalaRealisasi"
+import KepalaRealisasiView from "../pages/kepala/laporan/show/KepalaRealisasiView"
+import KepalaProjectKurvaS from "../pages/kepala/laporan/KepalaProjectKurvaS"
 
 export default function Router() {
   return (
@@ -53,6 +59,8 @@ export default function Router() {
         <Route path="/ppk/realisasi-pekerjaan/ubah/:id" element={<PPKRealisasiUpdateView/>}/>
         <Route path="/ppk/realisasi-pekerjaan/lihat/:id" element={<PPKRealisasiUpdateView/>}/>
 
+        <Route path="/ppk/project-kurva-s" element={<ProjectKurvaS/>}/>
+
         {/* Pokja */}
         <Route path="/pokja/data-entry-penjabat-pengadaan" element={<PokjaLaporanPenjabatPengadaan/>}/>
         <Route path="/pokja/data-entry-penjabat-pengadaan/tambah" element={<PokjaLaporanPenjabatPengadaanAdd/>}/>
@@ -69,10 +77,18 @@ export default function Router() {
 
         {/* Kepala Biro & Kepala Biro */}
         <Route path="/kepala/rencana-anggaran" element={<KepalaRencanaAnggaran/>}/>
+        <Route path="/kepala/rencana-anggaran/lihat/:id" element={<KepalaRencanaAnggaranView/>}/>
+
         <Route path="/kepala/jadwal-pelaksanaan" element={<KepalaJadwalPelaksanaan/>}/>
+        <Route path="/kepala/jadwal-pelaksanaan/lihat/:id" element={<KepalaJadwalPelaksanaanView/>}/>
+
+        <Route path="/kepala/realisasi-pekerjaan" element={<KepalaRealisasi/>}/>
+        <Route path="/kepala/realisasi-pekerjaan/lihat/:id" element={<KepalaRealisasiView/>}/>
 
         <Route path="/kepala/penjabat-pengadaan" element={<KepalaHasilPenjabatPengadaan/>}/>
         <Route path="/kepala/kelompok-kerja" element={<KepalaHasilKelompokKerja/>}/>
+
+        <Route path="/kepala/project-kurva-s" element={<KepalaProjectKurvaS/>}/>
 
         {/* Admin */}
         <Route path="/admin/manajemen-pengguna" element={<AdminManajemenPengguna/>}/>        

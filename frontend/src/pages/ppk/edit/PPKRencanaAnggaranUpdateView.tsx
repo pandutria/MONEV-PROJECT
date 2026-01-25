@@ -32,11 +32,12 @@ export default function PPKRencanaAnggaranUpdateView() {
     startDate,
     endDate,
     revisionCount,
+    rabDataByid,
+    setSelectedId
   } = useRABHooks();
   const { user, loading } = useAuth();
   
   const { dataEntryPengadaan } = useDataEntryHooks();
-  const { setSelectedId, rabDataByid } = useRABHooks();
   const { id } = useParams();
   const { reason } = location.state;
   const [selectedRevision, setSelectedRevision] = useState<any>(null);
@@ -57,14 +58,15 @@ export default function PPKRencanaAnggaranUpdateView() {
 
     const filteringDataTender = () => {
       const filter = dataEntryPengadaan?.filter((item: DataEntryProps) => {
-        const isGroup = item.tipe.includes("Kelompok");
+        const isGroup = item?.tipe?.includes("Kelompok");
+        const isUser = item?.selected_ppk_id === user?.id;
         const data = item?.kode_paket?.toString().toLowerCase().includes(search.toLowerCase());
 
         const isExisting = rabData?.some(
           rab => String(rab?.data_entry?.kode_paket) == String(item?.kode_paket)
         );
 
-        return data && !isExisting && isGroup;
+        return data && !isExisting && isGroup && isUser;
       }); 
 
       setTenderDataFilter(filter);
@@ -92,7 +94,7 @@ export default function PPKRencanaAnggaranUpdateView() {
     }
 
     fetchIsPreview();
-  }, [id, location, selectedRevision, setSelectedId]);
+  }, [id, location, selectedRevision, setSelectedId, revisionCount]);
 
   const columns = [
     {
@@ -258,9 +260,9 @@ export default function PPKRencanaAnggaranUpdateView() {
               />
 
               {isDisabled && (
-                <FormSelect value={selectedRevision} onChange={(e) => setSelectedRevision(e.target.value)} title={`Revisi ke - ${revisionCount[revisionCount.length - 1]?.alasan_count}`}>
+                <FormSelect value={selectedRevision} onChange={(e) => setSelectedRevision(e.target.value)} title={`Revisi ke - ${revisionCount?.[revisionCount.length - 1]?.alasan_count}`}>
                   {revisionCount.map((item, index) => (
-                    <option key={index} value={item.rab_id}>{item?.alasan_count}</option>
+                    <option key={index} value={item?.rab_id}>{item?.alasan_count}</option>
                   ))}
                 </FormSelect>
               )}

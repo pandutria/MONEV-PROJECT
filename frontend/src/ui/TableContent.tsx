@@ -16,7 +16,6 @@ interface TableContentProps {
     showSelect?: boolean;
     onEdit?: (item: any) => void;
     onPreview?: (item: any) => void;
-    onSelectedChange?: (selected: any[]) => void;
     idKey?: string;
     onSelectedIdsChange?: (ids: any[]) => void;
     onSelectedDataChange?: (data: any[]) => void;
@@ -31,7 +30,6 @@ export default function TableContent({
     showSelect = false,
     onEdit,
     onPreview,
-    onSelectedChange,
     idKey = 'id',
     onSelectedIdsChange,
     onSelectedDataChange
@@ -49,12 +47,10 @@ export default function TableContent({
         if (checked) {
             const allIds = currentData.map(item => item[idKey]);
             setSelectedIds(allIds);
-            onSelectedChange?.(currentData);
             onSelectedIdsChange?.(allIds);
             onSelectedDataChange?.(currentData);
         } else {
             setSelectedIds([]);
-            onSelectedChange?.([]);
             onSelectedIdsChange?.([]);
             onSelectedDataChange?.([]);
         }
@@ -71,10 +67,6 @@ export default function TableContent({
         }
 
         setSelectedIds(newSelectedIds);
-
-        const newSelectedItems = data.filter(d => newSelectedIds.includes(d[idKey]));
-
-        onSelectedChange?.(newSelectedItems);
         onSelectedIdsChange?.(newSelectedIds);
 
         const selectedData = data.filter(d =>

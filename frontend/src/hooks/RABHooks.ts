@@ -76,10 +76,6 @@ export default function useRABHooks() {
                     nama_paket: item.data_entry.nama_paket?.toString(),
                 }));
 
-                const revisions = data.map(item => ({
-                    rab_id: item.id,
-                    alasan_count: item.alasan_count
-                })).sort((a: any, b: any) => a - b)
 
                 const tahunOpts = buildTahunOptions(data);
                 const satkerOpts = buildSatkerOptions(data);
@@ -87,7 +83,6 @@ export default function useRABHooks() {
                 setRabData(SortDescById(mappingData));
                 setTahunData(tahunOpts);
                 setSatkerData(satkerOpts);
-                setRevisionCount(revisions);
             } catch (error) {
                 console.error(error);
             }
@@ -97,7 +92,22 @@ export default function useRABHooks() {
             try {
                 if (!selectedId) return;
                 const response = await API.get(`/rab/${selectedId}`);
-                setRabDataById(response?.data?.data);
+                const responseRab = await API.get('/rab');
+
+                const data: RABProps[] = responseRab.data.data
+                const revisions = data?.filter(item => {
+                    const filter = item?.rab_group_id == 35;
+                    return filter;
+                })
+                    .map(item => ({
+                        rab_id: item?.id,
+                        rab_group_id: item?.rab_group_id,
+                        alasan_count: item?.alasan_count
+                    }))
+                    .sort((a, b) => a.rab_id - b.rab_id);
+
+                setRabDataById(response.data.data);
+                setRevisionCount(revisions);
             } catch (error) {
                 console.error(error);
             }
@@ -246,13 +256,13 @@ export default function useRABHooks() {
                 title: "Konfirmasi!",
                 text: `Apakah anda yakin ingin menghapus data RAB ini?`,
             });
-            
+
             if (result.isConfirmed) {
                 let response;
                 SwalLoading();
 
-                for (let index = 0; index < ids.length; index++) {    
-                    const id = ids[index];            
+                for (let index = 0; index < ids.length; index++) {
+                    const id = ids[index];
                     response = await API.delete(`/rab/delete/${id}`);
                 }
 

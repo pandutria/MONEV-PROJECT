@@ -4,6 +4,7 @@ import API from "../server/API";
 import { SwalMessage } from "../utils/SwalMessage";
 import { useNavigate } from "react-router-dom";
 import SwalLoading from "../utils/SwalLoading";
+import { SortDescById } from "../utils/SortDescById";
 
 export default function useRealisasiHooks() {
     const [realisasiData, setRealisasiData] = useState<RealizationProps[]>([]);
@@ -64,7 +65,7 @@ export default function useRealisasiHooks() {
                     }))
                 ];
 
-                setRealisasiData(mappingData);
+                setRealisasiData(SortDescById(mappingData));
                 setSatkerData(satkerOptions);
                 setTahunData(tahunOptions);
             } catch (error) {

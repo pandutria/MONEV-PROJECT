@@ -100,6 +100,10 @@ const parseRABExcel = (
   return result;
 };
 
+const getTotalMingguFromData = (data: ScheduleItemProps[]): number => {
+  return data.length > 0 ? data[0].schedule_weeks.length : 0;
+};
+
 export default function PPKJadwalPelaksanaanAdd() {
   const [dataFile, setDataFile] = useState<ScheduleItemProps[]>([]);
   const [showDetail, setShowDetail] = useState(false);
@@ -108,11 +112,12 @@ export default function PPKJadwalPelaksanaanAdd() {
 
   const [tenderDataFilter, setTenderDataFilter] = useState<RABProps[]>([]);
   const [selectedRab, setSelectedRab] = useState<RABProps | null>(null);
-  const [totalMinggu, setTotalMinggu] = useState<number>(1);
 
   const { rabData } = useRABHooks();
   const { handleSchedulePost, scheduleData } = useScheduleHooks();
   const { user, loading } = useAuth();
+
+  const totalMinggu = getTotalMingguFromData(dataFile);
 
   const handleDeleteRow = (index: number) => {
     setDataFile(prev => prev.filter((_, i) => i !== index));
@@ -138,7 +143,6 @@ export default function PPKJadwalPelaksanaanAdd() {
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
       const total = getTotalMingguFromExcel(worksheet);
-      setTotalMinggu(total);
 
       const parsedData = parseRABExcel(worksheet, total);
 
