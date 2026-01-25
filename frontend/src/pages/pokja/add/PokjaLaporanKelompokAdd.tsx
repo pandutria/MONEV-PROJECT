@@ -26,11 +26,14 @@ export default function PokjaLaporanKelompokAdd() {
     const [showTender, setShowTender] = useState<any>('');
     const [selectedTender, setSelectedTender] = useState<any>(null);
     const [metodePengadaanOptions, setMetodePengadaanOptions] = useState<any>([]);
+    const [showSelectedPPK, setShowSelectedPPK] = useState(false);
+    const [userPPK, setUserPPK] = useState<UserProps[]>([]);
 
     const { user, loading } = useAuth();
     const { listUser } = useUserHooks();
     const [search, setSearch] = useState("");
     const {
+        selectedPPK,
         note,
         handleEntryPenjabatPengadaanPost,
         handleChangeEntryPenjabatPengadaan,
@@ -78,10 +81,7 @@ export default function PokjaLaporanKelompokAdd() {
     useEffect(() => {
         const fetchTender = () => {
             if (showTender) {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+                window.location.href = "#";
                 document.body.style.overflow = 'hidden';
             } else {
                 document.body.style.overflow = 'auto';
@@ -98,8 +98,24 @@ export default function PokjaLaporanKelompokAdd() {
             setTenderDataFilter(filter);
         }
 
+         const filteringUserPPK = () => {
+            const filteringData = listUser?.filter((item: UserProps) => {
+                const filter = item.role_id === 2;
+                return filter;
+            });
+
+            setUserPPK(filteringData);
+        }
+
+        if (selectedTender?.jenis_pengadaan) {
+            if (selectedTender?.jenis_pengadaan.toLowerCase() === ("Pekerjaan Konstruksi").toLowerCase()) {
+                setShowSelectedPPK(true);
+            }
+        }
+
         fetchTender();
         filteringDataTender();
+        filteringUserPPK();
     }, [selectedTender, showTender, listUser, search, tenderData, metodePengadaan]);
 
     const handleShowTender = () => {
@@ -266,6 +282,14 @@ export default function PokjaLaporanKelompokAdd() {
                                 <div className="grid grid-cols-1 gap-6">
                                     <FormUploadFile title="Evidence/Bukti Laporan Hasil Pemilihan PP" name="file" onChange={handleChangeFileEntryPenjabatPengadaan} />
                                     <FormInput title="Catatan" type='textarea' name="note" value={note} onChange={handleChangeEntryPenjabatPengadaan} placeholder="Catatan" />
+
+                                    {showSelectedPPK && (
+                                        <FormSelect title="Ditujukan ke PPK" name="ppk" value={selectedPPK} onChange={handleChangeEntryPenjabatPengadaan}>
+                                            {userPPK.map((item, index) => (
+                                                <option key={index} value={item.id}>PPK - {item.fullname}</option>
+                                            ))}
+                                        </FormSelect>
+                                    )}
                                 </div>
                             </div>
 

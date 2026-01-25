@@ -175,10 +175,7 @@ export default function PPKJadwalPelaksanaanAdd() {
   useEffect(() => {
     if (showTender && !selectedRab) {
       document.body.style.overflow = 'hidden';
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+      window.location.href = "#";
     } else {
       document.body.style.overflow = "auto"
     }

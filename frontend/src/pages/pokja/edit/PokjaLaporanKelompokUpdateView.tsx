@@ -19,6 +19,8 @@ export default function PokjaLaporanKelompokUpdateView() {
     const { user, loading } = useAuth();
     const { listUser } = useUserHooks();
     const [isDisabled, setIsDisabled] = useState(false);
+    const [showSelectedPPK, setShowSelectedPPK] = useState(false);
+    const [userPPK, setUserPPK] = useState<UserProps[]>([]);
     const location = useLocation();
     const {
         note,
@@ -26,6 +28,7 @@ export default function PokjaLaporanKelompokUpdateView() {
         handleChangeEntryPenjabatPengadaan,
         handleChangeFileEntryPenjabatPengadaan,
         setSelectedId,
+        selectedPPK,
         dataEntryPengadaanById
     } = useDataEntryHooks();
 
@@ -39,9 +42,28 @@ export default function PokjaLaporanKelompokUpdateView() {
                 setIsDisabled(true);
             }
         }
-        
+
+        const filteringUserPPK = () => {
+            const filteringData = listUser?.filter((item: UserProps) => {
+                const filter = item.role_id === 2;
+                return filter;
+            });
+
+            setUserPPK(filteringData);
+        }
+
+        const fetchShowPPK = () => {
+            if (dataEntryPengadaanById?.jenis_pengadaan) {
+                if (dataEntryPengadaanById?.jenis_pengadaan.toLowerCase() === ("Pekerjaan Konstruksi").toLowerCase()) {
+                    setShowSelectedPPK(true);
+                }
+            }
+        }
+
         fetchtenderId();
-    }, [listUser, id, setSelectedId, location]);
+        filteringUserPPK();
+        fetchShowPPK();
+    }, [listUser, id, setSelectedId, location, dataEntryPengadaanById]);
 
     if (loading) {
         return <LoadingSpinner />
@@ -60,7 +82,7 @@ export default function PokjaLaporanKelompokUpdateView() {
 
                     <div className="bg-white rounded-lg shadow-md p-6">
                         <h1 className="font-poppins-bold text-2xl text-gray-800 mb-8">
-                            Ubah Laporan kelompok Kerja
+                            {isDisabled ? "Lihat" : "Ubah"} Laporan kelompok Kerja
                         </h1>
 
                         <div className="space-y-8">
@@ -98,7 +120,7 @@ export default function PokjaLaporanKelompokUpdateView() {
 
                                     <FormInput disabled={true} title="Jenis Pengadaan" name="" value={dataEntryPengadaanById?.jenis_pengadaan?.toString()} placeholder="Otomatis terisi" />
                                 </div>
-                            </div>                            
+                            </div>
 
                             <div>
                                 <h2 className="font-poppins-semibold text-lg text-gray-800 mb-4 pb-2 border-b-2 border-primary/20">
@@ -155,6 +177,14 @@ export default function PokjaLaporanKelompokUpdateView() {
                                 <div className="grid grid-cols-1 gap-6">
                                     <FormUploadFile disabled={isDisabled} value={dataEntryPengadaanById ? dataEntryPengadaanById.bukti_file : ''} title="Evidence/Bukti Laporan Hasil Pemilihan PP" name="file" onChange={handleChangeFileEntryPenjabatPengadaan} />
                                     <FormInput disabled={isDisabled} title="Catatan" type='textarea' name="note" value={note ? note as any : dataEntryPengadaanById?.catatan} onChange={handleChangeEntryPenjabatPengadaan} placeholder="Catatan" />
+
+                                    {showSelectedPPK && (
+                                        <FormSelect disabled={isDisabled} title="Ditujukan ke PPK" name="ppk" value={selectedPPK} onChange={handleChangeEntryPenjabatPengadaan}>
+                                            {userPPK.map((item, index) => (
+                                                <option key={index} value={item.id}>PPK - {item.fullname}</option>
+                                            ))}
+                                        </FormSelect>
+                                    )}
                                 </div>
                             </div>
 

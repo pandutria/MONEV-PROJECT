@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { SwalMessage } from "../utils/SwalMessage";
 import API from "../server/API";
 import SwalLoading from "../utils/SwalLoading";
-import { useNavigate } from "react-router-dom";
 import { SortDescById } from "../utils/SortDescById";
 
 export default function useScheduleHooks() {
@@ -11,7 +10,6 @@ export default function useScheduleHooks() {
     const [tahunData, setTahunData] = useState<any>([]);
     const [satkerData, setSatkerData] = useState<any>([]);
     const token = localStorage.getItem("token");
-    const navigate = useNavigate();
     const [scheduleDataById, setScheduleDataById] = useState<ScheduleProps | null>(null);
     const [selectedId, setSelectedId] = useState<any>(null);
     const [revisionCount, setRevisionCount] = useState<any[]>([]);
@@ -158,17 +156,16 @@ export default function useScheduleHooks() {
             });
 
             setTimeout(() => {
-                navigate(-1);
+                window.location.href = "/ppk/jadwal-pelaksanaan"
             }, 2000);
-        } catch (error) {
+        } catch (error: any) {
             if (error) {
                 SwalMessage({
                     type: "error",
                     title: "Gagal!",
-                    text: "Terjadi Kesalahan!"
+                    text: error.response.data.message
                 });
             }
-            console.error(error)
         }
     }
 
@@ -224,14 +221,14 @@ export default function useScheduleHooks() {
             });
 
             setTimeout(() => {
-                navigate(-1);
+                window.location.href = "/ppk/jadwal-pelaksanaan"
             }, 2000);
-        } catch (error) {
+        } catch (error: any) {
             if (error) {
                 SwalMessage({
                     type: "error",
                     title: "Gagal!",
-                    text: "Terjadi Kesalahan!"
+                    text: error.response.data.message
                 });
             }
         }
@@ -275,15 +272,14 @@ export default function useScheduleHooks() {
                     window.location.reload();
                 }, 2000);
             }
-        } catch (error) {
+        } catch (error: any) {
             if (error) {
                 SwalMessage({
                     type: "error",
                     title: "Gagal!",
-                    text: "Terjadi Kesalahan!"
+                    text: error.response.data.message
                 })
             }
-            console.error(error)
         }
     }
 

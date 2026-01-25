@@ -1,10 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Search, ChevronDown, Calendar, Building2, Package } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import useRealisasiHooks from '../hooks/RealisasiHooks';
 
-export default function SearchData() {
+interface searchDataProps {
+    setSelectedRealization: any
+}
+
+export default function SearchData({ setSelectedRealization }: searchDataProps) {
     interface OptionProps {
-        value: string;
-        label: string;
+        text: string;
     }
 
     const [tahunAnggaran, setTahunAnggaran] = useState<string>('');
@@ -15,31 +20,19 @@ export default function SearchData() {
     const [searchSatuan, setSearchSatuan] = useState<string>('');
     const [searchPaket, setSearchPaket] = useState<string>('');
 
+    const {
+        realisasiData,
+        tahunData,
+        satkerData
+    } = useRealisasiHooks();
+
     const [openDropdown, setOpenDropdown] = useState<string>('');
     const [isVisible, setIsVisible] = useState<boolean>(false);
 
     const sectionRef = useRef<HTMLDivElement>(null);
-
-    const tahunOptions: OptionProps[] = [
-        { value: '2024', label: '2024' },
-        { value: '2023', label: '2023' },
-        { value: '2022', label: '2022' },
-        { value: '2021', label: '2021' },
-    ];
-
-    const satuanKerjaOptions: OptionProps[] = [
-        { value: 'dinas_pu', label: 'Dinas Pekerjaan Umum' },
-        { value: 'dinas_perhubungan', label: 'Dinas Perhubungan' },
-        { value: 'dinas_perumahan', label: 'Dinas Perumahan' },
-        { value: 'bappeda', label: 'Bappeda' },
-    ];
-
-    const paketOptions: OptionProps[] = [
-        { value: 'jalan_raya', label: 'Pembangunan Jalan Raya' },
-        { value: 'jembatan', label: 'Konstruksi Jembatan' },
-        { value: 'gedung', label: 'Pembangunan Gedung' },
-        { value: 'irigasi', label: 'Sistem Irigasi' },
-    ];
+    const paketCode = realisasiData.map((item: any) => ({
+        text: item?.kode_paket
+    }))
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -64,12 +57,20 @@ export default function SearchData() {
 
     const filterOptions = (options: OptionProps[], searchTerm: string) => {
         return options.filter(option =>
-            option.label.toLowerCase().includes(searchTerm.toLowerCase())
+            option?.text?.toLowerCase().includes(searchTerm.toLowerCase())
         );
     };
 
     const handleSearch = () => {
-        console.log('Search:', { tahunAnggaran, satuanKerja, paket });
+        const realisasiBySearch = realisasiData.filter((item) => {
+            return item.schedule.rab?.data_entry.kode_paket?.toLowerCase()?.includes(paket.toLowerCase());
+        });
+
+        setSelectedRealization(realisasiBySearch);
+        window.scrollTo({
+            top: 1000,
+            behavior: "smooth"
+        })
     };
 
     const renderDropdown = (
@@ -84,7 +85,7 @@ export default function SearchData() {
     ) => {
         const isOpen = openDropdown === id;
         const filteredOptions = filterOptions(options, searchValue);
-        const selectedOption = options.find(opt => opt.value === value);
+        const selectedOption = options.find(opt => opt.text === value);
 
         return (
             <div className="relative">
@@ -101,7 +102,11 @@ export default function SearchData() {
                         className="w-full pl-10 pr-10 py-3 border-2 border-gray-300 rounded-lg transition-all duration-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 text-left bg-white hover:border-gray-400"
                     >
                         <span className={selectedOption ? 'text-gray-900' : 'text-gray-400'}>
-                            {selectedOption ? selectedOption.label : `Pilih ${label}`}
+                            {label == "Paket" ? (
+                                selectedOption ? selectedOption.text : realisasiData?.[realisasiData.length - 1]?.schedule?.rab?.data_entry?.kode_paket
+                            ) : (
+                                `Pilih ${label}`
+                            )}
                         </span>
                     </button>
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -125,18 +130,18 @@ export default function SearchData() {
                             {filteredOptions.length > 0 ? (
                                 filteredOptions.map((option) => (
                                     <button
-                                        key={option.value}
+                                        key={option.text}
                                         type="button"
                                         onClick={() => {
-                                            setValue(option.value);
+                                            setValue(option.text);
                                             setSearchValue('');
                                             setOpenDropdown('');
                                         }}
-                                        className={`w-full font-poppins-regular text-left px-4 py-2 hover:bg-orange-50 transition-colors duration-150 ${value === option.value ? 'bg-orange-100 font-semibold' : ''
+                                        className={`w-full font-poppins-regular text-left px-4 py-2 hover:bg-orange-50 transition-colors duration-150 ${value === option.text ? 'bg-orange-100 font-semibold' : ''
                                             }`}
-                                        style={{ color: value === option.value ? '#f60' : '#374151' }}
+                                        style={{ color: value === option.text ? '#f60' : '#374151' }}
                                     >
-                                        {option.label}
+                                        {option.text}
                                     </button>
                                 ))
                             ) : (
@@ -150,6 +155,7 @@ export default function SearchData() {
             </div>
         );
     };
+    
     return (
         <div
             ref={sectionRef}
@@ -184,7 +190,7 @@ export default function SearchData() {
                             setTahunAnggaran,
                             searchTahun,
                             setSearchTahun,
-                            tahunOptions
+                            tahunData
                         )}
 
                         {renderDropdown(
@@ -195,7 +201,7 @@ export default function SearchData() {
                             setSatuanKerja,
                             searchSatuan,
                             setSearchSatuan,
-                            satuanKerjaOptions
+                            satkerData
                         )}
 
                         {renderDropdown(
@@ -206,7 +212,7 @@ export default function SearchData() {
                             setPaket,
                             searchPaket,
                             setSearchPaket,
-                            paketOptions
+                            paketCode as any
                         )}
                     </div>
 

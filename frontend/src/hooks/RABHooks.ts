@@ -23,7 +23,7 @@ export default function useRABHooks() {
         const uniqueYears = Array.from(
             new Set(
                 data
-                    .map((item: any) => item.tahun_anggaran)
+                    .map((item: any) => Number(item?.data_entry?.tahun_anggaran))
                     .filter((v: any): v is number => typeof v === "number")
             )
         ).sort((a: any, b: any) => b - a);
@@ -39,8 +39,8 @@ export default function useRABHooks() {
         const uniqueMap = new Map<string, string>();
 
         data.forEach(item => {
-            if (typeof item.satuan_kerja === "string") {
-                uniqueMap.set(item.satuan_kerja, item.satuan_kerja);
+            if (typeof item?.data_entry?.satuan_kerja === "string") {
+                uniqueMap.set(item?.data_entry?.satuan_kerja, item?.data_entry?.satuan_kerja);
             }
         });
 
@@ -120,6 +120,16 @@ export default function useRABHooks() {
     const handleRABPost = async (dataEntryId: number, dataRabDetail: RABDetailProps[]) => {
         try {
             if (!dataEntryId || !dataRabDetail) {
+                SwalMessage({
+                    type: "error",
+                    title: "Gagal!",
+                    text: "Harap isi field yang telah disediakan!"
+                });
+
+                return;
+            }
+
+            if (!program || !startDate || !endDate) {
                 SwalMessage({
                     type: "error",
                     title: "Gagal!",
@@ -277,12 +287,12 @@ export default function useRABHooks() {
                     window.location.reload();
                 }, 2000);
             }
-        } catch (error) {
+        } catch (error: any) {
             if (error) {
                 SwalMessage({
                     type: "error",
                     title: "Gagal!",
-                    text: "Terjadi Kesalahan!"
+                    text: error.response.data.message
                 })
             }
         }

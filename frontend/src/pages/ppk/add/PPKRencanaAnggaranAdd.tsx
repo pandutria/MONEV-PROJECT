@@ -127,10 +127,7 @@ export default function PPKRencanaAnggaranAdd() {
     const renderShowtender = () => {
       if (showTender && !selectedTender) {
         document.body.style.overflow = 'hidden';
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+        window.location.href = "#";
       } else {
         document.body.style.overflow = "auto"
         setShowTender(false)

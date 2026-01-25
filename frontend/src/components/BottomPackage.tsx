@@ -1,58 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useMemo, useState } from "react";
+import useRealisasiHooks from "../hooks/RealisasiHooks";
+import { FormatPackage } from "../ui/FormatPackage";
+import { ConvertToPercent } from "../utils/CovertToPercent";
 
 export default function BottomPackage() {
-    const tableData = [
-        {
-            satuanKerja: 'Divisi IT',
-            kodeTender: 'TND-2025-001',
-            namaPaket: 'Pengembangan Sistem Informasi',
-            tanggalMulai: '1 Jan 2025',
-            tanggalSelesai: '31 Mar 2025',
-            perencanaan: 65,
-            aktual: 45,
-            deviasi: -20
-        },
-        {
-            satuanKerja: 'Divisi Konstruksi',
-            kodeTender: 'TND-2025-002',
-            namaPaket: 'Pembangunan Gedung Kantor',
-            tanggalMulai: '15 Jan 2025',
-            tanggalSelesai: '15 Jun 2025',
-            perencanaan: 30,
-            aktual: 35,
-            deviasi: 5
-        },
-        {
-            satuanKerja: 'Divisi Pengadaan',
-            kodeTender: 'TND-2025-003',
-            namaPaket: 'Pengadaan Peralatan Kantor',
-            tanggalMulai: '1 Feb 2025',
-            tanggalSelesai: '28 Feb 2025',
-            perencanaan: 80,
-            aktual: 75,
-            deviasi: -5
-        },
-        {
-            satuanKerja: 'Divisi Marketing',
-            kodeTender: 'TND-2025-004',
-            namaPaket: 'Kampanye Digital Marketing',
-            tanggalMulai: '10 Jan 2025',
-            tanggalSelesai: '10 Apr 2025',
-            perencanaan: 50,
-            aktual: 55,
-            deviasi: 5
+    const { realisasiData } = useRealisasiHooks();
+    const tableData = useMemo(() => FormatPackage(realisasiData, "bottom"), [realisasiData]);
+    const [select, setSelect] = useState("");
+    const [tableDataFilter, setTableDataFilter] = useState<any>([]);
+    
+    useEffect(() => {
+        const fetchFilter = () => {
+            const filter = tableData.filter((item) => {
+                return item?.tahun_anggaran.includes(select);
+            });
+
+            setTableDataFilter(filter);
         }
-    ];
+
+        fetchFilter();
+    }, [tableData, select]);
 
     return (
-        <div className="w-full min-h-screen p-4 sm:p-6 lg:p-8 mt-8" data-aos="fade-up" data-aos-duration="1000">
+        <div className="w-full min-h-screen p-4  sm:p-6 lg:p-8 mt-8" data-aos="fade-up" data-aos-duration="1000">
             <div className="max-w-350 mx-auto">
                 <div className="mb-8">
                     <h1 className='font-poppins-bold text-2xl sm:text-4xl lg:text-3xl text-primary mb-2'>10 Paket Terbawah Realisasi Pekerjaan Konstruksi</h1>
                     <div className="flex flex-row gap-4 items-center">
                         <p className="font-poppins-medium text-[16px]">Tahun Anggaran: </p>
-                        <select className="border-2 border-gray-600 px-6 rounded-md font-poppins-regular text-[14px] py-2">
+                        <select value={select} onChange={(e) => setSelect(e.target.value)} className="border-2 border-gray-600 px-6 rounded-md font-poppins-regular text-[14px] py-2">
                             <option disabled selected>Pilih RAB</option>
-                            <option>2025</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
                         </select>
                     </div>
                 </div>
@@ -96,7 +76,7 @@ export default function BottomPackage() {
                                         </div>
                                         <div className="grid grid-cols-2 gap-3">
                                             <div className="bg-blue-600 text-white rounded-xl px-4 py-3 font-poppins-semibold text-xs shadow-md hover:bg-blue-500 transition-colors">
-                                                Perencanaan
+                                                Rencana
                                             </div>
                                             <div className="bg-green-600 text-white rounded-xl px-4 py-3 font-poppins-semibold text-xs shadow-md hover:bg-green-500 transition-colors">
                                                 Aktual
@@ -111,56 +91,56 @@ export default function BottomPackage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {tableData.map((item, index) => (
+                                {tableDataFilter.map((item: any, index: number) => (
                                     <tr key={index} className="hover:bg-linear-to-r hover:from-orange-50 hover:to-transparent transition-all duration-200 group">
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-2 h-12 bg-primary rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                                <span className="font-poppins-semibold text-sm text-gray-800">{item.satuanKerja}</span>
+                                                <span className="font-poppins-semibold text-sm text-gray-800">{item.satuan_kerja}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5">
                                             <span className="inline-block bg-gray-100 px-4 py-2 rounded-lg font-poppins-medium text-sm text-gray-700 group-hover:bg-orange-100 group-hover:text-primary transition-colors">
-                                                {item.kodeTender}
+                                                {item.kode_paket}
                                             </span>
                                         </td>
                                         <td className="px-6 py-5">
-                                            <span className="font-poppins-medium text-sm text-gray-800 line-clamp-2">{item.namaPaket}</span>
+                                            <span className="font-poppins-medium text-sm text-gray-800 line-clamp-2">{item.nama_paket}</span>
                                         </td>
                                         <td className="px-6 py-5 text-center">
                                             <div className="bg-blue-50 rounded-lg px-4 py-2 inline-block">
-                                                <span className="font-poppins-semibold text-sm text-blue-700">{item.tanggalMulai}</span>
+                                                <span className="font-poppins-semibold text-sm text-blue-700">{item.tanggal_mulai}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 text-center">
                                             <div className="bg-purple-50 rounded-lg px-4 py-2 inline-block">
-                                                <span className="font-poppins-semibold text-sm text-purple-700">{item.tanggalSelesai}</span>
+                                                <span className="font-poppins-semibold text-sm text-purple-700">{item.tanggal_akhir}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 text-center">
                                             <div className="flex flex-col items-center gap-2">
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5 max-w-25">
-                                                    <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style={{width: `${item.perencanaan}%`}}></div>
+                                                    <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style={{width: `${ConvertToPercent(item.perencanaan, item.perencanaan)}%`}}></div>
                                                 </div>
-                                                <span className="font-poppins-bold text-sm text-blue-700">{item.perencanaan}%</span>
+                                                <span className="font-poppins-bold text-sm text-blue-700">{ConvertToPercent(item.perencanaan, item.perencanaan)}%</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 text-center">
                                             <div className="flex flex-col items-center gap-2">
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5 max-w-25">
-                                                    <div className="bg-green-600 h-2.5 rounded-full transition-all duration-500" style={{width: `${item.aktual}%`}}></div>
+                                                    <div className="bg-green-600 h-2.5 rounded-full transition-all duration-500" style={{width: `${ConvertToPercent(item.aktual, item.perencanaan)}%`}}></div>
                                                 </div>
-                                                <span className="font-poppins-bold text-sm text-green-700">{item.aktual}%</span>
+                                                <span className="font-poppins-bold text-sm text-green-700">{ConvertToPercent(item.aktual, item.perencanaan)}%</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 text-center">
                                             <div className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-poppins-bold text-sm shadow-md ${
-                                                item.deviasi >= 0 
+                                                item.perencanaan < item.aktual
                                                     ? 'bg-linear-to-r from-green-500 to-green-600 text-white' 
                                                     : 'bg-linear-to-r from-red-500 to-red-600 text-white'
                                             }`}>
-                                                {item.deviasi > 0 ? '↑' : item.deviasi < 0 ? '↓' : '→'}
-                                                <span>{item.deviasi > 0 ? '+' : ''}{item.deviasi}%</span>
+                                                {item.perencanaan < item.aktual ? '↑' : item.perencanaan > item.aktual ? '↓' : '→'}
+                                                <span>{ConvertToPercent(item.perencanaan, item.perencanaan) - ConvertToPercent(item.aktual, item.perencanaan)}%</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -169,15 +149,25 @@ export default function BottomPackage() {
                         </table>
                     </div>
 
-                    {tableData.length === 0 && (
-                        <div className="py-24 text-center bg-linear-to-b from-gray-50 to-white">
-                            <div className="inline-block p-6 bg-gray-100 rounded-full mb-4">
-                                <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
+                    {tableDataFilter.length === 0 && (
+                        <div className="py-32 text-center">
+                            <div className="inline-block mb-8">
+                                <div className="relative">
+                                    <div className="absolute inset-0 bg-linear-to-r from-primary to-orange-600 rounded-full blur-2xl opacity-20"></div>
+                                    <div className="relative p-8 bg-linear-to-br from-gray-50 to-gray-100 rounded-full border-2 border-gray-200 shadow-lg">
+                                        <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                </div>
                             </div>
-                            <p className="font-poppins-semibold text-gray-500 text-xl">Tidak ada data</p>
-                            <p className="font-poppins-regular text-gray-400 text-sm mt-2">Data proyek akan muncul di sini</p>
+                            <h3 className="font-poppins-bold text-2xl text-gray-800 mb-2">Belum Ada Data</h3>
+                            <p className="font-poppins-regular text-gray-500 text-base mb-6 max-w-xs mx-auto">Silakan pilih tahun anggaran untuk menampilkan data realisasi pekerjaan konstruksi</p>
+                            <div className="flex justify-center gap-2">
+                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0s"}}></div>
+                                <div className="w-2 h-2 bg-orange-600 rounded-full animate-bounce" style={{animationDelay: "0.15s"}}></div>
+                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0.3s"}}></div>
+                            </div>
                         </div>
                     )}
                 </div>

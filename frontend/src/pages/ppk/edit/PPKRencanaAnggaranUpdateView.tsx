@@ -84,10 +84,7 @@ export default function PPKRencanaAnggaranUpdateView() {
 
       if (selectedRevision) {
         setSelectedId(selectedRevision);
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        })
+        window.location.href = "#";
       } else {
         setSelectedId(id);
       }

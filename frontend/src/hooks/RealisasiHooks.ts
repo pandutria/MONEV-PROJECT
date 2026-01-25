@@ -130,12 +130,12 @@ export default function useRealisasiHooks() {
             setTimeout(() => {
                 navigate("/ppk/realisasi-pekerjaan/");
             }, 2000);
-        } catch (error) {
+        } catch (error: any) {
             if (error) {
                 SwalMessage({
                     type: "error",
                     title: "Gagal!",
-                    text: "Terjadi Kesalahan!"
+                    text: error.response.data.message
                 })
             }
         }
@@ -170,12 +170,12 @@ export default function useRealisasiHooks() {
             setTimeout(() => {
                 window.location.reload();
             }, 2000);
-        } catch (error) {
+        } catch (error: any) {
             if (error) {
                 SwalMessage({
                     type: "error",
                     title: "Gagal!",
-                    text: "Terjadi Kesalahan!"
+                    text: error.response.data.message
                 })
             }
         }

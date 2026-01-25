@@ -98,27 +98,9 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
     ]
 
     useEffect(() => {
-        if (!metodePengadaan) return;
-
-        SwalMessage({
-            type: "warning",
-            title: "Peringatan!",
-            text: "Pilih kode tender / paket!"
-        })
-
-        setSelectedTender(null);
-        setPenyediaV5Param(null);
-        setPenyediaV6Param(null);
-        setShowTender(false);
-    }, [metodePengadaan,  setPenyediaV5Param, setPenyediaV6Param]);
-
-    useEffect(() => {
         const fetchTender = () => {
             if (showTender) {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+                window.location.href = "#";
                 document.body.style.overflow = 'hidden';
             } else {
                 document.body.style.overflow = 'auto';
