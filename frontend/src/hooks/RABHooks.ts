@@ -95,16 +95,23 @@ export default function useRABHooks() {
                 const responseRab = await API.get('/rab');
 
                 const data: RABProps[] = responseRab.data.data
-                const revisions = data?.filter(item => {
-                    const filter = item?.rab_group_id == 35;
-                    return filter;
-                })
+                const currentRab = data.find(item => item.id === Number(selectedId));
+                if (!currentRab) return;
+
+                const groupId = currentRab.rab_group_id ?? currentRab.id;
+
+                const revisions = data
+                    .filter(item =>
+                        item.id === groupId ||
+                        item.rab_group_id === groupId
+                    )
+                    .sort((a: any, b: any) => (a.revisi_ke ?? 0) - (b.revisi_ke ?? 0))
                     .map(item => ({
-                        rab_id: item?.id,
-                        rab_group_id: item?.rab_group_id,
-                        alasan_count: item?.alasan_count
-                    }))
-                    .sort((a, b) => a.rab_id - b.rab_id);
+                        rab_id: item.id,
+                        rab_group_id: item.rab_group_id,
+                        alasan_count: item.alasan_count,
+                    }));
+
 
                 setRabDataById(response.data.data);
                 setRevisionCount(revisions);
@@ -193,7 +200,7 @@ export default function useRABHooks() {
             SwalLoading();
             const responseRabHeader = await API.post("/rab/create", {
                 rab_group_id: groupRabHeader.rab_group_id,
-                data_entry_id: dataEntry.id,
+                data_entry_id: dataEntry,
                 program: program ? program.toString() : groupRabHeader?.program,
                 tanggal_mulai: startDate ? startDate?.toString() : groupRabHeader?.tanggal_mulai,
                 tanggal_akhir: endDate ? endDate?.toString() : groupRabHeader?.tanggal_akhir,

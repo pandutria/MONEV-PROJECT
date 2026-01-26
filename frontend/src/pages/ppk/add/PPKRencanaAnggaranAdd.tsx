@@ -17,6 +17,7 @@ import { Navigate } from 'react-router-dom';
 import TableHeader from '../../../ui/TableHeader';
 import useDataEntryHooks from '../../../hooks/DataEntryHooks';
 import RabDetailTable from '../../../ui/RabDetailTable';
+import { ParseNumber } from '../../../utils/ReplaceNumber';
 
 const parseRABExcel = (
   worksheet: XLSX.WorkSheet,
@@ -44,9 +45,9 @@ const parseRABExcel = (
     result.push({
       description: `${c} ${d} ${e}`.trim(),
       unit: String(getCell('F', row)),
-      volume: Number(getCell('G', row)) || 0,
-      unit_price: Number(getCell('H', row)) || 0,
-      total: Number(getCell('I', row)) || 0,
+      volume: ParseNumber(Number(getCell('G', row)) || 0),
+      unit_price: ParseNumber(Number(getCell('H', row)) || 0),
+      total: ParseNumber(Number(getCell('I', row)) || 0),
     } as any);
   }
 

@@ -36,7 +36,7 @@ export default function PPKRencanaAnggaranUpdateView() {
     setSelectedId
   } = useRABHooks();
   const { user, loading } = useAuth();
-  
+
   const { dataEntryPengadaan } = useDataEntryHooks();
   const { id } = useParams();
   const { reason } = location.state;
@@ -46,10 +46,6 @@ export default function PPKRencanaAnggaranUpdateView() {
     const renderShowtender = () => {
       if (showTender) {
         document.body.style.overflow = 'hidden';
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
       } else {
         document.body.style.overflow = "auto"
         setShowTender(false)
@@ -67,7 +63,7 @@ export default function PPKRencanaAnggaranUpdateView() {
         );
 
         return data && !isExisting && isGroup && isUser;
-      }); 
+      });
 
       setTenderDataFilter(filter);
     }
@@ -133,7 +129,7 @@ export default function PPKRencanaAnggaranUpdateView() {
       <Navbar />
 
       {showTender && (
-        <div className="absolute inset-0 h-screen flex justify-center items-center bg-black/20 z-20">
+        <div className="fixed inset-0 h-screen flex justify-center items-center bg-black/20 z-20">
           <div className="bg-white p-4 rounded-lg flex flex-col max-w-[90vw] max-h-[70vh] gap-4 relative">
             <div className="absolute top-4 right-4 cursor-pointer text-primary" onClick={() => setShowTender(false)}>
               <X />
@@ -167,7 +163,7 @@ export default function PPKRencanaAnggaranUpdateView() {
 
       <div className="pt-24 pb-12 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000">
         <div className="max-w-7xl mx-auto">
-          <BackButton />
+          <BackButton type='custom' link='/ppk/rencana-anggaran' />
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h1 className="font-poppins-bold text-2xl text-gray-800 mb-6">
               {isDisabled ? "Lihat" : "Ubah"} Rencana Anggaran Biaya
@@ -266,7 +262,7 @@ export default function PPKRencanaAnggaranUpdateView() {
             </div>
 
             {!isDisabled && (
-              <SubmitButton text='Perbarui RAB' onClick={() => handleRABPut(selectedTender ? selectedTender?.data_entry : rabDataByid?.data_entry, rabDataByid as any, reason)} />
+              <SubmitButton text='Perbarui RAB' onClick={() => handleRABPut(selectedTender ? selectedTender.id : rabDataByid?.data_entry, rabDataByid as any, reason)} />
             )}
           </div>
 

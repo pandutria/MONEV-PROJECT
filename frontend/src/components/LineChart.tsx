@@ -167,18 +167,18 @@ export default function LineChart({ selectedRealization }: LineChartProps) {
                                 <p className="font-poppins-medium text-sm text-gray-600 mb-1">Progres Aktual</p>
                                 <div className="flex items-center gap-3">
                                     <div className="flex-1 bg-gray-200 rounded-full h-3">
-                                        <div className="bg-green-500 h-3 rounded-full" style={{ width: `${actualProgress}%` }}></div>
+                                        <div className="bg-blue-500 h-3 rounded-full" style={{ width: `${actualProgress}%` }}></div>
                                     </div>
-                                    <span className="font-poppins-semibold text-lg text-green-600 min-w-11.25">{actualProgress}%</span>
+                                    <span className="font-poppins-semibold text-lg text-blue-600 min-w-11.25">{actualProgress}%</span>
                                 </div>
                             </div>
                             <div>
                                 <p className="font-poppins-medium text-sm text-gray-600 mb-1">Deviasi</p>
                                 <div className="flex items-center gap-3">
                                     <div className="flex-1 bg-gray-200 rounded-full h-3">
-                                        <div className="bg-red-500 h-3 rounded-full" style={{ width: `${scheduleProgress - actualProgress}%` }}></div>
+                                        <div className={`${scheduleProgress < actualProgress ? "bg-green-500" : "bg-red-500"} h-3 rounded-full`} style={{ width: `${scheduleProgress - actualProgress}%` }}></div>
                                     </div>
-                                    <span className="font-poppins-semibold text-lg text-red-600 min-w-11.25">{scheduleProgress < actualProgress ? "+" : "-"} {scheduleProgress - actualProgress}%</span>
+                                    <span className={`font-poppins-semibold text-lg ${scheduleProgress < actualProgress ? "text-blue-600" : "text-red-600"} min-w-11.25`}>{scheduleProgress < actualProgress ? "+" : "-"} {scheduleProgress - actualProgress}%</span>
                                 </div>
                             </div>
                         </div>

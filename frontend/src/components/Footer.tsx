@@ -50,7 +50,7 @@ export default function Footer() {
                             </div>
                             <div className="flex items-center gap-3">
                                 <Phone size={18} className="text-primary shrink-0" />
-                                <a href="tel:+6221123456" className="font-poppins-medium text-sm hover:text-primary transition-colors">+62 (21) 1234-5678</a>
+                                <a href="tel:+6221123456" className="font-poppins-medium text-sm hover:text-primary transition-colors">+62 456-1234-5678</a>
                             </div>
                             <div className="flex items-center gap-3">
                                 <Mail size={18} className="text-primary shrink-0" />
@@ -71,7 +71,7 @@ export default function Footer() {
                             </div>
                         </div>
                         <div className="md:text-right">
-                            <p className="font-poppins-medium text-sm text-gray-400">&copy; 2025 Monev Project. Semua hak dilindungi.</p>
+                            <p className="font-poppins-medium text-sm text-gray-400">&copy; 2026 Monev Project. Semua hak dilindungi.</p>
                         </div>
                     </div>
                 </div>

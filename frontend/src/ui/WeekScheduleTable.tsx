@@ -123,7 +123,7 @@ export default function WeekScheduleTable({ totalMinggu, dataFile, handleDeleteR
                                                 </span>
                                             </td>
                                             {showDelete ? (
-                                                item.schedule_weeks.map((val, i) => (
+                                                item.schedule_weeks?.map((val, i) => (
                                                     <td
                                                         key={i}
                                                         className="px-4 py-4 text-center border-l border-gray-200 bg-primary/2 hover:bg-primary/5 transition-all duration-200"
@@ -137,7 +137,7 @@ export default function WeekScheduleTable({ totalMinggu, dataFile, handleDeleteR
                                                     </td>
                                                 ))
                                             ) : (
-                                                item.schedule_weeks.map((val, i) => (
+                                                item.schedule_weeks?.map((val, i) => (
                                                     <td
                                                         key={i}
                                                         className="px-4 py-4 text-center border-l border-gray-200 bg-primary/2 hover:bg-primary/5 transition-all duration-200"

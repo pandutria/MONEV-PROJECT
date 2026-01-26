@@ -67,11 +67,11 @@ export default function useScheduleHooks() {
                         id: index + 2,
                         text: satker
                     }))
-                ];                
+                ];
 
                 setScheduleData(SortDescById(mappingData));
                 setTahunData(tahunOptions);
-                setSatkerData(satkerOptions);                
+                setSatkerData(satkerOptions);
             } catch (error) {
                 console.error(error);
             }
@@ -84,17 +84,27 @@ export default function useScheduleHooks() {
                 const response = await API.get(`/schedule/${selectedId}`);
                 const data: ScheduleProps[] = responseData.data.data;
 
-                const revisions = data?.filter(item => {
-                    const filter = item?.schedule_group_id == selectedId;
-                    return filter;
-                })
-                    .map(item => ({
-                        rab_id: item?.id,
-                        rab_group_id: item?.schedule_group_id,
-                        alasan_count: item?.alasan_count
-                    }))
-                    .sort((a, b) => a.rab_id - b.rab_id);
+                const currentSchedule = data.find(
+                    item => item.id === Number(selectedId)
+                );
+                if (!currentSchedule) return;
 
+                const groupId =
+                    currentSchedule.schedule_group_id ?? currentSchedule.id;
+
+                const revisions = data
+                    .filter(item =>
+                        item.id === groupId ||
+                        item.schedule_group_id === groupId
+                    )
+                    .sort((a: any, b: any) => (a?.revisi_ke ?? 0) - (b?.revisi_ke ?? 0))
+                    .map(item => ({
+                        schedule_id: item.id,
+                        schedule_group_id: item.schedule_group_id,
+                        alasan_count: item.alasan_count,
+                    }));
+
+                    console.log(revisions)
                 setRevisionCount(revisions)
                 setScheduleDataById(response.data.data);
             } catch (error) {
@@ -169,7 +179,7 @@ export default function useScheduleHooks() {
         }
     }
 
-    const handleSchedulePut = async (dataTenderByRab: RABProps, scheduleGroupId: number, dataItem: ScheduleItemProps[], reason: string) => {
+    const handleSchedulePut = async (dataTenderByRab: RABProps, scheduleGroupId: number, dataItem: ScheduleItemProps[], reason: string) => {      
         try {
             if (dataItem.length < 0) {
                 SwalMessage({
@@ -251,13 +261,13 @@ export default function useScheduleHooks() {
                 title: "Konfirmasi!",
                 text: `Apakah anda yakin ingin menghapus data Jadwal ini?`,
             });
-            
+
             if (result.isConfirmed) {
                 let response;
                 SwalLoading();
 
-                for (let index = 0; index < ids.length; index++) {    
-                    const id = ids[index];            
+                for (let index = 0; index < ids.length; index++) {
+                    const id = ids[index];
                     response = await API.delete(`/schedule/delete/${id}`);
                 }
 

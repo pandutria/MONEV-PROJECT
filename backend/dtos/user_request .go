@@ -1,8 +1,8 @@
 package dtos
 
 type LoginRequest struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Email    string `json:"email"`
+	Password string `json:"password" `
 }
 
 type CreateUserRequest struct {
@@ -29,4 +29,8 @@ type CreateUserRequest struct {
 
 	SatkerCode *uint64 `form:"satker_code"`
 	GpId       *uint64 `form:"gp_id"`
+}
+
+type UpdatePasswordRequest struct {
+	Password string `form:"password"`
 }

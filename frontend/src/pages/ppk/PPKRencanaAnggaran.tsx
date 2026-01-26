@@ -82,11 +82,7 @@ export default function PPKRencanaAnggaran() {
     useEffect(() => {
         const fetchEdit = () => {
             if (selectRevisi) {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                })
-
+                window.location.href = "#";
                 document.body.style.overflow = 'hidden';
                 setShowRevisi(true);
             } else {

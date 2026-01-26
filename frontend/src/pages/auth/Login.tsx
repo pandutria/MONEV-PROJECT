@@ -117,6 +117,12 @@ export default function Login() {
                 className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg transition-all duration-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
                 placeholder="Masukkan kode di atas"
                 maxLength={5}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault()
+                    handleLogin()
+                  }
+                }}
               />
             </div>
           </div>
@@ -125,6 +131,7 @@ export default function Login() {
               type="button"
               className="font-medium hover:underline"
               style={{ color: '#f60' }}
+              onClick={() => navigate("/lupa-kata-sandi")}
             >
               Lupa kata sandi?
             </button>

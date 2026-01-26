@@ -172,8 +172,17 @@ func DeleteRabHeader(c *gin.Context) {
 	var header models.RabHeader
 	config.DB.First(&header, id)
 
+	var schedule []models.ScheduleHeader
+	err := config.DB.Where("rab_id = ?", header.Id).Find(&schedule).Error
+	if len(schedule) > 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Sudah ada data yang terikat dengan data ini!",
+		})
+		return
+	}
+
 	var detail []models.RabDetail
-	err := config.DB.Where("rab_header_id = ?", id).Delete(&detail).Error
+	err = config.DB.Where("rab_header_id = ?", id).Delete(&detail).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Menghapus data gagal!",

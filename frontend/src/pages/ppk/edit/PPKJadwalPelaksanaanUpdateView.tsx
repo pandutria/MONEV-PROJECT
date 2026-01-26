@@ -38,12 +38,11 @@ export default function PPKJadwalPelaksanaanUpdateView() {
   const location = useLocation();
   const [isDisabled, setIsDisabled] = useState(false);
   const { id } = useParams();
-  const { reason } = location.state;
+  const reason = location.state?.reason;
 
   useEffect(() => {
     if (showTender && !selectedRab) {
       document.body.style.overflow = 'hidden';
-      window.location.href = "#";
     } else {
       document.body.style.overflow = "auto"
     }
@@ -120,7 +119,7 @@ export default function PPKJadwalPelaksanaanUpdateView() {
       <Navbar />
 
       {showTender && (
-        <div className="absolute inset-0 h-screen flex justify-center items-center bg-black/20 z-20">
+        <div className="fixed inset-0 h-screen flex justify-center items-center bg-black/20 z-20">
           <div className="bg-white p-4 rounded-lg flex flex-col max-w-[90vw] max-h-[70vh] gap-4 relative">
             <div className="absolute top-4 right-4 cursor-pointer text-primary" onClick={() => setShowTender(false)}>
               <X />
@@ -157,7 +156,7 @@ export default function PPKJadwalPelaksanaanUpdateView() {
 
       <div className="pt-24 pb-12 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000">
         <div className="max-w-7xl mx-auto">
-          <BackButton />
+          <BackButton type='custom' link='/ppk/jadwal-pelaksanaan' />
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h1 className="font-poppins-bold text-2xl text-gray-800 mb-6">
               {isDisabled ? "Lihat" : "Ubah"} Jadwal Pelaksanaan
@@ -245,7 +244,7 @@ export default function PPKJadwalPelaksanaanUpdateView() {
               {isDisabled && (
                 <FormSelect value={selectedRevision} onChange={(e) => setSelectedRevision(e.target.value)} title={`Revisi ke - ${revisionCount[revisionCount.length - 1]?.alasan_count}`}>
                   {revisionCount.map((item, index) => (
-                    <option key={index} value={item.rab_id}>{item?.alasan_count}</option>
+                    <option key={index} value={item.schedule_id}>{item?.alasan_count}</option>
                   ))}
                 </FormSelect>
               )}

@@ -67,10 +67,7 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
         });
 
         setSelectedRealization(realisasiBySearch);
-        window.scrollTo({
-            top: 1000,
-            behavior: "smooth"
-        })
+        window.location.href = "#";
     };
 
     const renderDropdown = (
@@ -103,7 +100,7 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
                     >
                         <span className={selectedOption ? 'text-gray-900' : 'text-gray-400'}>
                             {label == "Paket" ? (
-                                selectedOption ? selectedOption.text : realisasiData?.[realisasiData.length - 1]?.schedule?.rab?.data_entry?.kode_paket
+                                selectedOption ? selectedOption.text : realisasiData?.[realisasiData.length - 1]?.schedule?.rab?.data_entry?.kode_paket ?? "Tidak Ada"
                             ) : (
                                 `Pilih ${label}`
                             )}

@@ -125,7 +125,7 @@ export default function KepalaJadwalPelaksanaanView() {
 
               <FormSelect value={selectedRevision} onChange={(e) => setSelectedRevision(e.target.value)} title={`Revisi ke - ${revisionCount[revisionCount.length - 1]?.alasan_count}`}>
                 {revisionCount.map((item, index) => (
-                  <option key={index} value={item.rab_id}>{item?.alasan_count}</option>
+                  <option key={index} value={item.schedule_id}>{item?.alasan_count}</option>
                 ))}
               </FormSelect>
             </div>

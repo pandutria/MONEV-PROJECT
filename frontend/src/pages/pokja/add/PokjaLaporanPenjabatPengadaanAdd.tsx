@@ -46,6 +46,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
     const [search, setSearch] = useState("");
 
     const {
+        dataEntryPengadaan,
         selectedPPK,
         note,
         handleEntryPenjabatPengadaanPost,
@@ -120,6 +121,8 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         if (selectedTender?.jenis_pengadaan) {
             if (selectedTender?.jenis_pengadaan.toLowerCase() === ("Pekerjaan Konstruksi").toLowerCase()) {
                 setShowSelectedPPK(true);
+            } else {
+                setShowSelectedPPK(false)
             }
         }
 
@@ -131,7 +134,10 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         const filteringDataNonTender = () => {
             const filter = nonTenderData.filter((item: NonTenderDataProps) => {
                 const data = item?.kd_nontender?.toString().toLowerCase().includes(search.toLowerCase());
-                return data;
+                const isExisting = dataEntryPengadaan?.some(
+                    kode => String(kode?.kode_paket).trim() == String(item?.kd_nontender)
+                );
+                return data && !isExisting;
             });
 
             setNoTenderDataFilter(filter);
@@ -140,7 +146,10 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         const filteringDataKatalogV5 = () => {
             const filter = katalogv5Data.filter((item: KatalogV5DataProps) => {
                 const data = item?.kd_paket?.toString().toLowerCase().includes(search.toLowerCase());
-                return data;
+                const isExisting = dataEntryPengadaan?.some(
+                    kode => String(kode?.kode_paket).trim() == String(item?.kd_paket)
+                );
+                return data && !isExisting;
             });
 
             setKatalogV5DataFilter(filter)
@@ -149,7 +158,10 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         const filteringDataKatalogV6 = () => {
             const filter = katalogv6Data.filter((item: KatalogV6DataProps) => {
                 const data = item?.kd_paket?.toString().toLowerCase().includes(search.toLowerCase());
-                return data;
+                const isExisting = dataEntryPengadaan?.some(
+                    kode => String(kode?.kode_paket).trim() == String(item?.kd_paket)
+                );
+                return data && !isExisting;
             });
 
             setKatalogV6DataFilter(filter);
@@ -171,7 +183,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
         fetchPenyediaV5();
         fetchPenyediaV6();
-    }, [search, nonTenderData, katalogv5Data, katalogv6Data, setPenyediaV5Param, selectedTender, setPenyediaV6Param]);
+    }, [search, nonTenderData, katalogv5Data, katalogv6Data, setPenyediaV5Param, selectedTender, setPenyediaV6Param, dataEntryPengadaan]);
 
     const isEPurchasing = String(metodePengadaan) === 'E-Purchasing V5' || String(metodePengadaan) === 'E-Purchasing V6';
     const handleShowTender = () => {
@@ -187,7 +199,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
         }
     }
 
-    if (loading || noTenderDataFilter.length === 0 || katalogV5DataFilter.length === 0 || katalogV6DataFilter.length === 0) {
+    if (loading) {
         return <LoadingSpinner />
     }
 

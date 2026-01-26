@@ -17,6 +17,7 @@ import TableHeader from '../../../ui/TableHeader';
 import useScheduleHooks from '../../../hooks/ScheduleHooks';
 import WeekScheduleTable from '../../../ui/WeekScheduleTable';
 import useRABHooks from '../../../hooks/RABHooks';
+import { ParseNumber } from '../../../utils/ReplaceNumber';
 
 const WEEK_START_COL = 'P';
 
@@ -84,21 +85,23 @@ const parseRABExcel = (
       const col = formatLoopExcel(startColIndex + i);
       minggu.push(Number(getCell(col, row)) || 0);
     }
-
+    
     result.push({
       description: `${b} ${c} ${d} ${e} ${f} ${g}`.trim(),
-      total_price: getCell('M', row),
-      weight: Number(getCell('O', row)) || 0,
+      total_price: ParseNumber(getCell('M', row)),
+      weight: ParseNumber(Number(getCell('O', row)) || 0),
       schedule_weeks: minggu,
-      id: 0,
+      id: 0,  
       schedule_header_id: 0,
       created_at: '',
       updated_at: ''
     });
   }
-
+  
+  console.log(result)
   return result;
 };
+
 
 const getTotalMingguFromData = (data: ScheduleItemProps[]): number => {
   return data.length > 0 ? data[0].schedule_weeks.length : 0;

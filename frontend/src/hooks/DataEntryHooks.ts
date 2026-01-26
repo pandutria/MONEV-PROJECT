@@ -190,49 +190,49 @@ export default function useDataEntryHooks() {
                 formData.append("status_paket", data.status_paket);
                 formData.append("status_pengiriman", data.paket_status_str);                
 
-                if (dataPenyedia[0].nama_penyedia) {
-                    formData.append("pemenang", dataPenyedia[0].nama_penyedia);
-                }
-                if (dataPenyedia[0].no_telp_penyedia) {
-                    formData.append("nomor_telp", dataPenyedia[0].no_telp_penyedia);
-                }
-                if (dataPenyedia[0].email_penyedia) {
-                    formData.append("email", dataPenyedia[0].email_penyedia);
-                }
-                if (dataPenyedia[0].npwp_penyedia) {
-                    formData.append("npwp", dataPenyedia[0].npwp_penyedia);
-                }
+                // if (dataPenyedia[0].nama_penyedia) {
+                //     formData.append("pemenang", dataPenyedia[0].nama_penyedia);
+                // }
+                // if (dataPenyedia[0].no_telp_penyedia) {
+                //     formData.append("nomor_telp", dataPenyedia[0].no_telp_penyedia);
+                // }
+                // if (dataPenyedia[0].email_penyedia) {
+                //     formData.append("email", dataPenyedia[0].email_penyedia);
+                // }
+                // if (dataPenyedia[0].npwp_penyedia) {
+                //     formData.append("npwp", dataPenyedia[0].npwp_penyedia);
+                // }
 
-                if (dataPenyedia[0].alamat_penyedia) {
-                    formData.append("alamat_pemenang", dataPenyedia[0].alamat_penyedia);
-                }
+                // if (dataPenyedia[0].alamat_penyedia) {
+                //     formData.append("alamat_pemenang", dataPenyedia[0].alamat_penyedia);
+                // }
             }
 
-            if (type == "E-Purchasing V6") {
-                formData.append("tipe", "Penjabat");
-                formData.append("kode_paket", data.kd_paket);
-                formData.append("nama_paket", data.rup_nama_pkt);
-                formData.append("sumber_dana", data.sumber_dana);
-                formData.append("status_paket", data.status_pkt);
-                formData.append("status_pengiriman", data.status_pengiriman);
+            // if (type == "E-Purchasing V6") {
+            //     formData.append("tipe", "Penjabat");
+            //     formData.append("kode_paket", data.kd_paket);
+            //     formData.append("nama_paket", data.rup_nama_pkt);
+            //     formData.append("sumber_dana", data.sumber_dana);
+            //     formData.append("status_paket", data.status_pkt);
+            //     formData.append("status_pengiriman", data.status_pengiriman);
 
-                if (dataPenyedia[0].nama_penyedia) {
-                    formData.append("pemenang", dataPenyedia[0].nama_penyedia);
-                }
-                if (dataPenyedia[0].telepon) {
-                    formData.append("nomor_telp", dataPenyedia[0].telepon);
-                }
-                if (dataPenyedia[0].email) {
-                    formData.append("email", dataPenyedia[0].email);
-                }
-                if (dataPenyedia[0].npwp_penyedia) {
-                    formData.append("npwp", dataPenyedia[0].npwp_penyedia);
-                }
+            //     if (dataPenyedia[0].nama_penyedia) {
+            //         formData.append("pemenang", dataPenyedia[0].nama_penyedia);
+            //     }
+            //     if (dataPenyedia[0].telepon) {
+            //         formData.append("nomor_telp", dataPenyedia[0].telepon);
+            //     }
+            //     if (dataPenyedia[0].email) {
+            //         formData.append("email", dataPenyedia[0].email);
+            //     }
+            //     if (dataPenyedia[0].npwp_penyedia) {
+            //         formData.append("npwp", dataPenyedia[0].npwp_penyedia);
+            //     }
 
-                if (dataPenyedia[0].alamat_penyedia) {
-                    formData.append("alamat_pemenang", dataPenyedia[0].alamat_penyedia);
-                }
-            }
+            //     if (dataPenyedia[0].alamat_penyedia) {
+            //         formData.append("alamat_pemenang", dataPenyedia[0].alamat_penyedia);
+            //     }
+            // }
 
             if (!(type == "Pengadaan Langsung" || type == "E-Purchasing V5" || type == "E-Purchasing V6")) {
                 formData.append("tipe", "Kelompok");

@@ -171,6 +171,16 @@ func DeleteSchedule(c *gin.Context) {
 	var schedule models.ScheduleHeader
 	config.DB.First(&schedule, id)
 
+	var realisasi []models.RealisasiHeader
+	err := config.DB.Where("schedule_header_id = ?", schedule.Id).Find(&realisasi).Error
+
+	if len(realisasi) > 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Sudah ada data yang terikat dengan data ini!",
+		})
+		return
+	}
+
 	var items []models.ScheduleItem
 	config.DB.Where("schedule_header_id = ?", id).Find(&items)
 	var itemIDs []uint
@@ -199,7 +209,7 @@ func DeleteSchedule(c *gin.Context) {
 		return
 	}
 
-	err := config.DB.Delete(&schedule).Error
+	err = config.DB.Delete(&schedule).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Menghapus data gagal!",

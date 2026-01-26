@@ -27,10 +27,13 @@ import PPKRealisasiUpdateView from "../pages/ppk/edit/PPKRealisasiUpdateView"
 import ProjectKurvaS from "../pages/ppk/ProjectKurvaS"
 import KepalaRencanaAnggaranView from "../pages/kepala/laporan/show/KepalaRencanaAnggaranView"
 import KepalaJadwalPelaksanaan from "../pages/kepala/laporan/KepalaJadwalPelaksanaan"
-import KepalaJadwalPelaksanaanView from "../pages/kepala/laporan/show/kepalaJadwalPelaksanaanView"
 import KepalaRealisasi from "../pages/kepala/laporan/KepalaRealisasi"
 import KepalaRealisasiView from "../pages/kepala/laporan/show/KepalaRealisasiView"
 import KepalaProjectKurvaS from "../pages/kepala/laporan/KepalaProjectKurvaS"
+import KepalaJadwalPelaksanaanView from "../pages/kepala/laporan/show/KepalaJadwalPelaksanaanView"
+import NotFound from "../pages/NotFound"
+import ForgotPassword from "../pages/auth/ForgotPassword"
+import ResetPassword from "../pages/auth/ResetPassword"
 
 export default function Router() {
   return (
@@ -39,9 +42,12 @@ export default function Router() {
         {/* All User */}
         <Route path="/" element={<Dashboard />} />
         <Route path="/ubah-profile" element={<EditProfile/>}/>
+        <Route path="*" element={<NotFound/>}/>
 
         {/* Auth */}
         <Route path="/masuk" element={<Login/>} />
+        <Route path="/lupa-kata-sandi" element={<ForgotPassword/>} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* PPK */}
         <Route path="/ppk/rencana-anggaran" element={<PPKRencanaAnggaran/>}/>

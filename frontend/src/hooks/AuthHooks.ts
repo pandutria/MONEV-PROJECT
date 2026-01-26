@@ -88,6 +88,18 @@ export default function useAuthHooks() {
         if (name === "password") return setPassword(value);
     }
 
+    const handleChangePassword = async(email: string) => {
+        try {
+            
+        } catch (error: any) {
+            SwalMessage({
+                type: "error",
+                title: "Gagal!",
+                text: error.response.data.message
+            })
+        }
+    }
+
     return {
         email,
         password,

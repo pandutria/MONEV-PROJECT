@@ -230,8 +230,19 @@ func DeleteDataEntry(c *gin.Context) {
 	id := c.Param("id")
 
 	var data models.DataEntry
-	config.DB.First(&data, &id)
-	err := config.DB.Delete(&data).Error
+	config.DB.First(&data, id)
+
+	var rab []models.RabHeader
+	err := config.DB.Where("data_entry_id = ?", id).Find(&rab).Error
+	if len(rab) > 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Sudah ada data yang terikat dengan data ini!",
+		})
+		return
+	}
+
+
+	err = config.DB.Delete(&data).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Mengahapus dara gagal!",

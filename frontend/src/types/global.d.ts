@@ -325,7 +325,7 @@ declare global {
 
     number?: string;
     description: string;
-    total_price: number;
+    total_price: number | string;
     weight: number;
 
     created_at: string;
