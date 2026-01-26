@@ -91,7 +91,7 @@ func CreateRealisasi(c *gin.Context) {
 func CreateRealisasiDetail(c *gin.Context) {
 	var req dtos.CreateRealisasiDetailRequest
 
-	BuktiFile, _ := c.FormFile("bukti_file")
+	buktiFile, _ := c.FormFile("bukti_file")
 
 	uploadDir := "uploads/realisasi"
 	_ = os.MkdirAll(uploadDir, os.ModePerm)
@@ -110,25 +110,40 @@ func CreateRealisasiDetail(c *gin.Context) {
 		return &path
 	}
 
-	BuktiPath := saveUpload(BuktiFile)
-
-	err := c.ShouldBindWith(&req, binding.FormMultipart)
-	if err != nil {
-		c.JSON(http.StatusConflict, gin.H{
+	if err := c.ShouldBindWith(&req, binding.FormMultipart); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 
-	detail := models.RealisasiDetail{
-		RealisasiHeaderId: req.RealisasiHeaderId,
-		WeekNumber: req.WeekNumber,
-		Value: req.Value,
-		BuktiFile: BuktiPath,
+	var existing models.RealisasiDetail
+
+	result := config.DB.
+		Where(
+			"realisasi_header_id = ? AND week_number = ?",
+			req.RealisasiHeaderId,
+			req.WeekNumber,
+		).
+		First(&existing)
+
+	if result.RowsAffected > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Data realisasi untuk week ini sudah ada",
+		})
+		return
 	}
 
-	err = config.DB.Create(&detail).Error
-	if err != nil {
+	buktiPath := saveUpload(buktiFile)
+
+	detail := models.RealisasiDetail{
+		RealisasiHeaderId: req.RealisasiHeaderId,
+		WeekNumber:        req.WeekNumber,
+		Value:             req.Value,
+		BuktiFile:         buktiPath,
+	}
+
+	if err := config.DB.Create(&detail).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Membuat data gagal!",
 			"error":   err.Error(),
@@ -185,7 +200,6 @@ func UpdateRealisasiDetail(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Mengubah data gagal!",
-			"error":   err.Error(),
 		})
 		return
 	}

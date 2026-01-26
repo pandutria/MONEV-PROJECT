@@ -95,3 +95,31 @@ func Me(c *gin.Context) {
 		"data": user,
 	})
 }
+
+func UpdatePassword(c *gin.Context) {
+	var req dtos.LoginRequest
+
+	var user models.User
+	err := config.DB.Where("email = ?", req.Email).Find(&user).Error
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H {
+			"message": "Email tidak valid!",
+		})
+		return
+	}
+
+	user.Password = req.Password
+
+	err = config.DB.Save(&user).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Mengubah password gagal",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H {
+		"message": "Mengambil data berhasil",
+		"data": user,
+	})
+}
