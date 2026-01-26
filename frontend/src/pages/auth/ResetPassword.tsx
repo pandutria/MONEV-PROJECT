@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Lock, ArrowLeft, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import logo from "/image/logo/logo-monalisa.png";
 import background from "/image/auth/background.jpg";
+import useAuthHooks from '../../hooks/AuthHooks';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -15,36 +17,13 @@ export default function ResetPassword() {
   const token = searchParams.get('token');
   const email = searchParams.get('email');
 
+  const { handleChangePassword, handleChange, password } = useAuthHooks();
+
   useEffect(() => {
     if (!token || !email) {
       <Navigate to="/" replace/>
     }
   }, [token, email, navigate]);
-
-//   const handleResetPassword = async () => {
-
-
-//     setLoading(true);
-
-//     try {
-//       SwalMessage({
-//         type: "success",
-//         title: "Berhasil!",
-//         text: "Kata sandi berhasil diubah!"
-//       })
-//       setTimeout(() => {
-//         navigate('/masuk');
-//       }, 2000);
-//     } catch (error) {
-//       console.error('Error:', error);
-//       SwalMessage({
-//         type: "error",
-//         text: "Terjadi Kesahal"
-//       })
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
 
   return (
     <div
@@ -126,7 +105,7 @@ export default function ResetPassword() {
                 placeholder="Ulangi kata sandi baru"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    handleResetPassword();
+                    handleChangePassword(email as any)
                   }
                 }}
               />
@@ -153,12 +132,9 @@ export default function ResetPassword() {
 
           <button
             type="button"
-            onClick={handleResetPassword}
-            disabled={loading}
+            onClick={() => handleChangePassword(email)}
             className="w-full text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundColor: '#f60' }}
-            onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = '#ff7a1a')}
-            onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = '#f60')}
           >
           </button>
         </div>

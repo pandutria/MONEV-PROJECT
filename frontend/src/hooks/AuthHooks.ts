@@ -29,7 +29,7 @@ export default function useAuthHooks() {
         setCaptchaCode(generateCaptcha());
     }, []);
 
-    const handleLogin = async() => {
+    const handleLogin = async () => {
         if (captchaInput !== captchaCode) {
             SwalMessage({
                 title: "Gagal!",
@@ -88,9 +88,33 @@ export default function useAuthHooks() {
         if (name === "password") return setPassword(value);
     }
 
-    const handleChangePassword = async(email: string) => {
+    const handleChangePassword = async (email: string) => {
         try {
-            
+            if (!email) {
+                SwalMessage({
+                    type: "error",
+                    title: "Gagal!",
+                    text: "Tidak Valid!"
+                });
+
+                window.location.href = "/masuk";
+                return;
+            }
+
+            const response = await API.put('/auth/password/update', {
+                email,
+                password
+            });
+
+            SwalMessage({
+                type: "success",
+                title: "Berhasil!",
+                text: response.data.message
+            });
+
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 2000);
         } catch (error: any) {
             SwalMessage({
                 type: "error",
@@ -109,6 +133,7 @@ export default function useAuthHooks() {
         refreshCaptcha,
         captchaInput,
         setCaptchaInput,
-        handleLogout
+        handleLogout,
+        handleChangePassword
     }
 }

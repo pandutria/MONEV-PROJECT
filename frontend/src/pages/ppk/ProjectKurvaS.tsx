@@ -129,14 +129,14 @@ export default function ProjectKurvaS() {
       )}
 
       <div className="top-0 z-10 bg-white/95 border-primary/20-lg pt-24" data-aos="fade-up" data-aos-duration="1000">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-          <div className="flex items-center justify-between mb-8">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-6">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="font-poppins-bold text-4xl text-gray-900 mb-2">Project Kurva S</h1>
+              <h1 className="font-poppins-bold text-3xl text-gray-900 mb-2">Project Kurva S</h1>
               <p className="font-poppins-regular text-gray-500 text-sm">Monitor dan analisis progres proyek secara real-time</p>
             </div>
-            <div className="w-16 h-16 bg-linear-to-br from-primary to-primary/60 rounded-2xl flex items-center justify-center shadow-lg">
-              <TrendingUp className="w-8 h-8 text-white" />
+            <div className="w-14 h-14 bg-linear-to-br from-primary to-primary/60 rounded-2xl flex items-center justify-center shadow-lg">
+              <TrendingUp className="w-7 h-7 text-white" />
             </div>
           </div>
           <div className="w-full gap-6 font-poppins-regular">
@@ -148,65 +148,65 @@ export default function ProjectKurvaS() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12" data-aos="fade-up" data-aos-duration="1000">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8" data-aos="fade-up" data-aos-duration="1000">
         {selectedProject && (
-          <div className="space-y-8 animate-fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-linear-to-br from-white to-primary/5 rounded-2xl shadow-lg p-6 border-2 border-primary/30 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-2 h-8 bg-linear-to-b from-primary to-primary/60 rounded-full"></div>
+          <div className="space-y-6 animate-fade-in">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-linear-to-br from-white to-primary/5 rounded-xl shadow-md p-4 border border-primary/30 hover:shadow-lg hover:border-primary/50 transition-all duration-300">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1.5 h-6 bg-linear-to-b from-primary to-primary/60 rounded-full"></div>
                   <p className="font-poppins-medium text-gray-600 text-xs uppercase tracking-wider">Program Kegiatan</p>
                 </div>
-                <p className="font-poppins-bold text-gray-900 text-sm leading-relaxed">{selectedProject.schedule.rab?.program}</p>
+                <p className="font-poppins-semibold text-gray-900 text-sm leading-relaxed">{selectedProject.schedule.rab?.program}</p>
               </div>
 
-              <div className="bg-linear-to-br from-white to-blue-50 rounded-2xl shadow-lg p-6 border-2 border-blue-200/50 hover:shadow-2xl hover:border-blue-300 transition-all duration-300 transform hover:-translate-y-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-2 h-8 bg-linear-to-b from-blue-500 to-blue-400 rounded-full"></div>
+              <div className="bg-linear-to-br from-white to-blue-50 rounded-xl shadow-md p-4 border border-blue-200/50 hover:shadow-lg hover:border-blue-300 transition-all duration-300">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1.5 h-6 bg-linear-to-b from-blue-500 to-blue-400 rounded-full"></div>
                   <p className="font-poppins-medium text-gray-600 text-xs uppercase tracking-wider">Kegiatan</p>
                 </div>
-                <p className="font-poppins-bold text-gray-900 text-sm leading-relaxed">{selectedProject.schedule.rab?.data_entry.nama_paket}</p>
+                <p className="font-poppins-semibold text-gray-900 text-sm leading-relaxed">{selectedProject.schedule.rab?.data_entry.nama_paket}</p>
               </div>
 
-              <div className="bg-linear-to-br from-white to-yellow-50 rounded-2xl shadow-lg p-6 border-2 border-yellow-200/50 hover:shadow-2xl hover:border-yellow-300 transition-all duration-300 transform hover:-translate-y-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-2 h-8 bg-linear-to-b from-yellow-500 to-yellow-400 rounded-full"></div>
-                  <p className="font-poppins-medium text-gray-600 text-xs uppercase tracking-wider">Sisa Minggu</p>
-                </div>
-                <p className="font-poppins-bold text-gray-900 text-sm leading-relaxed">{RemainingWeeks(String(selectedProject?.schedule?.rab?.tanggal_mulai), String(selectedProject?.schedule?.rab?.tanggal_akhir))} Minggu</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-              <div className="bg-linear-to-br from-white to-cyan-50 rounded-2xl shadow-lg p-6 border-2 border-cyan-200/50 hover:shadow-2xl hover:border-cyan-300 transition-all duration-300 transform hover:-translate-y-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <Calendar className="w-5 h-5 text-cyan-600" />
+              <div className="bg-linear-to-br from-white to-cyan-50 rounded-xl shadow-md p-4 border border-cyan-200/50 hover:shadow-lg hover:border-cyan-300 transition-all duration-300">
+                <div className="flex items-center gap-2 mb-2">
+                  <Calendar className="w-4 h-4 text-cyan-600" />
                   <p className="font-poppins-medium text-gray-600 text-xs uppercase tracking-wider">Tanggal Mulai</p>
                 </div>
-                <p className="font-poppins-bold text-gray-900 text-sm">
+                <p className="font-poppins-semibold text-gray-900 text-sm">
                   {FormatDate(String(selectedProject.schedule.rab?.tanggal_mulai))}
                 </p>
               </div>
 
-              <div className="bg-linear-to-br from-white to-purple-50 rounded-2xl shadow-lg p-6 border-2 border-purple-200/50 hover:shadow-2xl hover:border-purple-300 transition-all duration-300 transform hover:-translate-y-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <Calendar className="w-5 h-5 text-purple-600" />
+              <div className="bg-linear-to-br from-white to-purple-50 rounded-xl shadow-md p-4 border border-purple-200/50 hover:shadow-lg hover:border-purple-300 transition-all duration-300">
+                <div className="flex items-center gap-2 mb-2">
+                  <Calendar className="w-4 h-4 text-purple-600" />
                   <p className="font-poppins-medium text-gray-600 text-xs uppercase tracking-wider">Tanggal Selesai</p>
                 </div>
-                <p className="font-poppins-bold text-gray-900 text-sm">
+                <p className="font-poppins-semibold text-gray-900 text-sm">
                   {FormatDate(String(selectedProject.schedule.rab?.tanggal_akhir))}
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="bg-linear-to-br from-white to-orange-50 rounded-2xl shadow-lg p-8 border-2 border-orange-200/50 hover:shadow-2xl transition-all duration-300">
-                <p className="font-poppins-bold text-gray-700 text-sm uppercase tracking-wider mb-6">Progress Perencanaan</p>
-                <div className="space-y-4">
-                  <div className="inline-flex items-center justify-center px-6 py-3 bg-linear-to-r from-orange-100 to-orange-50 text-orange-700 rounded-xl font-poppins-bold text-4xl border-2 border-orange-300/50">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+              <div className="bg-linear-to-br from-white to-yellow-50 rounded-xl shadow-md p-5 border border-yellow-200/50 hover:shadow-lg hover:border-yellow-300 transition-all duration-300">
+                <p className="font-poppins-bold text-gray-700 text-xs uppercase tracking-wider mb-4">Sisa Minggu</p>
+                <div className="space-y-3">
+                  <div className="inline-flex items-center justify-center px-4 py-2 bg-linear-to-r from-yellow-100 to-yellow-50 text-yellow-700 rounded-lg font-poppins-bold text-2xl border border-yellow-300/50">
+                    {RemainingWeeks(String(selectedProject?.schedule?.rab?.tanggal_mulai), String(selectedProject?.schedule?.rab?.tanggal_akhir))}
+                  </div>
+                  <p className="font-poppins-medium text-xs text-yellow-600">Minggu tersisa</p>
+                </div>
+              </div>
+
+              <div className="bg-linear-to-br from-white to-orange-50 rounded-xl shadow-md p-5 border border-orange-200/50 hover:shadow-lg transition-all duration-300">
+                <p className="font-poppins-bold text-gray-700 text-xs uppercase tracking-wider mb-4">Progress Perencanaan</p>
+                <div className="space-y-3">
+                  <div className="inline-flex items-center justify-center px-4 py-2 bg-linear-to-r from-orange-100 to-orange-50 text-orange-700 rounded-lg font-poppins-bold text-2xl border border-orange-300/50">
                     {scheduleProgress}%
                   </div>
-                  <div className="w-full bg-linear-to-r from-gray-200 to-gray-100 rounded-full h-3 overflow-hidden">
+                  <div className="w-full bg-linear-to-r from-gray-200 to-gray-100 rounded-full h-2.5 overflow-hidden">
                     <div
                       className="h-full bg-linear-to-r from-orange-500 to-orange-400 rounded-full transition-all duration-700 shadow-lg"
                       style={{ width: `${scheduleProgress}%` }}
@@ -215,13 +215,13 @@ export default function ProjectKurvaS() {
                 </div>
               </div>
 
-              <div className="bg-linear-to-br from-white to-blue-50 rounded-2xl shadow-lg p-8 border-2 border-blue-200/50 hover:shadow-2xl transition-all duration-300">
-                <p className="font-poppins-bold text-gray-700 text-sm uppercase tracking-wider mb-6">Progress Aktual</p>
-                <div className="space-y-4">
-                  <div className="inline-flex items-center justify-center px-6 py-3 bg-linear-to-r from-blue-100 to-blue-50 text-blue-700 rounded-xl font-poppins-bold text-4xl border-2 border-blue-300/50">
+              <div className="bg-linear-to-br from-white to-blue-50 rounded-xl shadow-md p-5 border border-blue-200/50 hover:shadow-lg transition-all duration-300">
+                <p className="font-poppins-bold text-gray-700 text-xs uppercase tracking-wider mb-4">Progress Aktual</p>
+                <div className="space-y-3">
+                  <div className="inline-flex items-center justify-center px-4 py-2 bg-linear-to-r from-blue-100 to-blue-50 text-blue-700 rounded-lg font-poppins-bold text-2xl border border-blue-300/50">
                     {actualProgress}%
                   </div>
-                  <div className="w-full bg-linear-to-r from-gray-200 to-gray-100 rounded-full h-3 overflow-hidden">
+                  <div className="w-full bg-linear-to-r from-gray-200 to-gray-100 rounded-full h-2.5 overflow-hidden">
                     <div
                       className="h-full bg-linear-to-r from-blue-500 to-blue-400 rounded-full transition-all duration-700 shadow-lg"
                       style={{ width: `${actualProgress}%` }}
@@ -230,22 +230,22 @@ export default function ProjectKurvaS() {
                 </div>
               </div>
 
-              <div className={`bg-linear-to-br from-white rounded-2xl shadow-lg p-8 border-2 transition-all duration-300 hover:shadow-2xl ${Number(actualProgress) - Number(scheduleProgress) > 0 ? 'to-emerald-50 border-emerald-200/50' : 'to-red-50 border-red-200/50'}`}>
-                <p className="font-poppins-bold text-gray-700 text-sm uppercase tracking-wider mb-6">Deviasi</p>
-                <div className="space-y-4">
-                  <div className={`inline-flex items-center justify-center px-6 py-3 rounded-xl font-poppins-bold text-4xl border-2 ${Number(actualProgress) - Number(scheduleProgress) > 0 ? 'bg-linear-to-r from-emerald-100 to-emerald-50 text-emerald-700 border-emerald-300/50' : 'bg-linear-to-r from-red-100 to-red-50 text-red-700 border-red-300/50'}`}>
+              <div className={`bg-linear-to-br from-white rounded-xl shadow-md p-5 border transition-all duration-300 hover:shadow-lg ${Number(actualProgress) - Number(scheduleProgress) > 0 ? 'to-emerald-50 border-emerald-200/50' : 'to-red-50 border-red-200/50'}`}>
+                <p className="font-poppins-bold text-gray-700 text-xs uppercase tracking-wider mb-4">Deviasi</p>
+                <div className="space-y-3">
+                  <div className={`inline-flex items-center justify-center px-4 py-2 rounded-lg font-poppins-bold text-2xl border ${Number(actualProgress) - Number(scheduleProgress) > 0 ? 'bg-linear-to-r from-emerald-100 to-emerald-50 text-emerald-700 border-emerald-300/50' : 'bg-linear-to-r from-red-100 to-red-50 text-red-700 border-red-300/50'}`}>
                     {Number(actualProgress) - Number(scheduleProgress)}%
                   </div>
-                  <p className={`font-poppins-medium text-sm ${Number(actualProgress) - Number(scheduleProgress) > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                  <p className={`font-poppins-medium text-xs ${Number(actualProgress) - Number(scheduleProgress) > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                     {Number(actualProgress) - Number(scheduleProgress) > 0 ? '✓ Lebih cepat dari rencana' : Number(actualProgress) - Number(scheduleProgress) < 0 ? '✗ Tertinggal dari rencana' : '= Sesuai rencana'}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-linear-to-br from-white to-primary/5 rounded-2xl shadow-xl p-8 border-2 border-primary/20 hover:shadow-2xl transition-all duration-300">
-              <h2 className="font-poppins-bold text-gray-900 text-xl mb-8 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-linear-to-b from-primary to-primary/60 rounded-full"></div>
+            <div className="bg-linear-to-br from-white to-primary/5 rounded-xl shadow-lg p-6 border border-primary/20 hover:shadow-xl transition-all duration-300">
+              <h2 className="font-poppins-bold text-gray-900 text-lg mb-6 flex items-center gap-2">
+                <div className="w-1 h-6 bg-linear-to-b from-primary to-primary/60 rounded-full"></div>
                 Kurva S - Perbandingan Rencana vs Aktual
               </h2>
               <Line
@@ -255,7 +255,7 @@ export default function ProjectKurvaS() {
                     {
                       label: 'Rencana',
                       data: kurvaData.map(d => d.rencana),
-                      borderColor: '#f60',                  
+                      borderColor: '#f60',
                       backgroundColor: 'rgba(255, 102, 0, 0.05)',
                       borderWidth: 3,
                       pointRadius: 5,
@@ -269,11 +269,11 @@ export default function ProjectKurvaS() {
                     {
                       label: 'Aktual',
                       data: kurvaData.map(d => d.aktual),
-                      borderColor: '#3b82f6',                        
+                      borderColor: '#3b82f6',
                       backgroundColor: 'rgba(59, 130, 246, 0.05)',
                       borderWidth: 3,
                       pointRadius: 5,
-                      pointBackgroundColor: '#3b82f6',                      
+                      pointBackgroundColor: '#3b82f6',
                       pointBorderColor: '#fff',
                       pointBorderWidth: 2,
                       pointHoverRadius: 7,
@@ -330,19 +330,19 @@ export default function ProjectKurvaS() {
                     }
                   }
                 }}
-                height={300}
+                height={100}
               />
             </div>
           </div>
         )}
 
         {!selectedProject && (
-          <div className="bg-linear-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-20 text-center border-2 border-dashed border-primary/20">
-            <div className="w-24 h-24 bg-linear-to-br from-primary/10 to-primary/5 rounded-2xl flex items-center justify-center mx-auto mb-8">
-              <Search className="w-12 h-12 text-primary" />
+          <div className="bg-linear-to-br from-white to-gray-50 rounded-xl shadow-xl p-16 text-center border-2 border-dashed border-primary/20">
+            <div className="w-20 h-20 bg-linear-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center mx-auto mb-6">
+              <Search className="w-10 h-10 text-primary" />
             </div>
-            <p className="font-poppins-bold text-gray-900 text-2xl mb-3">Silahkan Cari Project</p>
-            <p className="font-poppins-regular text-gray-500 text-lg">Masukkan Kode Tender untuk melihat detail analisis Kurva S</p>
+            <p className="font-poppins-bold text-gray-900 text-xl mb-2">Silahkan Cari Project</p>
+            <p className="font-poppins-regular text-gray-500 text-base">Masukkan Kode Tender untuk melihat detail analisis Kurva S</p>
           </div>
         )}
       </div>
