@@ -230,13 +230,13 @@ export default function ProjectKurvaS() {
                 </div>
               </div>
 
-              <div className={`bg-linear-to-br from-white rounded-xl shadow-md p-5 border transition-all duration-300 hover:shadow-lg ${Number(actualProgress) - Number(scheduleProgress) > 0 ? 'to-emerald-50 border-emerald-200/50' : 'to-red-50 border-red-200/50'}`}>
+              <div className={`bg-linear-to-br from-white rounded-xl shadow-md p-5 border transition-all duration-300 hover:shadow-lg ${Number(actualProgress) - Number(scheduleProgress) >= 0 ? 'to-emerald-50 border-emerald-200/50' : 'to-red-50 border-red-200/50'}`}>
                 <p className="font-poppins-bold text-gray-700 text-xs uppercase tracking-wider mb-4">Deviasi</p>
                 <div className="space-y-3">
-                  <div className={`inline-flex items-center justify-center px-4 py-2 rounded-lg font-poppins-bold text-2xl border ${Number(actualProgress) - Number(scheduleProgress) > 0 ? 'bg-linear-to-r from-emerald-100 to-emerald-50 text-emerald-700 border-emerald-300/50' : 'bg-linear-to-r from-red-100 to-red-50 text-red-700 border-red-300/50'}`}>
+                  <div className={`inline-flex items-center justify-center px-4 py-2 rounded-lg font-poppins-bold text-2xl border ${Number(actualProgress) - Number(scheduleProgress) >= 0 ? 'bg-linear-to-r from-emerald-100 to-emerald-50 text-emerald-700 border-emerald-300/50' : 'bg-linear-to-r from-red-100 to-red-50 text-red-700 border-red-300/50'}`}>
                     {Number(actualProgress) - Number(scheduleProgress)}%
                   </div>
-                  <p className={`font-poppins-medium text-xs ${Number(actualProgress) - Number(scheduleProgress) > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                  <p className={`font-poppins-medium text-xs ${Number(actualProgress) - Number(scheduleProgress) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                     {Number(actualProgress) - Number(scheduleProgress) > 0 ? '✓ Lebih cepat dari rencana' : Number(actualProgress) - Number(scheduleProgress) < 0 ? '✗ Tertinggal dari rencana' : '= Sesuai rencana'}
                   </p>
                 </div>
@@ -248,90 +248,94 @@ export default function ProjectKurvaS() {
                 <div className="w-1 h-6 bg-linear-to-b from-primary to-primary/60 rounded-full"></div>
                 Kurva S - Perbandingan Rencana vs Aktual
               </h2>
-              <Line
-                data={{
-                  labels: kurvaData.map(d => d.minggu),
-                  datasets: [
-                    {
-                      label: 'Rencana',
-                      data: kurvaData.map(d => d.rencana),
-                      borderColor: '#f60',
-                      backgroundColor: 'rgba(255, 102, 0, 0.05)',
-                      borderWidth: 3,
-                      pointRadius: 5,
-                      pointBackgroundColor: '#f60',
-                      pointBorderColor: '#fff',
-                      pointBorderWidth: 2,
-                      pointHoverRadius: 7,
-                      tension: 0.4,
-                      fill: false
-                    },
-                    {
-                      label: 'Aktual',
-                      data: kurvaData.map(d => d.aktual),
-                      borderColor: '#3b82f6',
-                      backgroundColor: 'rgba(59, 130, 246, 0.05)',
-                      borderWidth: 3,
-                      pointRadius: 5,
-                      pointBackgroundColor: '#3b82f6',
-                      pointBorderColor: '#fff',
-                      pointBorderWidth: 2,
-                      pointHoverRadius: 7,
-                      tension: 0.4,
-                      fill: false
-                    }
-                  ]
-                }}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: true,
-                  plugins: {
-                    legend: {
-                      display: true,
-                      labels: {
-                        font: { family: 'poppins-regular', size: 13 },
-                        padding: 20,
-                        usePointStyle: true,
-                        pointStyle: 'circle'
-                      }
-                    },
-                    tooltip: {
-                      backgroundColor: '#fff',
-                      borderColor: '#f60',
-                      borderWidth: 2,
-                      titleFont: { family: 'poppins-semibold', size: 13 },
-                      bodyFont: { family: 'poppins-regular', size: 12 },
-                      padding: 12,
-                      displayColors: true,
-                      cornerRadius: 10,
-                      titleColor: '#111827',
-                      bodyColor: '#111827'
-                    }
-                  },
-                  scales: {
-                    y: {
-                      beginAtZero: true,
-                      ticks: {
-                        font: { family: 'poppins-regular', size: 12 },
-                        color: '#9ca3af'
+              <div className="w-full overflow-x-auto">
+                <div className="min-w-150">
+                  <Line
+                    data={{
+                      labels: kurvaData.map(d => d.minggu),
+                      datasets: [
+                        {
+                          label: 'Rencana',
+                          data: kurvaData.map(d => d.rencana),
+                          borderColor: '#f60',
+                          backgroundColor: 'rgba(255, 102, 0, 0.05)',
+                          borderWidth: 3,
+                          pointRadius: 5,
+                          pointBackgroundColor: '#f60',
+                          pointBorderColor: '#fff',
+                          pointBorderWidth: 2,
+                          pointHoverRadius: 7,
+                          tension: 0.4,
+                          fill: false
+                        },
+                        {
+                          label: 'Aktual',
+                          data: kurvaData.map(d => d.aktual),
+                          borderColor: '#3b82f6',
+                          backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                          borderWidth: 3,
+                          pointRadius: 5,
+                          pointBackgroundColor: '#3b82f6',
+                          pointBorderColor: '#fff',
+                          pointBorderWidth: 2,
+                          pointHoverRadius: 7,
+                          tension: 0.4,
+                          fill: false
+                        }
+                      ]
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          display: true,
+                          labels: {
+                            font: { family: 'poppins-regular', size: 13 },
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                          }
+                        },
+                        tooltip: {
+                          backgroundColor: '#fff',
+                          borderColor: '#f60',
+                          borderWidth: 2,
+                          titleFont: { family: 'poppins-semibold', size: 13 },
+                          bodyFont: { family: 'poppins-regular', size: 12 },
+                          padding: 12,
+                          displayColors: true,
+                          cornerRadius: 10,
+                          titleColor: '#111827',
+                          bodyColor: '#111827'
+                        }
                       },
-                      grid: {
-                        color: '#e5e7eb'
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          ticks: {
+                            font: { family: 'poppins-regular', size: 12 },
+                            color: '#9ca3af'
+                          },
+                          grid: {
+                            color: '#e5e7eb'
+                          }
+                        },
+                        x: {
+                          ticks: {
+                            font: { family: 'poppins-regular', size: 12 },
+                            color: '#9ca3af'
+                          },
+                          grid: {
+                            display: false
+                          }
+                        }
                       }
-                    },
-                    x: {
-                      ticks: {
-                        font: { family: 'poppins-regular', size: 12 },
-                        color: '#9ca3af'
-                      },
-                      grid: {
-                        display: false
-                      }
-                    }
-                  }
-                }}
-                height={100}
-              />
+                    }}
+                    height={300}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         )}

@@ -104,7 +104,6 @@ export default function useScheduleHooks() {
                         alasan_count: item.alasan_count,
                     }));
 
-                    console.log(revisions)
                 setRevisionCount(revisions)
                 setScheduleDataById(response.data.data);
             } catch (error) {
@@ -238,7 +237,7 @@ export default function useScheduleHooks() {
                 SwalMessage({
                     type: "error",
                     title: "Gagal!",
-                    text: error.response.data.message
+                    text: error?.response?.data?.message
                 });
             }
         }

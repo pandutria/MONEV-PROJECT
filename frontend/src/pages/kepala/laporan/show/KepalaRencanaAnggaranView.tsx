@@ -32,7 +32,7 @@ export default function KepalaRencanaAnggaranView() {
     fetchIsPreview();
   }, [id, setSelectedId, selectedRevision]);
 
-  if (loading) {
+  if (loading || !rabDataByid) {
     return <LoadingSpinner />
   }
 

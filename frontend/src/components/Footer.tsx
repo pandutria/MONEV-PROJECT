@@ -79,11 +79,7 @@ export default function Footer() {
 
             <div className="bg-gray-950 border-t border-gray-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <p className="font-poppins-regular text-xs text-gray-500">v1.0.0</p>
-                        <p className="font-poppins-regular text-xs text-gray-500">Dikembangkan oleh <span className="text-primary"></span> Optimus Teknologi Pro</p>
-                        <p className="font-poppins-regular text-xs text-gray-500">Status: <span className="text-green-500">Online</span></p>
-                    </div>
+                    <p className="font-poppins-regular text-xs text-gray-500">Dikembangkan oleh <span className="text-primary"></span> Optimus Teknologi Pro</p>
                 </div>
             </div>
         </footer>

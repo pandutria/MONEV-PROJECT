@@ -35,7 +35,7 @@ export default function ForgotPassword() {
 
     try {
       const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      const resetLink = `${window.location.origin}/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
+      const resetLink = `${window.location.origin}/reset-kata-sandi?token=${resetToken}&email=${encodeURIComponent(email)}`;
 
       const templateParams = {
         recipient: email,

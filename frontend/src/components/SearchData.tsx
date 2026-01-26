@@ -30,6 +30,7 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
     const [isVisible, setIsVisible] = useState<boolean>(false);
 
     const sectionRef = useRef<HTMLDivElement>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
     const paketCode = realisasiData.map((item: any) => ({
         text: item?.kode_paket
     }))
@@ -55,6 +56,19 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
         };
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setOpenDropdown('');
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const filterOptions = (options: OptionProps[], searchTerm: string) => {
         return options.filter(option =>
             option?.text?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -67,7 +81,10 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
         });
 
         setSelectedRealization(realisasiBySearch);
-        window.location.href = "#";
+        window.scrollTo({
+            top: 1000,
+            behavior: "smooth"
+        })
     };
 
     const renderDropdown = (
@@ -175,6 +192,7 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
                 </div>
 
                 <div
+                    ref={dropdownRef}
                     className={`bg-white rounded-2xl shadow-2xl p-6 md:p-8 lg:p-10 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                         }`}
                 >

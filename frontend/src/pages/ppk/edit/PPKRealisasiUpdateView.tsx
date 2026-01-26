@@ -44,7 +44,7 @@ export default function PPKRealisasiUpdateView() {
         }
     }, [showRealisasiModal]);
 
-    if (loading) {
+    if (loading || !realisasiDataById) {
         return <LoadingSpinner />
     }
 
@@ -141,7 +141,7 @@ export default function PPKRealisasiUpdateView() {
                         
                         {!isDisabled && (
                             <SubmitButton
-                                text='Tambahkan Realisasi'
+                                text='Tambah / Ubah Realisasi'
                                 onClick={() => {
                                     if (realisasiDataById?.schedule) {
                                         setShowRealisasiModal(true)

@@ -74,10 +74,6 @@ export default function PPKRencanaAnggaranAdd() {
   } = useRABHooks();
   const { user, loading } = useAuth();
 
-  const handleDeleteRow = (index: number) => {
-    setDataFile(prev => prev.filter((_, i) => i !== index));
-  };
-
   const handleDownloadTemplate = () => {
     const link = document.createElement('a');
     link.href = '../../../../public/download/template-rab.xlsx';
@@ -320,7 +316,8 @@ export default function PPKRencanaAnggaranAdd() {
 
           <RabDetailTable
             dataFile={dataFile}
-            handleDeleteRow={handleDeleteRow}
+            handleDeleteRow={null as any}
+            showDelete={false}
           />
         </div>
       </div>

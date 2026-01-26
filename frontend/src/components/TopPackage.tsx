@@ -135,11 +135,11 @@ export default function TopPackage() {
                                         </td>
                                         <td className="px-6 py-5 text-center">
                                             <div className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-poppins-bold text-sm shadow-md ${
-                                                item.perencanaan < item.aktual
+                                                item.perencanaan <= item.aktual
                                                     ? 'bg-linear-to-r from-green-500 to-green-600 text-white' 
                                                     : 'bg-linear-to-r from-red-500 to-red-600 text-white'
                                             }`}>
-                                                {item.perencanaan < item.aktual ? '↑' : item.perencanaan > item.aktual ? '↓' : '→'}
+                                                {item.perencanaan <= item.aktual ? '↑' : item.perencanaan >= item.aktual ? '↓' : '→'}
                                                 <span>{ConvertToPercent(item.perencanaan, item.perencanaan) - ConvertToPercent(item.aktual, item.perencanaan)}%</span>
                                             </div>
                                         </td>

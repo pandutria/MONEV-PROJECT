@@ -116,7 +116,7 @@ export default function PPKRencanaAnggaranUpdateView() {
     },
   ];
 
-  if (loading || dataEntryPengadaan.length === 0) {
+  if (loading || !rabDataByid) {
     return <LoadingSpinner />
   }
 
@@ -262,7 +262,7 @@ export default function PPKRencanaAnggaranUpdateView() {
             </div>
 
             {!isDisabled && (
-              <SubmitButton text='Perbarui RAB' onClick={() => handleRABPut(selectedTender ? selectedTender.id : rabDataByid?.data_entry, rabDataByid as any, reason)} />
+              <SubmitButton text='Perbarui RAB' onClick={() => handleRABPut(selectedTender ? selectedTender.id : rabDataByid?.data_entry.id, rabDataByid as any, reason)} />
             )}
           </div>
 

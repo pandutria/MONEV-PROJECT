@@ -121,6 +121,7 @@ export default function useAuthHooks() {
                 title: "Gagal!",
                 text: error.response.data.message
             })
+            console.error(error)
         }
     }
 

@@ -56,7 +56,7 @@ export default function Navbar() {
 
   return (
     <nav className={`w-full px-4 md:px-8 shadow-lg fixed top-0 left-0 right-0 z-50 bg-white ${type == 'guest' ? 'py-3 md:py-6' : 'py-2 md:py-2'}`}>
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <div className="max-w-8xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-8">
           <img src={logo} className="w-auto h-6" />
 

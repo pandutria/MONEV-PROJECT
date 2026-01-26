@@ -95,22 +95,22 @@ export default function AdminTambahUserModal({ isOpen, onClose }: TambahUserModa
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormSelect title="Role" name="roleId" value={roleId} onChange={handleChangeUser}>
+              <FormSelect title="Role (Wajib Diisi)" name="roleId" value={roleId} onChange={handleChangeUser}>
                 {role.map((item, index) => (
                   <option key={index} value={item.id}>{item.name}</option>
                 ))}
               </FormSelect>
 
               {showGroupPokja && (
-                <FormSelect title="Kelompok Pokja" name="pokjaGroupId" value={pokjaGroupId} onChange={handleChangeUser}>
+                <FormSelect title="Kelompok Pokja (Wajib Diisi)" name="pokjaGroupId" value={pokjaGroupId} onChange={handleChangeUser}>
                   {pokjaGroup.map((item, index) => (
                     <option key={index} value={item.id}>{item.name}</option>
                   ))}
                 </FormSelect>
               )}
 
-              <FormInput type='email' title="Email" name="email" value={email} onChange={handleChangeUser} placeholder="Masukkan email" />
-              <FormInput type='password' title="Kata Sandi" name="password" value={password} onChange={handleChangeUser} placeholder="Masukkan kata sandi" />
+              <FormInput type='email' title="Email (Wajib Diisi)" name="email" value={email} onChange={handleChangeUser} placeholder="Masukkan email" />
+              <FormInput type='password' title="Kata Sandi (Wajib Diisi)" name="password" value={password} onChange={handleChangeUser} placeholder="Masukkan kata sandi" />
             </div>
           </div>
 
@@ -120,7 +120,7 @@ export default function AdminTambahUserModal({ isOpen, onClose }: TambahUserModa
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormInput title="Nama lengkap" name="fullname" value={fullname} onChange={handleChangeUser} placeholder="Masukkan nama lengkap" />
+              <FormInput title="Nama lengkap (Wajib Diisi)" name="fullname" value={fullname} onChange={handleChangeUser} placeholder="Masukkan nama lengkap" />
               <FormInput title="Alamat" name="address" value={address} onChange={handleChangeUser} placeholder="Masukkan alamat" />
               <FormInput type='number' title="Telepon/HP" name="phoneNumber" value={phoneNumber} onChange={handleChangeUser} placeholder="Masukkan telepon" />
 

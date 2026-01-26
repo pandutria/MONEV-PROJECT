@@ -65,7 +65,7 @@ export default function PokjaLaporanKelompokUpdateView() {
         fetchShowPPK();
     }, [listUser, id, setSelectedId, location, dataEntryPengadaanById]);
 
-    if (loading) {
+    if (loading || !dataEntryPengadaanById) {
         return <LoadingSpinner />
     }
 

@@ -8,7 +8,6 @@ import useAuthHooks from '../../hooks/AuthHooks';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
-  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -69,10 +68,11 @@ export default function ResetPassword() {
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="newPassword"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
+                value={password}
+                onChange={handleChange}
+                name='password'
                 className="w-full pl-10 pr-12 py-3 border-2 border-gray-300 rounded-lg transition-all duration-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
-                placeholder="Minimal 8 karakter"
+                placeholder="Kata Sandi Baru"
               />
               <button
                 type="button"
@@ -123,7 +123,7 @@ export default function ResetPassword() {
             </div>
           </div>
 
-          {newPassword && confirmPassword && newPassword === confirmPassword && (
+          {password && confirmPassword && password === confirmPassword && (
             <div className="flex items-center gap-2 text-green-600 text-sm">
               <CheckCircle className="h-4 w-4" />
               <span>Password cocok</span>
@@ -132,10 +132,11 @@ export default function ResetPassword() {
 
           <button
             type="button"
-            onClick={() => handleChangePassword(email)}
+            onClick={() => handleChangePassword(email as any)}
             className="w-full text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundColor: '#f60' }}
           >
+            Reset Kata Sandi
           </button>
         </div>
       </div>

@@ -206,6 +206,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
     if (!user || user.role.name != "pokja") {
         return <Navigate to="/" replace />
     }
+    
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />

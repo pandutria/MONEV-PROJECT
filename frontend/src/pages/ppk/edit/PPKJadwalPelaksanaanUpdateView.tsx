@@ -250,7 +250,7 @@ export default function PPKJadwalPelaksanaanUpdateView() {
               )}
             </div>
             {!isDisabled && (
-              <SubmitButton text='Ubah Jadwal' onClick={() => handleSchedulePut(selectedRab as any, scheduleDataById.schedule_group_id, scheduleDataById.items as any, reason)} />
+              <SubmitButton text='Ubah Jadwal' onClick={() => handleSchedulePut(selectedRab ? selectedRab : scheduleDataById.rab as any, scheduleDataById.schedule_group_id, scheduleDataById.items as any, reason)} />
             )}
           </div>
 

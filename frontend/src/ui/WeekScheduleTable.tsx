@@ -122,7 +122,7 @@ export default function WeekScheduleTable({ totalMinggu, dataFile, handleDeleteR
                                                     {item.weight}%
                                                 </span>
                                             </td>
-                                            {showDelete ? (
+                                            {!isRealization ? (
                                                 item.schedule_weeks?.map((val, i) => (
                                                     <td
                                                         key={i}

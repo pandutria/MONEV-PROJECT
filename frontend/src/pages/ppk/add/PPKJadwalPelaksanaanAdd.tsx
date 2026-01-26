@@ -20,7 +20,6 @@ import useRABHooks from '../../../hooks/RABHooks';
 import { ParseNumber } from '../../../utils/ReplaceNumber';
 
 const WEEK_START_COL = 'P';
-
 const formatLoopExcel = (index: number): string => {
   let col = '';
   while (index >= 0) {
@@ -98,10 +97,8 @@ const parseRABExcel = (
     });
   }
   
-  console.log(result)
   return result;
 };
-
 
 const getTotalMingguFromData = (data: ScheduleItemProps[]): number => {
   return data.length > 0 ? data[0].schedule_weeks.length : 0;
@@ -121,10 +118,6 @@ export default function PPKJadwalPelaksanaanAdd() {
   const { user, loading } = useAuth();
 
   const totalMinggu = getTotalMingguFromData(dataFile);
-
-  const handleDeleteRow = (index: number) => {
-    setDataFile(prev => prev.filter((_, i) => i !== index));
-  };
 
   const handleDownloadTemplate = () => {
     const link = document.createElement('a');
@@ -199,6 +192,7 @@ export default function PPKJadwalPelaksanaanAdd() {
 
     filteringDataTender();
   }, [search, rabData, scheduleData]);
+  console.log(dataFile)
 
   const columns = [
     {
@@ -360,7 +354,9 @@ export default function PPKJadwalPelaksanaanAdd() {
           <WeekScheduleTable
             totalMinggu={totalMinggu}
             dataFile={dataFile}
-            handleDeleteRow={handleDeleteRow}
+            
+            handleDeleteRow={null as any}
+            showDelete={false}
           />
         </div>
       </div>

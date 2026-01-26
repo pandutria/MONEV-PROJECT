@@ -18,6 +18,7 @@ export default function PokjaHasilKelompokKerja() {
     const { dataEntryPengadaan, tahunOptions, metodePengadaanOptions, sumberDanaOptions } = useDataEntryHooks();
     const [dataEntryFilter, setDataEntryFilter] = useState<DataEntryProps[]>([]);
     const { user, loading } = useAuth();
+    const [metodeOptionsFilter, setMetodeOptionsFilter] = useState<any>([]);
 
     const columns = [
         {
@@ -121,11 +122,16 @@ export default function PokjaHasilKelompokKerja() {
                 return filterType && tahunFilter && metodeFilter && sumberDanaFilter;;
             });
 
+            const metodeFilter = metodePengadaanOptions?.filter((item) => {
+                return item?.text == "Tender" || item?.text == "Seleksi"
+            });
+
+            setMetodeOptionsFilter(metodeFilter);
             setDataEntryFilter(dataFilter);
         }
 
         filteringDataEntry();
-    }, [dataEntryPengadaan, tahun, metodePengadaan, sumberDana]);
+    }, [dataEntryPengadaan, tahun, metodePengadaan, sumberDana, metodePengadaanOptions]);
 
     const generateTableHTML = () => {
         const thead = `
@@ -282,7 +288,7 @@ export default function PokjaHasilKelompokKerja() {
                 <TableHeaderReport
                     title="DAFTAR PAKET PROSES PEMILIHAN PENYEDIA BARANG/JASA KELOMPOK KERJA"
                     tahunOptions={tahunOptions}
-                    metodePengadaanOptions={metodePengadaanOptions}
+                    metodePengadaanOptions={metodeOptionsFilter}
                     sumberDanaOptions={sumberDanaOptions}
                     selectedTahun={tahun}
                     selectedMetodePengadaan={metodePengadaan}
@@ -290,7 +296,6 @@ export default function PokjaHasilKelompokKerja() {
                     onTahunChange={setTahun}
                     onMetodePengadaanChange={setMetodePengadaan}
                     onSumberDanaChange={setSumberDana}
-                    onBuatReport={() => console.log('Buat Report')}
                     onPrint={() => handlePrint()}
                     onSavePDF={() => handleSavePDF()}
                     onSaveExcel={() => handleSaveExcel()}

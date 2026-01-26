@@ -55,7 +55,7 @@ export default function PokjaLaporanPenjabatPengadaanUpdateView() {
     }, [listUser, id, setSelectedId, location]);
 
     const isEPurchasing = String(dataEntryPengadaanById?.metode_pengadaan?.toString()) === 'E-Purchasing V6';
-    if (loading) {
+    if (loading || !dataEntryPengadaanById) {
         return <LoadingSpinner />
     }
 

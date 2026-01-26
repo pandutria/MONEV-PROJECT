@@ -47,7 +47,7 @@ export default function Router() {
         {/* Auth */}
         <Route path="/masuk" element={<Login/>} />
         <Route path="/lupa-kata-sandi" element={<ForgotPassword/>} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/reset-kata-sandi" element={<ResetPassword />} />
 
         {/* PPK */}
         <Route path="/ppk/rencana-anggaran" element={<PPKRencanaAnggaran/>}/>

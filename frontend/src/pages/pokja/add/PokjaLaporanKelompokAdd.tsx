@@ -89,19 +89,6 @@ export default function PokjaLaporanKelompokAdd() {
             }
         }
 
-        const filteringDataTender = () => {
-            const filter = tenderData?.filter((item: TenderDataProps) => {
-                const data = item?.kd_paket?.toString().toLowerCase().includes(search.toLowerCase());
-                const isExisting = dataEntryPengadaan?.some(
-                    kode => String(kode?.kode_paket).trim() == String(item?.kd_paket)
-                );
-                const metode = item.mtd_pemilihan?.toString().toLowerCase().includes(metodePengadaan?.toLowerCase());
-                return data && metode && !isExisting;
-            });
-
-            setTenderDataFilter(filter);
-        }
-
         const filteringUserPPK = () => {
             const filteringData = listUser?.filter((item: UserProps) => {
                 const filter = item.role_id === 2;
@@ -119,8 +106,22 @@ export default function PokjaLaporanKelompokAdd() {
             }
         }
 
-        fetchTender();
+        const filteringDataTender = () => {
+            const filter = tenderData.filter((item: TenderDataProps) => {
+                const data = item?.kd_tender?.toString().toLowerCase().includes(search.toLowerCase());
+                const isExisting = dataEntryPengadaan?.some(
+                    kode => String(kode?.kode_paket).trim() == String(item?.kd_tender)
+                );
+
+                const metodeFilter = item.mtd_pemilihan?.includes(metodePengadaan);
+                return metodeFilter && data && !isExisting;
+            });
+
+            setTenderDataFilter(filter)
+        }
+
         filteringDataTender();
+        fetchTender();
         filteringUserPPK();
     }, [selectedTender, showTender, listUser, search, tenderData, metodePengadaan, dataEntryPengadaan]);
 

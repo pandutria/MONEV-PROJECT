@@ -17,6 +17,7 @@ export default function PokjaHasilPenjabatPengadaan() {
     const tableRef = useRef<HTMLDivElement>(null);
     const { dataEntryPengadaan, sumberDanaOptions, metodePengadaanOptions, tahunOptions } = useDataEntryHooks();
     const [dataEntryFilter, setDataEntryFilter] = useState<DataEntryProps[]>([]);
+    const [metodeOptionsFilter, setMetodeOptionsFilter] = useState<any>([]);
     const { user, loading } = useAuth();
 
     const columns = [
@@ -89,11 +90,17 @@ export default function PokjaHasilPenjabatPengadaan() {
                 return filterType && tahunFilter && metodeFilter && sumberDanaFilter;;
             });
 
+            const metodeFilter = metodePengadaanOptions?.filter((item) => {
+                return item?.text != "Tender" && item?.text != "Seleksi"
+            });
+
+            setMetodeOptionsFilter(metodeFilter);
             setDataEntryFilter(dataFilter);
         }
 
+
         filteringDataEntry();
-    }, [dataEntryPengadaan, tahun, metodePengadaan, sumberDana]);
+    }, [dataEntryPengadaan, tahun, metodePengadaan, sumberDana, metodePengadaanOptions]);
 
     const generateTableHTML = () => {
         const thead = `
@@ -250,7 +257,7 @@ export default function PokjaHasilPenjabatPengadaan() {
                 <TableHeaderReport
                     title="DAFTAR PAKET PROSES PEMILIHAN PENYEDIA BARANG/JASA PENJABAT PENGADAAN"
                     tahunOptions={tahunOptions}
-                    metodePengadaanOptions={metodePengadaanOptions}
+                    metodePengadaanOptions={metodeOptionsFilter}
                     sumberDanaOptions={sumberDanaOptions}
                     selectedTahun={tahun}
                     selectedMetodePengadaan={metodePengadaan}

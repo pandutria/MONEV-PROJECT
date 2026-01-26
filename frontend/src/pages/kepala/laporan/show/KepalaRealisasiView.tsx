@@ -21,7 +21,7 @@ export default function KepalaRealisasiView() {
         }
     }, [setSelectedId, id]);
 
-    if (loading) {
+    if (loading || !realisasiDataById) {
         return <LoadingSpinner />
     }
 
