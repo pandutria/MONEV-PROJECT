@@ -119,7 +119,7 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
                             {label == "Paket" ? (
                                 selectedOption ? selectedOption.text : realisasiData?.[realisasiData.length - 1]?.schedule?.rab?.data_entry?.kode_paket ?? "Tidak Ada"
                             ) : (
-                                `Pilih ${label}`
+                                selectedOption ? selectedOption.text : `Pilih ${label}`
                             )}
                         </span>
                     </button>

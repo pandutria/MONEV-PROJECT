@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Lock, ArrowLeft, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import logo from "/image/logo/logo-monalisa.png";
 import background from "/image/auth/background.jpg";
 import useAuthHooks from '../../hooks/AuthHooks';
@@ -19,9 +19,15 @@ export default function ResetPassword() {
   const { handleChangePassword, handleChange, password } = useAuthHooks();
 
   useEffect(() => {
-    if (!token || !email) {
-      <Navigate to="/" replace/>
+    const checkToken = () => {
+      if (!token || !email) {
+        return navigate("/", {
+          replace: true
+        })
+      }
     }
+
+    checkToken()
   }, [token, email, navigate]);
 
   return (
@@ -46,11 +52,11 @@ export default function ResetPassword() {
       >
         <div className="text-center mb-8">
           <div className="flex justify-center items-center gap-4 mb-4">
-            <ArrowLeft 
-              className="w-6 h-6 cursor-pointer hover:scale-90 transition-all text-gray-700" 
+            <ArrowLeft
+              className="w-6 h-6 cursor-pointer hover:scale-90 transition-all text-gray-700"
               onClick={() => navigate("/login")}
             />
-            <img src={logo} className='w-auto h-4 mx-auto'/>
+            <img src={logo} className='w-auto h-4 mx-auto' />
           </div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Reset Kata Sandi</h1>
           <p className="text-gray-600">Masukkan kata sandi baru Anda</p>

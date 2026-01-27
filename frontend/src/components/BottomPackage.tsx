@@ -14,7 +14,7 @@ export default function BottomPackage() {
             )
             : [];
 
-        return FormatPackage(filtered).slice(0, 10);
+        return FormatPackage(filtered, 'bottom').slice(0, 10);
     }, [realisasiData, select]);
 
     return (
