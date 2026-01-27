@@ -119,7 +119,7 @@ export default function KepalaRealisasiView() {
                         }
                         dataFile={realisasiDataById?.schedule?.items as any}
                         handleDeleteRow={null as any}
-                        showDelete={false}
+                        isEdit={true}
                         isRealization={true}
                         realizationData={realisasiDataById?.detail}
                     />

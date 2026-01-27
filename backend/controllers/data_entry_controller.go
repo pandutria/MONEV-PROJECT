@@ -236,7 +236,7 @@ func DeleteDataEntry(c *gin.Context) {
 	err := config.DB.Where("data_entry_id = ?", id).Find(&rab).Error
 	if len(rab) > 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Sudah ada data yang terikat dengan data ini!",
+			"message": "Paket Pekerjaan Konstruksi sudah di-assign ke user PPK",
 		})
 		return
 	}

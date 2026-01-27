@@ -8,17 +8,22 @@ interface WeekScheduleTableProps {
     dataFile: ScheduleItemProps[];
     handleDeleteRow: (index: number) => void;
     showDelete?: boolean;
+    isEdit?: boolean;
     isRealization?: boolean;
     realizationData?: RealizationDetailProps[];
 }
 
-export default function WeekScheduleTable({ totalMinggu, dataFile, handleDeleteRow, showDelete = true, isRealization = false, realizationData }: WeekScheduleTableProps) {
+export default function WeekScheduleTable({ totalMinggu, dataFile, handleDeleteRow, showDelete = false, isRealization = false, realizationData, isEdit = false }: WeekScheduleTableProps) {
     const getWeeklyCumulativeValue = (weekIdx: number) => {
         return dataFile?.reduce((sum: number, item: ScheduleItemProps) => {
             const cumulativeForItem = item.schedule_weeks
                 .slice(0, weekIdx + 1)
                 .reduce((acc, val) => {
-                    return acc + (Number(showDelete ? val : val.value) || 0);
+                    if (isRealization) {
+                        return acc + (Number(!isEdit ? val.value : val.value) || 0);
+                    } else {
+                        return acc + (Number(!isEdit ? val : val.value) || 0);
+                    }
                 }, 0);
             return sum + cumulativeForItem;
         }, 0) || 0;
@@ -122,35 +127,70 @@ export default function WeekScheduleTable({ totalMinggu, dataFile, handleDeleteR
                                                     {item.weight}%
                                                 </span>
                                             </td>
-                                            {!isRealization ? (
-                                                item.schedule_weeks?.map((val, i) => (
-                                                    <td
-                                                        key={i}
-                                                        className="px-4 py-4 text-center border-l border-gray-200 bg-primary/2 hover:bg-primary/5 transition-all duration-200"
-                                                    >
-                                                        <div className={`flex items-center justify-center h-8 rounded font-poppins-bold text-sm transition-all duration-200 ${Number(val) > 0
-                                                            ? 'bg-green-100 text-green-700 ring-1 ring-green-200'
-                                                            : 'text-gray-400'
-                                                            }`}>
-                                                            {Number(val) > 0 ? val : "-" as any}
-                                                        </div>
-                                                    </td>
-                                                ))
-                                            ) : (
-                                                item.schedule_weeks?.map((val, i) => (
-                                                    <td
-                                                        key={i}
-                                                        className="px-4 py-4 text-center border-l border-gray-200 bg-primary/2 hover:bg-primary/5 transition-all duration-200"
-                                                    >
-                                                        <div className={`flex items-center justify-center h-8 rounded font-poppins-bold text-sm transition-all duration-200 ${Number(val.value) > 0
-                                                            ? 'bg-green-100 text-green-700 ring-1 ring-green-200'
-                                                            : 'text-gray-400'
-                                                            }`}>
-                                                            {Number(val.value) > 0 ? val.value : "-" as any}
-                                                        </div>
-                                                    </td>
-                                                ))
+                                            {!isRealization && (
+                                                !isEdit ? (
+                                                    item.schedule_weeks?.map((val, i) => (
+                                                        <td
+                                                            key={i}
+                                                            className="px-4 py-4 text-center border-l border-gray-200 bg-primary/2 hover:bg-primary/5 transition-all duration-200"
+                                                        >
+                                                            <div className={`flex items-center justify-center h-8 rounded font-poppins-bold text-sm transition-all duration-200 ${Number(val) > 0
+                                                                ? 'bg-green-100 text-green-700 ring-1 ring-green-200'
+                                                                : 'text-gray-400'
+                                                                }`}>
+                                                                {Number(val) > 0 ? val : "-" as any}
+                                                            </div>
+                                                        </td>
+                                                    ))
+                                                ) : (
+                                                    item.schedule_weeks?.map((val, i) => (
+                                                        <td
+                                                            key={i}
+                                                            className="px-4 py-4 text-center border-l border-gray-200 bg-primary/2 hover:bg-primary/5 transition-all duration-200"
+                                                        >
+                                                            <div className={`flex items-center justify-center h-8 rounded font-poppins-bold text-sm transition-all duration-200 ${Number(val.value) > 0
+                                                                ? 'bg-green-100 text-green-700 ring-1 ring-green-200'
+                                                                : 'text-gray-400'
+                                                                }`}>
+                                                                {Number(val.value) > 0 ? val.value : "-" as any}
+                                                            </div>
+                                                        </td>
+                                                    ))
+                                                )
                                             )}
+
+                                            {isRealization && (
+                                                !isEdit ? (
+                                                    item.schedule_weeks?.map((val, i) => (
+                                                        <td
+                                                            key={i}
+                                                            className="px-4 py-4 text-center border-l border-gray-200 bg-primary/2 hover:bg-primary/5 transition-all duration-200"
+                                                        >
+                                                            <div className={`flex items-center justify-center h-8 rounded font-poppins-bold text-sm transition-all duration-200 ${Number(val) > 0
+                                                                ? 'bg-green-100 text-green-700 ring-1 ring-green-200'
+                                                                : 'text-gray-400'
+                                                                }`}>
+                                                                {Number(val.value) > 0 ? val.value : "-" as any}
+                                                            </div>
+                                                        </td>
+                                                    ))
+                                                ) : (
+                                                    item.schedule_weeks?.map((val, i) => (
+                                                        <td
+                                                            key={i}
+                                                            className="px-4 py-4 text-center border-l border-gray-200 bg-primary/2 hover:bg-primary/5 transition-all duration-200"
+                                                        >
+                                                            <div className={`flex items-center justify-center h-8 rounded font-poppins-bold text-sm transition-all duration-200 ${Number(val.value) > 0
+                                                                ? 'bg-green-100 text-green-700 ring-1 ring-green-200'
+                                                                : 'text-gray-400'
+                                                                }`}>
+                                                                {Number(val.value) > 0 ? val.value : "-" as any}
+                                                            </div>
+                                                        </td>
+                                                    ))
+                                                )
+                                            )}
+
                                             {showDelete && (
                                                 <td className="px-6 py-4 text-center">
                                                     <button
@@ -200,28 +240,55 @@ export default function WeekScheduleTable({ totalMinggu, dataFile, handleDeleteR
                                                 Kemajuan Pekerjaan Mingguan
                                             </div>
                                         </td>
-                                        {Array.from({ length: totalMinggu }).map((_, weekIdx) => (
-                                            <td
-                                                key={weekIdx}
-                                                className="px-4 py-4 text-center border-l border-gray-200"
-                                            >
-                                                <div className="inline-flex items-center justify-center min-w-12 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg font-poppins-bold text-sm ring-1 ring-blue-300 shadow-sm hover:shadow-md transition-all duration-200">
-                                                    {showDelete ? (
-                                                        dataFile?.reduce(
-                                                            (sum: number, item: ScheduleItemProps) =>
-                                                                sum + (Number(item.schedule_weeks[weekIdx]) || 0),
-                                                            0
-                                                        )
-                                                    ) : (
-                                                        dataFile?.reduce(
-                                                            (sum: number, item: ScheduleItemProps) =>
-                                                                sum + (Number(item.schedule_weeks[weekIdx].value) || 0),
-                                                            0
-                                                        )
-                                                    )}
-                                                </div>
-                                            </td>
-                                        ))}
+                                        {!isRealization && (
+                                            Array.from({ length: totalMinggu }).map((_, weekIdx) => (
+                                                <td
+                                                    key={weekIdx}
+                                                    className="px-4 py-4 text-center border-l border-gray-200"
+                                                >
+                                                    <div className="inline-flex items-center justify-center min-w-12 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg font-poppins-bold text-sm ring-1 ring-blue-300 shadow-sm hover:shadow-md transition-all duration-200">
+                                                        {!isEdit ? (
+                                                            dataFile?.reduce(
+                                                                (sum: number, item: ScheduleItemProps) =>
+                                                                    sum + (Number(item.schedule_weeks[weekIdx]) || 0),
+                                                                0
+                                                            )
+                                                        ) : (
+                                                            dataFile?.reduce(
+                                                                (sum: number, item: ScheduleItemProps) =>
+                                                                    sum + (Number(item.schedule_weeks[weekIdx].value) || 0),
+                                                                0
+                                                            )
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            ))
+                                        )}
+
+                                        {isRealization && (
+                                            Array.from({ length: totalMinggu }).map((_, weekIdx) => (
+                                                <td
+                                                    key={weekIdx}
+                                                    className="px-4 py-4 text-center border-l border-gray-200"
+                                                >
+                                                    <div className="inline-flex items-center justify-center min-w-12 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg font-poppins-bold text-sm ring-1 ring-blue-300 shadow-sm hover:shadow-md transition-all duration-200">
+                                                        {!isEdit ? (
+                                                            dataFile?.reduce(
+                                                                (sum: number, item: ScheduleItemProps) =>
+                                                                    sum + (Number(item.schedule_weeks[weekIdx].value) || 0),
+                                                                0
+                                                            )
+                                                        ) : (
+                                                            dataFile?.reduce(
+                                                                (sum: number, item: ScheduleItemProps) =>
+                                                                    sum + (Number(item.schedule_weeks[weekIdx].value) || 0),
+                                                                0
+                                                            )
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            ))
+                                        )}
                                         <td></td>
                                     </tr>
 

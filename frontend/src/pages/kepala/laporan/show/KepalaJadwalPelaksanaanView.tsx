@@ -141,6 +141,7 @@ export default function KepalaJadwalPelaksanaanView() {
               )
             }
             showDelete={false}
+            isEdit={true}
             handleDeleteRow={null as any}
           />
         </div>

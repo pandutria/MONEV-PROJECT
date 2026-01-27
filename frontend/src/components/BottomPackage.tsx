@@ -140,7 +140,7 @@ export default function BottomPackage() {
                                                     : 'bg-linear-to-r from-red-500 to-red-600 text-white'
                                             }`}>
                                                 {item.perencanaan < item.aktual ? '↑' : item.perencanaan > item.aktual ? '↓' : '→'}
-                                                <span>{ConvertToPercent(item.perencanaan, item.perencanaan) - ConvertToPercent(item.aktual, item.perencanaan)}%</span>
+                                                <span>{(ConvertToPercent(item.perencanaan, item.perencanaan) - ConvertToPercent(item.aktual, item.perencanaan)).toFixed(2)}%</span>
                                             </div>
                                         </td>
                                     </tr>

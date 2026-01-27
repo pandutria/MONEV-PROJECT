@@ -178,7 +178,7 @@ export default function LineChart({ selectedRealization }: LineChartProps) {
                                     <div className="flex-1 bg-gray-200 rounded-full h-3">
                                         <div className={`${scheduleProgress < actualProgress ? "bg-green-500" : "bg-red-500"} h-3 rounded-full`} style={{ width: `${scheduleProgress - actualProgress}%` }}></div>
                                     </div>
-                                    <span className={`font-poppins-semibold text-lg ${scheduleProgress < actualProgress ? "text-blue-600" : "text-red-600"} min-w-11.25`}>{scheduleProgress < actualProgress ? "+" : "-"} {scheduleProgress - actualProgress}%</span>
+                                    <span className={`font-poppins-semibold text-lg ${scheduleProgress < actualProgress ? "text-blue-600" : "text-red-600"} min-w-11.25`}>{scheduleProgress < actualProgress ? "+" : "-"} {(scheduleProgress - actualProgress).toFixed(2)}%</span>
                                 </div>
                             </div>
                         </div>

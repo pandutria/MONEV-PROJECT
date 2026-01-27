@@ -176,7 +176,7 @@ func DeleteSchedule(c *gin.Context) {
 
 	if len(realisasi) > 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Sudah ada data yang terikat dengan data ini!",
+			"message": "Paket Pekerjaan Konstruksi sudah di-assign ke user PPK",
 		})
 		return
 	}

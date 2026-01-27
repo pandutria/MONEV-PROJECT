@@ -246,7 +246,8 @@ export default function PPKRealisasiAdd() {
                             }
                             dataFile={selectedSchedule?.items as any}
                             handleDeleteRow={null as any}
-                            showDelete={false}
+                            isEdit={false}
+                            isRealization={true}
                         />
                     )}
                 </div>

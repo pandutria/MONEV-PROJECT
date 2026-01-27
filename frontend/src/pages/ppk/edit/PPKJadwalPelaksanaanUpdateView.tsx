@@ -263,7 +263,7 @@ export default function PPKJadwalPelaksanaanUpdateView() {
                 ) ?? [0])
               )
             }
-            showDelete={false}
+            isEdit={true}
             handleDeleteRow={null as any}
           />
         </div>

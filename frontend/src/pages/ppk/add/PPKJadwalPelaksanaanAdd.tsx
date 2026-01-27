@@ -356,7 +356,6 @@ export default function PPKJadwalPelaksanaanAdd() {
             dataFile={dataFile}
             
             handleDeleteRow={null as any}
-            showDelete={false}
           />
         </div>
       </div>
