@@ -46,11 +46,11 @@ export default function PokjaHasilKelompokKerja() {
             label: 'Nilai HPS'
         },
         {
-            key: 'vendor_id',
+            key: 'jumlah_pendaftar',
             label: 'Jumlah Pendaftar'
         },
         {
-            key: 'pnw_value',
+            key: 'jumlah_pemasukan',
             label: 'Jumlah Pemasukkan PNW'
         },
         {

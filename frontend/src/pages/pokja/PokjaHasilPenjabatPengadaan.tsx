@@ -62,11 +62,11 @@ export default function PokjaHasilPenjabatPengadaan() {
             label: 'No & Tanggal'
         },
         {
-            key: 'efisience',
+            key: 'efisiensi',
             label: 'Efisiensi Nilai Pagu-Kontrak'
         },
         {
-            key: 'presentation',
+            key: 'presentase',
             label: 'presentase'
         },
     ];

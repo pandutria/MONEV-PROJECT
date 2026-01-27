@@ -119,8 +119,12 @@ export default function useDataEntryHooks() {
                     nilai_penawaran: FormatRupiah(Number(item.nilai_penawaran)) ?? "-",
                     nilai_negosiasi: FormatRupiah(Number(item.nilai_negosiasi)) ?? "-",
                     tanggal_masuk: FormatDate(item.updated_at),
-                    // efisience: FormatRupiah(Number(item.budget_value) - Number(item.contract_initial)),
-                    // presentation: Number(item.budget_value) > 0 ? (((Number(item.budget_value) - Number(item.contract_initial)) / Number(item.budget_value)) * 100).toFixed(2) + "%" : "0%"
+                    jumlah_pendaftar: "-",
+                    jumlah_pemasukan: "-",
+                    efisiensi: "-",
+                    presentase: "-",
+                    // efisiensi: FormatRupiah(Number(item.budget_value) - Number(item.contract_initial)),
+                    // presentase: Number(item.budget_value) > 0 ? (((Number(item.budget_value) - Number(item.contract_initial)) / Number(item.budget_value)) * 100).toFixed(2) + "%" : "0%"
                 }));
 
                 setDataEntryPengadaan(SortDescById(mappingData));
