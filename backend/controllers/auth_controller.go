@@ -10,12 +10,11 @@ import (
 	"github.com/optimus/backend/utils"
 )
 
-
 func Login(c *gin.Context) {
 	var req dtos.LoginRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusConflict, 
+		c.JSON(http.StatusConflict,
 			gin.H{
 				"message": err.Error(),
 			})
@@ -24,11 +23,11 @@ func Login(c *gin.Context) {
 
 	var user models.User
 	err := config.DB.Where("email = ?", req.Email).First(&user).Error
-	
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Email atau password tidak benar!",
-		},)
+		})
 		return
 	}
 
@@ -46,7 +45,6 @@ func Login(c *gin.Context) {
 		return
 	}
 
-
 	token, err := utils.GenerateJWT(user.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -58,9 +56,9 @@ func Login(c *gin.Context) {
 	config.DB.Preload("Role")
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Masuk berhasil!",
+		"message":      "Masuk berhasil!",
 		"access_token": token,
-		"token_type": "Bearer",
+		"token_type":   "Bearer",
 		"data": gin.H{
 			"id":    user.Id,
 			"email": user.Email,
@@ -68,12 +66,11 @@ func Login(c *gin.Context) {
 	})
 }
 
-
 func Me(c *gin.Context) {
 	userId, isNull := c.Get("user_id")
-	
+
 	if !isNull {
-		c.JSON(http.StatusUnauthorized, gin.H {
+		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Penggunaa harus login terlebih dahulu!",
 		})
 		return
@@ -84,42 +81,52 @@ func Me(c *gin.Context) {
 	err := config.DB.Preload("Role").First(&user, userId).Error
 
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H {
+		c.JSON(http.StatusNotFound, gin.H{
 			"message": "User tidak di temukan!",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H {
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Mengambil data berhasil",
-		"data": user,
+		"data":    user,
 	})
 }
 
 func UpdatePassword(c *gin.Context) {
 	var req dtos.LoginRequest
 
-	var user models.User
-	err := config.DB.Where("email = ?", req.Email).Find(&user).Error
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H {
-			"message": "Email tidak valid!",
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Request tidak valid",
+			"error":   err.Error(),
 		})
 		return
 	}
 
-	user.Password = req.Password
+	var user models.User
+	err := config.DB.Where("email = ?", req.Email).Find(&user).Error
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Email tidak valid!",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	user.Password = utils.HashSHA512(req.Password)
 
 	err = config.DB.Save(&user).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Mengubah password gagal",
+			"error":   err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H {
-		"message": "Mengambil data berhasil",
-		"data": user,
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Mengubah password berhasil",
+		"data":    user,
 	})
 }

@@ -176,7 +176,7 @@ func DeleteRabHeader(c *gin.Context) {
 	err := config.DB.Where("rab_id = ?", header.Id).Find(&schedule).Error
 	if len(schedule) > 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Sudah ada data yang terikat dengan data ini!",
+			"message": "Paket Pekerjaan Konstruksi sudah di-assign ke user PPK",
 		})
 		return
 	}

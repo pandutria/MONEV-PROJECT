@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -12,6 +13,7 @@ import (
 	"github.com/optimus/backend/config"
 	"github.com/optimus/backend/dtos"
 	"github.com/optimus/backend/models"
+	"gorm.io/gorm"
 )
 
 func GetAllRealisasi(c *gin.Context) {
@@ -90,8 +92,9 @@ func CreateRealisasi(c *gin.Context) {
 
 func CreateRealisasiDetail(c *gin.Context) {
 	var req dtos.CreateRealisasiDetailRequest
+	var existing models.RealisasiDetail
 
-	buktiFile, _ := c.FormFile("bukti_file")
+	BuktiFile, _ := c.FormFile("bukti_file")
 
 	uploadDir := "uploads/realisasi"
 	_ = os.MkdirAll(uploadDir, os.ModePerm)
@@ -110,50 +113,70 @@ func CreateRealisasiDetail(c *gin.Context) {
 		return &path
 	}
 
-	if err := c.ShouldBindWith(&req, binding.FormMultipart); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+	BuktiPath := saveUpload(BuktiFile)
+
+	err := c.ShouldBindWith(&req, binding.FormMultipart)
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 
-	var existing models.RealisasiDetail
+	err = config.DB.
+		Where("realisasi_header_id = ? AND week_number = ?", req.RealisasiHeaderId, req.WeekNumber).
+		First(&existing).Error
 
-	result := config.DB.
-		Where(
-			"realisasi_header_id = ? AND week_number = ?",
-			req.RealisasiHeaderId,
-			req.WeekNumber,
-		).
-		First(&existing)
+	if err == nil {
+		existing.Value = req.Value
 
-	if result.RowsAffected > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Data realisasi untuk week ini sudah ada",
+		if BuktiPath != nil {
+			existing.BuktiFile = BuktiPath
+		}
+
+		err = config.DB.Save(&existing).Error
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Update data gagal!",
+				"error":   err.Error(),
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Update data berhasil",
+			"data":    existing,
 		})
 		return
 	}
 
-	buktiPath := saveUpload(buktiFile)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		detail := models.RealisasiDetail{
+			RealisasiHeaderId: req.RealisasiHeaderId,
+			WeekNumber:        req.WeekNumber,
+			Value:             req.Value,
+			BuktiFile:         BuktiPath,
+		}
 
-	detail := models.RealisasiDetail{
-		RealisasiHeaderId: req.RealisasiHeaderId,
-		WeekNumber:        req.WeekNumber,
-		Value:             req.Value,
-		BuktiFile:         buktiPath,
-	}
+		err = config.DB.Create(&detail).Error
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Membuat data gagal!",
+				"error":   err.Error(),
+			})
+			return
+		}
 
-	if err := config.DB.Create(&detail).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Membuat data gagal!",
-			"error":   err.Error(),
+		c.JSON(http.StatusCreated, gin.H{
+			"message": "Membuat data berhasil",
+			"data":    detail,
 		})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "Membuat data berhasil",
-		"data":    detail,
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"message": "Terjadi kesalahan!",
+		"error":   err.Error(),
 	})
 }
 

@@ -32,5 +32,5 @@ type CreateUserRequest struct {
 }
 
 type UpdatePasswordRequest struct {
-	Password string `form:"password"`
+	Password string `json:"password"`
 }
