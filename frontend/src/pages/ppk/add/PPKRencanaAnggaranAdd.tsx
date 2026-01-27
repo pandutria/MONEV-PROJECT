@@ -225,7 +225,7 @@ export default function PPKRencanaAnggaranAdd() {
 
       <div className="pt-24 pb-12 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000">
         <div className="max-w-7xl mx-auto">
-          <BackButton />
+          <BackButton type='custom' link='/ppk/rencana-anggaran'/>
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h1 className="font-poppins-bold text-2xl text-gray-800 mb-6">
               Rencana Anggaran Biaya

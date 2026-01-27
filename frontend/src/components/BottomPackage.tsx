@@ -1,26 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import useRealisasiHooks from "../hooks/RealisasiHooks";
 import { FormatPackage } from "../ui/FormatPackage";
 import { ConvertToPercent } from "../utils/CovertToPercent";
 
 export default function BottomPackage() {
     const { realisasiData } = useRealisasiHooks();
-    const tableData = useMemo(() => FormatPackage(realisasiData, "bottom"), [realisasiData]);
-    const [select, setSelect] = useState("");
-    const [tableDataFilter, setTableDataFilter] = useState<any>([]);
-    
-    useEffect(() => {
-        const fetchFilter = () => {
-            const filter = tableData.filter((item) => {
-                return item?.tahun_anggaran.includes(select);
-            });
+    const [select, setSelect] = useState("2025");
+    const tableData = useMemo(() => {
+        const filtered = select
+            ? realisasiData.filter((item: any) =>
+                item?.schedule?.rab?.data_entry?.tahun_anggaran === select
+            )
+            : [];
 
-            setTableDataFilter(filter);
-        }
-
-        fetchFilter();
-    }, [tableData, select]);
+        return FormatPackage(filtered).slice(0, 10);
+    }, [realisasiData, select]);
 
     return (
         <div className="w-full min-h-screen p-4  sm:p-6 lg:p-8 mt-8" data-aos="fade-up" data-aos-duration="1000">
@@ -91,7 +86,7 @@ export default function BottomPackage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {tableDataFilter.map((item: any, index: number) => (
+                                {tableData?.slice(0, 10)?.map((item: any, index: number) => (
                                     <tr key={index} className="hover:bg-linear-to-r hover:from-orange-50 hover:to-transparent transition-all duration-200 group">
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-3">
@@ -149,7 +144,7 @@ export default function BottomPackage() {
                         </table>
                     </div>
 
-                    {tableDataFilter.length === 0 && (
+                    {tableData.length === 0 && (
                         <div className="py-32 text-center">
                             <div className="inline-block mb-8">
                                 <div className="relative">

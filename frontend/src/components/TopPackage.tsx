@@ -1,27 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import useRealisasiHooks from "../hooks/RealisasiHooks";
 import { FormatPackage } from "../ui/FormatPackage";
 import { ConvertToPercent } from "../utils/CovertToPercent";
 
 export default function TopPackage() {
     const { realisasiData } = useRealisasiHooks();
-    const tableData = useMemo(() => FormatPackage(realisasiData), [realisasiData]);
-    const [select, setSelect] = useState("");
-    const [tableDataFilter, setTableDataFilter] = useState<any>([]);
-    
-    useEffect(() => {
-        const fetchFilter = () => {
-            const filter = tableData.filter((item) => {
-                return item?.tahun_anggaran.includes(select);
-            });
+    const [select, setSelect] = useState("2025");
 
-            setTableDataFilter(filter);
-        }
+    const tableData = useMemo(() => {
+        const filtered = select
+            ? realisasiData.filter((item: any) =>
+                item?.schedule?.rab?.data_entry?.tahun_anggaran === select
+            )
+            : [];
 
-        fetchFilter();
-    }, [tableData, select]);
-
+        return FormatPackage(filtered).slice(0, 10);
+    }, [realisasiData, select]);
     return (
         <div className="w-full min-h-screen p-4  sm:p-6 lg:p-8 mt-8" data-aos="fade-up" data-aos-duration="1000">
             <div className="max-w-350 mx-auto">
@@ -36,7 +31,7 @@ export default function TopPackage() {
                         </select>
                     </div>
                 </div>
-                
+
                 <div className="bg-white rounded-3xl overflow-hidden border border-gray-100">
                     <div className="overflow-x-auto">
                         <table className="w-full">
@@ -91,7 +86,7 @@ export default function TopPackage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {tableDataFilter.map((item: any, index: number) => (
+                                {tableData.slice(0, 10).map((item: any, index: number) => (
                                     <tr key={index} className="hover:bg-linear-to-r hover:from-orange-50 hover:to-transparent transition-all duration-200 group">
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-3">
@@ -120,7 +115,7 @@ export default function TopPackage() {
                                         <td className="px-6 py-5 text-center">
                                             <div className="flex flex-col items-center gap-2">
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5 max-w-25">
-                                                    <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style={{width: `${ConvertToPercent(item.perencanaan, item.perencanaan)}%`}}></div>
+                                                    <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style={{ width: `${ConvertToPercent(item.perencanaan, item.perencanaan)}%` }}></div>
                                                 </div>
                                                 <span className="font-poppins-bold text-sm text-blue-700">{ConvertToPercent(item.perencanaan, item.perencanaan)}%</span>
                                             </div>
@@ -128,17 +123,16 @@ export default function TopPackage() {
                                         <td className="px-6 py-5 text-center">
                                             <div className="flex flex-col items-center gap-2">
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5 max-w-25">
-                                                    <div className="bg-green-600 h-2.5 rounded-full transition-all duration-500" style={{width: `${ConvertToPercent(item.aktual, item.perencanaan)}%`}}></div>
+                                                    <div className="bg-green-600 h-2.5 rounded-full transition-all duration-500" style={{ width: `${ConvertToPercent(item.aktual, item.perencanaan)}%` }}></div>
                                                 </div>
                                                 <span className="font-poppins-bold text-sm text-green-700">{ConvertToPercent(item.aktual, item.perencanaan)}%</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 text-center">
-                                            <div className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-poppins-bold text-sm shadow-md ${
-                                                item.perencanaan <= item.aktual
-                                                    ? 'bg-linear-to-r from-green-500 to-green-600 text-white' 
+                                            <div className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-poppins-bold text-sm shadow-md ${item.perencanaan <= item.aktual
+                                                    ? 'bg-linear-to-r from-green-500 to-green-600 text-white'
                                                     : 'bg-linear-to-r from-red-500 to-red-600 text-white'
-                                            }`}>
+                                                }`}>
                                                 {item.perencanaan <= item.aktual ? '↑' : item.perencanaan >= item.aktual ? '↓' : '→'}
                                                 <span>{(ConvertToPercent(item.perencanaan, item.perencanaan) - ConvertToPercent(item.aktual, item.perencanaan)).toFixed(2)}%</span>
                                             </div>
@@ -149,7 +143,7 @@ export default function TopPackage() {
                         </table>
                     </div>
 
-                    {tableDataFilter.length === 0 && (
+                    {tableData.length === 0 && (
                         <div className="py-32 text-center">
                             <div className="inline-block mb-8">
                                 <div className="relative">
@@ -164,9 +158,9 @@ export default function TopPackage() {
                             <h3 className="font-poppins-bold text-2xl text-gray-800 mb-2">Belum Ada Data</h3>
                             <p className="font-poppins-regular text-gray-500 text-base mb-6 max-w-xs mx-auto">Silakan pilih tahun anggaran untuk menampilkan data realisasi pekerjaan konstruksi</p>
                             <div className="flex justify-center gap-2">
-                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0s"}}></div>
-                                <div className="w-2 h-2 bg-orange-600 rounded-full animate-bounce" style={{animationDelay: "0.15s"}}></div>
-                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0.3s"}}></div>
+                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0s" }}></div>
+                                <div className="w-2 h-2 bg-orange-600 rounded-full animate-bounce" style={{ animationDelay: "0.15s" }}></div>
+                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0.3s" }}></div>
                             </div>
                         </div>
                     )}
