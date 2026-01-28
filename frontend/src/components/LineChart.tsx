@@ -42,7 +42,7 @@ export default function LineChart({ selectedRealization }: LineChartProps) {
     const actualProgress = ConvertToPercent(RemainingProgress(latestRealization?.detail), RemainingProgress(scheduleAggreateWeeks)) ?? 0;
     const kurvaData = buildKurvaData(latestRealization?.schedule, latestRealization as any);
     const deviation = actualProgress - scheduleProgress;
-    const isAhead = deviation > 0;
+    const isAhead = deviation >= 0;
 
     return (
         <div className="w-full h-screen flex items-center p-4 lg:p-8 my-36 bg-linear-to-br from-orange-50/30 via-white to-blue-50/20" data-aos="fade-up" data-aos-duration="1000">
