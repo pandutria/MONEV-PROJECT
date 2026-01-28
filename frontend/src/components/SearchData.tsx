@@ -195,7 +195,7 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
     return (
         <div
             ref={sectionRef}
-            className="h-screen flex items-center my-8 px-4 md:px-8 bg-linear-to-br from-orange-50/30 via-white to-orange-50/20"
+            className="lg:h-screen h-auto flex items-center lg:my-8 my-32 px-4 md:px-8 bg-linear-to-br from-orange-50/30 via-white to-orange-50/20"
         >
             <div className="max-w-7xl mx-auto w-full">
                 <div
