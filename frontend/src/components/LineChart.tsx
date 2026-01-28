@@ -18,6 +18,7 @@ import { ScheduleWeekAggregate } from '../utils/ScheduleWeekAggregate';
 import { RemainingProgress } from '../utils/RemainingProgress';
 import { ConvertToPercent } from '../utils/CovertToPercent';
 import { buildKurvaData } from '../utils/BuildKurvaData';
+import { TrendingUp, Calendar, Clock, Activity, BarChart3, Sparkles } from 'lucide-react';
 
 ChartJS.register(
     CategoryScale,
@@ -40,161 +41,285 @@ export default function LineChart({ selectedRealization }: LineChartProps) {
     const scheduleProgress = ConvertToPercent(RemainingProgress(scheduleAggreateWeeks), RemainingProgress(scheduleAggreateWeeks)) ?? 0;
     const actualProgress = ConvertToPercent(RemainingProgress(latestRealization?.detail), RemainingProgress(scheduleAggreateWeeks)) ?? 0;
     const kurvaData = buildKurvaData(latestRealization?.schedule, latestRealization as any);
+    const deviation = actualProgress - scheduleProgress;
+    const isAhead = deviation > 0;
 
     return (
-        <div className="w-full min-h-screen p-4 sm:p-6 lg:p-8" data-aos="fade-up" data-aos-duration="1000">
-            <h1 className="text-center font-poppins-semibold text-2xl sm:text-3xl lg:text-4xl text-primary mb-12">
-                Grafik Progress
-            </h1>
-
-            <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
-                <div className="h-100 sm:h-112.5 lg:h-125 mb-8">
-                    <Line
-                        data={{
-                            labels: kurvaData.map(d => d.minggu),
-                            datasets: [
-                                {
-                                    label: 'Rencana',
-                                    data: kurvaData.map(d => d.rencana),
-                                    borderColor: '#f60',
-                                    backgroundColor: 'rgba(255,102,0,0.05)',
-                                    borderWidth: 3,
-                                    pointRadius: 5,
-                                    pointBackgroundColor: '#f60',
-                                    pointBorderColor: '#fff',
-                                    pointBorderWidth: 2,
-                                    pointHoverRadius: 7,
-                                    tension: 0.4,
-                                    fill: false
-                                },
-                                {
-                                    label: 'Aktual',
-                                    data: kurvaData.map(d => d.aktual),
-                                    borderColor: '#3b82f6',
-                                    backgroundColor: 'rgba(59,130,246,0.05)',
-                                    borderWidth: 3,
-                                    pointRadius: 5,
-                                    pointBackgroundColor: '#3b82f6',
-                                    pointBorderColor: '#fff',
-                                    pointBorderWidth: 2,
-                                    pointHoverRadius: 7,
-                                    tension: 0.4,
-                                    fill: false
-                                }
-                            ]
-                        }}
-                        options={{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    labels: {
-                                        font: { family: 'poppins-regular', size: 13 },
-                                        padding: 20,
-                                        usePointStyle: true,
-                                        pointStyle: 'circle'
-                                    }
-                                },
-                                tooltip: {
-                                    backgroundColor: '#fff',
-                                    borderColor: '#f60',
-                                    borderWidth: 2,
-                                    titleFont: { family: 'poppins-semibold', size: 13 },
-                                    bodyFont: { family: 'poppins-regular', size: 12 },
-                                    padding: 12,
-                                    displayColors: true,
-                                    cornerRadius: 10,
-                                    titleColor: '#111827',
-                                    bodyColor: '#111827'
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        font: { family: 'poppins-regular', size: 12 },
-                                        color: '#9ca3af'
-                                    },
-                                    grid: { color: '#e5e7eb' }
-                                },
-                                x: {
-                                    ticks: {
-                                        font: { family: 'poppins-regular', size: 12 },
-                                        color: '#9ca3af'
-                                    },
-                                    grid: { display: false }
-                                }
-                            }
-                        }}
-                    />
+        <div className="w-full h-screen flex items-center p-4 lg:p-8 my-36 bg-linear-to-br from-orange-50/30 via-white to-blue-50/20" data-aos="fade-up" data-aos-duration="1000">
+            <div className="max-w-7xl mx-auto w-full">
+                <div className="text-center mb-4">
+                    <div className="inline-flex items-center space-x-2 px-3 py-1.5 bg-linear-to-r from-orange-100 to-blue-100 rounded-full mb-3">
+                        <BarChart3 className="h-3.5 w-3.5 text-orange-600" />
+                        <span className="text-xs font-poppins-semibold text-gray-700">Analisis Progress</span>
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-poppins-bold bg-linear-to-r from-orange-600 via-orange-500 to-blue-500 bg-clip-text text-transparent mb-2">
+                        Grafik Progress Pekerjaan
+                    </h1>
+                    <p className="text-gray-600 text-sm font-poppins-regular max-w-2xl mx-auto">
+                        Visualisasi perbandingan progress rencana dan aktual secara real-time
+                    </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 mt-12">
-                    <div className="bg-linear-to-br from-primary to-orange-600 rounded-lg p-6 text-white shadow-md">
-                        <p className="font-poppins-medium text-sm sm:text-base mb-2 opacity-90">Sisa Minggu</p>
-                        <p className="font-poppins-bold text-4xl sm:text-5xl">
-                            {latestRealization ? RemainingWeeks(
-                                String(latestRealization?.schedule?.rab?.tanggal_mulai),
-                                String(latestRealization?.schedule?.rab?.tanggal_akhir)
-                            ) : 0}
-                        </p>
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 border border-orange-100 mb-4">
+                    <div className="flex items-center space-x-2 mb-4">
+                        <div className="w-1 h-6 bg-linear-to-b from-orange-500 to-blue-500 rounded-full"></div>
+                        <h2 className="text-lg font-poppins-bold text-gray-800 flex items-center space-x-2">
+                            <TrendingUp className="h-5 w-5 text-orange-500" />
+                            <span>Kurva Progress</span>
+                        </h2>
                     </div>
 
-                    <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-                        <p className="font-poppins-semibold text-sm sm:text-base text-gray-600 mb-3">Durasi</p>
-                        <p className="font-poppins-bold text-2xl sm:text-3xl text-gray-800">
-                            {latestRealization ? TotalWeek(
-                                String(latestRealization?.schedule?.rab?.tanggal_mulai),
-                                String(latestRealization?.schedule?.rab?.tanggal_akhir)
-                            ) : 0} Minggu
-                        </p>
+                    <div className="bg-linear-to-br from-gray-50 to-white rounded-xl p-4 border border-gray-200 shadow-inner mb-4">
+                        <div className="h-56 sm:h-64">
+                            <Line
+                                data={{
+                                    labels: kurvaData.map(d => d.minggu),
+                                    datasets: [
+                                        {
+                                            label: 'Rencana',
+                                            data: kurvaData.map(d => d.rencana),
+                                            borderColor: '#f60',
+                                            backgroundColor: 'rgba(255,102,0,0.1)',
+                                            borderWidth: 3,
+                                            pointRadius: 6,
+                                            pointBackgroundColor: '#f60',
+                                            pointBorderColor: '#fff',
+                                            pointBorderWidth: 3,
+                                            pointHoverRadius: 9,
+                                            pointHoverBorderWidth: 4,
+                                            tension: 0.4,
+                                            fill: true
+                                        },
+                                        {
+                                            label: 'Aktual',
+                                            data: kurvaData.map(d => d.aktual),
+                                            borderColor: '#3b82f6',
+                                            backgroundColor: 'rgba(59,130,246,0.1)',
+                                            borderWidth: 3,
+                                            pointRadius: 6,
+                                            pointBackgroundColor: '#3b82f6',
+                                            pointBorderColor: '#fff',
+                                            pointBorderWidth: 3,
+                                            pointHoverRadius: 9,
+                                            pointHoverBorderWidth: 4,
+                                            tension: 0.4,
+                                            fill: true
+                                        }
+                                    ]
+                                }}
+                                options={{
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: {
+                                            display: true,
+                                            position: 'top',
+                                            labels: {
+                                                font: { family: 'poppins-semibold', size: 12 },
+                                                padding: 15,
+                                                usePointStyle: true,
+                                                pointStyle: 'circle',
+                                                color: '#374151'
+                                            }
+                                        },
+                                        tooltip: {
+                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                            borderColor: '#f60',
+                                            borderWidth: 2,
+                                            titleFont: { family: 'poppins-semibold', size: 12 },
+                                            bodyFont: { family: 'poppins-regular', size: 11 },
+                                            padding: 12,
+                                            displayColors: true,
+                                            cornerRadius: 10,
+                                            titleColor: '#111827',
+                                            bodyColor: '#374151',
+                                            boxPadding: 4
+                                        }
+                                    },
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            ticks: {
+                                                font: { family: 'poppins-medium', size: 10 },
+                                                color: '#6b7280',
+                                                callback: function(value) {
+                                                    return value + '%';
+                                                }
+                                            },
+                                            grid: { 
+                                                color: '#e5e7eb'
+                                            },
+                                            border: {
+                                                display: false
+                                            }
+                                        },
+                                        x: {
+                                            ticks: {
+                                                font: { family: 'poppins-medium', size: 10 },
+                                                color: '#6b7280'
+                                            },
+                                            grid: { 
+                                                display: false 
+                                            },
+                                            border: {
+                                                display: false
+                                            }
+                                        }
+                                    },
+                                    interaction: {
+                                        intersect: false,
+                                        mode: 'index'
+                                    }
+                                }}
+                            />
+                        </div>
                     </div>
 
-                    <div className="bg-white border-2 border-gray-200 rounded-lg p-6 lg:row-span-2">
-                        <h3 className="font-poppins-bold text-lg sm:text-xl text-primary mb-4">Progres Proyek</h3>
-                        <div className="space-y-4">
-                            <div>
-                                <p className="font-poppins-medium text-sm text-gray-600 mb-1">Progress Perencanaan</p>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex-1 bg-gray-200 rounded-full h-3">
-                                        <div className="bg-primary h-3 rounded-full" style={{ width: `${scheduleProgress}%` }}></div>
-                                    </div>
-                                    <span className="font-poppins-semibold text-lg text-primary min-w-11.25">{scheduleProgress}%</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4  ">
+                        <div className="bg-linear-to-br from-orange-500 to-orange-600 rounded-xl p-4 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="font-poppins-medium text-sm opacity-90">Rencana</p>
+                                <div className="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
+                                    <BarChart3 className="h-4 w-4" />
                                 </div>
                             </div>
-                            <div>
-                                <p className="font-poppins-medium text-sm text-gray-600 mb-1">Progres Aktual</p>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex-1 bg-gray-200 rounded-full h-3">
-                                        <div className="bg-blue-500 h-3 rounded-full" style={{ width: `${actualProgress}%` }}></div>
-                                    </div>
-                                    <span className="font-poppins-semibold text-lg text-blue-600 min-w-11.25">{actualProgress}%</span>
+                            <p className="font-poppins-bold text-3xl">{scheduleProgress.toFixed(1)}%</p>
+                        </div>
+
+                        <div className="bg-linear-to-br from-blue-500 to-blue-600 rounded-xl p-4 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="font-poppins-medium text-sm opacity-90">Aktual</p>
+                                <div className="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
+                                    <Activity className="h-4 w-4" />
                                 </div>
                             </div>
-                            <div>
-                                <p className="font-poppins-medium text-sm text-gray-600 mb-1">Deviasi</p>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex-1 bg-gray-200 rounded-full h-3">
-                                        <div className={`${scheduleProgress < actualProgress ? "bg-green-500" : "bg-red-500"} h-3 rounded-full`} style={{ width: `${scheduleProgress - actualProgress}%` }}></div>
-                                    </div>
-                                    <span className={`font-poppins-semibold text-lg ${scheduleProgress < actualProgress ? "text-blue-600" : "text-red-600"} min-w-11.25`}>{scheduleProgress < actualProgress ? "+" : "-"} {(scheduleProgress - actualProgress).toFixed(2)}%</span>
+                            <p className="font-poppins-bold text-3xl">{actualProgress.toFixed(1)}%</p>
+                        </div>
+
+                        <div className={`bg-linear-to-br ${isAhead ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600'} rounded-xl p-4 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="font-poppins-medium text-sm opacity-90">Deviasi</p>
+                                <div className="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
+                                    <TrendingUp className={`h-4 w-4 ${isAhead ? '' : 'rotate-180'}`} />
                                 </div>
+                            </div>
+                            <p className="font-poppins-bold text-3xl">{isAhead ? '+' : ''}{deviation.toFixed(1)}%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 border border-orange-100 hover:shadow-xl transition-all duration-300">
+                        <div className="flex items-center space-x-2 mb-3">
+                            <div className="w-10 h-10 bg-linear-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+                                <Clock className="h-5 w-5 text-white" />
+                            </div>
+                            <div>
+                                <p className="font-poppins-medium text-xs text-gray-600">Sisa Waktu</p>
+                                <p className="font-poppins-bold text-lg text-gray-800">
+                                    {latestRealization ? RemainingWeeks(
+                                        String(latestRealization?.schedule?.rab?.tanggal_mulai),
+                                        String(latestRealization?.schedule?.rab?.tanggal_akhir)
+                                    ) : 0} <span className="text-sm">Minggu</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div className="h-full bg-linear-to-r from-orange-500 to-orange-600 rounded-full animate-pulse" style={{ width: `${scheduleProgress}%` }}></div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 border border-blue-100 hover:shadow-xl transition-all duration-300">
+                        <div className="flex items-center space-x-2 mb-3">
+                            <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+                                <Calendar className="h-5 w-5 text-white" />
+                            </div>
+                            <div>
+                                <p className="font-poppins-medium text-xs text-gray-600">Total Durasi</p>
+                                <p className="font-poppins-bold text-lg text-gray-800">
+                                    {latestRealization ? TotalWeek(
+                                        String(latestRealization?.schedule?.rab?.tanggal_mulai),
+                                        String(latestRealization?.schedule?.rab?.tanggal_akhir)
+                                    ) : 0} <span className="text-sm">Minggu</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div className="h-full bg-linear-to-r from-blue-500 to-blue-600 rounded-full" style={{ width: '100%' }}></div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 border border-purple-100 lg:row-span-2 hover:shadow-xl transition-all duration-300">
+                        <div className="flex items-center space-x-2 mb-3">
+                            <div className="w-1 h-6 bg-linear-to-b from-purple-500 to-purple-600 rounded-full"></div>
+                            <h3 className="font-poppins-bold text-base text-gray-800 flex items-center space-x-2">
+                                <Sparkles className="h-4 w-4 text-purple-500" />
+                                <span>Detail Progress</span>
+                            </h3>
+                        </div>
+                        <div className="space-y-3">
+                            <div className="bg-linear-to-br from-orange-50 to-orange-100/50 rounded-lg p-3">
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className="font-poppins-semibold text-xs text-gray-700">Progress Perencanaan</p>
+                                    <span className="font-poppins-bold text-base text-orange-600">{scheduleProgress.toFixed(1)}%</span>
+                                </div>
+                                <div className="relative h-2 bg-white rounded-full overflow-hidden shadow-inner">
+                                    <div className="absolute inset-0 bg-linear-to-r from-orange-400 to-orange-600 rounded-full transition-all duration-500" style={{ width: `${scheduleProgress}%` }}></div>
+                                </div>
+                            </div>
+                            
+                            <div className="bg-linear-to-br from-blue-50 to-blue-100/50 rounded-lg p-3">
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className="font-poppins-semibold text-xs text-gray-700">Progres Aktual</p>
+                                    <span className="font-poppins-bold text-base text-blue-600">{actualProgress.toFixed(1)}%</span>
+                                </div>
+                                <div className="relative h-2 bg-white rounded-full overflow-hidden shadow-inner">
+                                    <div className="absolute inset-0 bg-linear-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-500" style={{ width: `${actualProgress}%` }}></div>
+                                </div>
+                            </div>
+                            
+                            <div className={`bg-linear-to-br ${isAhead ? 'from-green-50 to-green-100/50' : 'from-red-50 to-red-100/50'} rounded-lg p-3`}>
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className="font-poppins-semibold text-xs text-gray-700">Selisih Progress</p>
+                                    <span className={`font-poppins-bold text-base ${isAhead ? 'text-green-600' : 'text-red-600'}`}>
+                                        {isAhead ? '+' : ''}{deviation.toFixed(1)}%
+                                    </span>
+                                </div>
+                                <div className="relative h-2 bg-white rounded-full overflow-hidden shadow-inner">
+                                    <div className={`absolute inset-0 bg-linear-to-r ${isAhead ? 'from-green-400 to-green-600' : 'from-red-400 to-red-600'} rounded-full transition-all duration-500`} style={{ width: `${Math.abs(deviation)}%` }}></div>
+                                </div>
+                                <p className={`text-xs font-poppins-medium mt-1.5 ${isAhead ? 'text-green-600' : 'text-red-600'}`}>
+                                    {isAhead ? '✓ Progress di atas rencana' : '✗ Progress di bawah rencana'}
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white border-2 border-gray-200 rounded-lg p-6 lg:col-span-2">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 lg:col-span-2 border border-gray-200 hover:shadow-xl transition-all duration-300">
+                        <div className="flex items-center space-x-2 mb-3">
+                            <div className="w-1 h-6 bg-linear-to-b from-indigo-500 to-indigo-600 rounded-full"></div>
+                            <h3 className="font-poppins-bold text-base text-gray-800">Jadwal Pelaksanaan</h3>
+                        </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <p className="font-poppins-semibold text-sm sm:text-base text-primary mb-2">Tanggal Mulai Pekerjaan</p>
-                                <p className="font-poppins-medium text-base sm:text-lg text-gray-800">
+                            <div className="bg-linear-to-br from-green-50 to-green-100/50 rounded-lg p-3 border border-green-200">
+                                <div className="flex items-center space-x-2 mb-2">
+                                    <div className="w-9 h-9 bg-linear-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                                        <Calendar className="h-4 w-4 text-white" />
+                                    </div>
+                                    <p className="font-poppins-semibold text-xs text-gray-700">Tanggal Mulai</p>
+                                </div>
+                                <p className="font-poppins-bold text-sm text-gray-800 ml-11">
                                     {latestRealization ? FormatDate(String(latestRealization?.schedule?.rab?.tanggal_mulai)) : "Belum Ada Data"}
                                 </p>
                             </div>
-                            <div>
-                                <p className="font-poppins-semibold text-sm sm:text-base text-primary mb-2">Tanggal Selesai Pekerjaan</p>
-                                <p className="font-poppins-medium text-base sm:text-lg text-gray-800">
+                            <div className="bg-linear-to-br from-red-50 to-red-100/50 rounded-lg p-3 border border-red-200">
+                                <div className="flex items-center space-x-2 mb-2">
+                                    <div className="w-9 h-9 bg-linear-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+                                        <Calendar className="h-4 w-4 text-white" />
+                                    </div>
+                                    <p className="font-poppins-semibold text-xs text-gray-700">Tanggal Selesai</p>
+                                </div>
+                                <p className="font-poppins-bold text-sm text-gray-800 ml-11">
                                     {latestRealization ? FormatDate(String(latestRealization?.schedule?.rab?.tanggal_akhir)) : "Belum Ada Data"}
                                 </p>
                             </div>
@@ -202,6 +327,13 @@ export default function LineChart({ selectedRealization }: LineChartProps) {
                     </div>
                 </div>
             </div>
+
+            <style>{`
+                @keyframes shimmer {
+                    0% { background-position: -1000px 0; }
+                    100% { background-position: 1000px 0; }
+                }
+            `}</style>
         </div>
     );
 }

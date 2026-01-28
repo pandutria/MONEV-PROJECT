@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Search, ChevronDown, Calendar, Building2, Package } from 'lucide-react';
+import { Search, ChevronDown, Calendar, Building2, Package, Sparkles } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import useRealisasiHooks from '../hooks/RealisasiHooks';
 
@@ -28,6 +28,7 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
 
     const [openDropdown, setOpenDropdown] = useState<string>('');
     const [isVisible, setIsVisible] = useState<boolean>(false);
+    const [isSearching, setIsSearching] = useState<boolean>(false);
 
     const sectionRef = useRef<HTMLDivElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -76,15 +77,19 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
     };
 
     const handleSearch = () => {
-        const realisasiBySearch = realisasiData.filter((item) => {
-            return item.schedule.rab?.data_entry.kode_paket?.toLowerCase()?.includes(paket.toLowerCase());
-        });
+        setIsSearching(true);
+        setTimeout(() => {
+            const realisasiBySearch = realisasiData.filter((item) => {
+                return item.schedule.rab?.data_entry.kode_paket?.toLowerCase()?.includes(paket.toLowerCase());
+            });
 
-        setSelectedRealization(realisasiBySearch);
-        window.scrollTo({
-            top: 1000,
-            behavior: "smooth"
-        })
+            setSelectedRealization(realisasiBySearch);
+            window.scrollTo({
+                top: 1000,
+                behavior: "smooth"
+            });
+            setIsSearching(false);
+        }, 500);
     };
 
     const renderDropdown = (
@@ -102,47 +107,55 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
         const selectedOption = options.find(opt => opt.text === value);
 
         return (
-            <div className="relative">
-                <label className="block text-sm font-poppins-semibold text-gray-700 mb-2">
-                    {label}
+            <div className="relative group">
+                <label className="text-sm font-poppins-semibold text-gray-700 mb-3 flex items-center space-x-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-linear-to-r from-orange-500 to-orange-600"></span>
+                    <span>{label}</span>
                 </label>
                 <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        {icon}
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <div className="p-1.5 rounded-lg bg-linear-to-br from-orange-50 to-orange-100 group-hover:from-orange-100 group-hover:to-orange-200 transition-all duration-300">
+                            {icon}
+                        </div>
                     </div>
                     <button
                         type="button"
                         onClick={() => setOpenDropdown(isOpen ? '' : id)}
-                        className="w-full pl-10 pr-10 py-3 border-2 border-gray-300 rounded-lg transition-all duration-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 text-left bg-white hover:border-gray-400"
+                        className="w-full pl-16 pr-12 py-4 border-2 border-gray-200 rounded-xl transition-all duration-300 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-100 text-left bg-white hover:border-orange-300 hover:shadow-lg group-hover:bg-linear-to-r group-hover:from-white group-hover:to-orange-50/30"
                     >
-                        <span className={selectedOption ? 'text-gray-900' : 'text-gray-400'}>
-                            {label == "Paket" ? (
+                        <span className={`font-poppins-medium ${selectedOption ? 'text-gray-800' : 'text-gray-400'}`}>
+                            {label === "Paket" ? (
                                 selectedOption ? selectedOption.text : realisasiData?.[realisasiData.length - 1]?.schedule?.rab?.data_entry?.kode_paket ?? "Tidak Ada"
                             ) : (
                                 selectedOption ? selectedOption.text : `Pilih ${label}`
                             )}
                         </span>
                     </button>
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                         <ChevronDown
-                            className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                            className={`h-5 w-5 text-orange-500 transition-all duration-300 ${isOpen ? 'rotate-180 scale-110' : ''}`}
                         />
                     </div>
                 </div>
 
                 {isOpen && (
-                    <div className="absolute z-10 w-full mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-xl animate-fade-in">
-                        <input
-                            type="text"
-                            value={searchValue}
-                            onChange={(e) => setSearchValue(e.target.value)}
-                            placeholder="Cari..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-200"
-                            onClick={(e) => e.stopPropagation()}
-                        />
-                        <div className="max-h-48 overflow-y-auto">
+                    <div className="absolute z-20 w-full mt-3 bg-white border-2 border-orange-200 rounded-xl shadow-2xl animate-fade-in overflow-hidden">
+                        <div className="p-3 bg-linear-to-r from-orange-50 to-orange-100/50 border-b border-orange-200">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-orange-500" />
+                                <input
+                                    type="text"
+                                    value={searchValue}
+                                    onChange={(e) => setSearchValue(e.target.value)}
+                                    placeholder="Cari..."
+                                    className="w-full pl-10 pr-4 py-2.5 border border-orange-200 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 bg-white font-poppins-regular text-sm"
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                            </div>
+                        </div>
+                        <div className="max-h-56 overflow-y-auto custom-scrollbar">
                             {filteredOptions.length > 0 ? (
-                                filteredOptions.map((option) => (
+                                filteredOptions.map((option, index) => (
                                     <button
                                         key={option.text}
                                         type="button"
@@ -151,16 +164,25 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
                                             setSearchValue('');
                                             setOpenDropdown('');
                                         }}
-                                        className={`w-full font-poppins-regular text-left px-4 py-2 hover:bg-orange-50 transition-colors duration-150 ${value === option.text ? 'bg-orange-100 font-semibold' : ''
-                                            }`}
+                                        className={`w-full font-poppins-regular text-left px-4 py-3 hover:bg-linear-to-r hover:from-orange-50 hover:to-orange-100/50 transition-all duration-200 border-b border-gray-100 last:border-0 ${
+                                            value === option.text ? 'bg-linear-to-r from-orange-100 to-orange-50 font-poppins-semibold border-l-4 border-l-orange-500' : ''
+                                        } ${index === 0 ? 'rounded-t-lg' : ''} ${index === filteredOptions.length - 1 ? 'rounded-b-lg' : ''}`}
                                         style={{ color: value === option.text ? '#f60' : '#374151' }}
                                     >
-                                        {option.text}
+                                        <span className="flex items-center space-x-2">
+                                            {value === option.text && (
+                                                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                                            )}
+                                            <span>{option.text}</span>
+                                        </span>
                                     </button>
                                 ))
                             ) : (
-                                <div className="px-4 py-3 text-gray-500 text-sm">
-                                    Tidak ada hasil
+                                <div className="px-4 py-6 text-gray-400 text-sm text-center font-poppins-regular">
+                                    <div className="flex flex-col items-center space-y-2">
+                                        <Search className="h-8 w-8 text-gray-300" />
+                                        <span>Tidak ada hasil</span>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -173,34 +195,48 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
     return (
         <div
             ref={sectionRef}
-            className="min-h-screen py-12 px-4 md:px-8 pt-36"
+            className="h-screen flex items-center my-8 px-4 md:px-8 bg-linear-to-br from-orange-50/30 via-white to-orange-50/20"
         >
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-7xl mx-auto w-full">
                 <div
-                    className={`text-center mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                    className={`text-center mb-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                         }`}
                 >
+                    <div className="inline-flex items-center space-x-2 px-4 py-2 bg-linear-to-r from-orange-100 to-orange-50 rounded-full mb-4">
+                        <Sparkles className="h-4 w-4 text-orange-500" />
+                        <span className="text-sm font-poppins-semibold text-orange-600">Sistem Pencarian Data</span>
+                    </div>
                     <h1
-                        className="text-3xl md:text-4xl lg:text-5xl font-poppins-bold mb-4"
-                        style={{ color: '#f60' }}
+                        className="text-3xl md:text-4xl lg:text-5xl font-poppins-bold mb-4 bg-linear-to-r from-orange-600 via-orange-500 to-orange-600 bg-clip-text text-transparent"
                     >
                         Realisasi Pekerjaan Konstruksi
                     </h1>
-                    <p className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto font-poppins-medium">
-                        Cari dan lihat detail realisasi pekerjaan konstruksi berdasarkan tahun anggaran, satuan kerja, dan paket pekerjaan
+                    <p className="text-gray-600 text-base md:text-lg max-w-3xl mx-auto font-poppins-regular leading-relaxed">
+                        Cari dan lihat detail realisasi pekerjaan konstruksi berdasarkan tahun anggaran, satuan kerja, dan paket pekerjaan dengan mudah dan cepat
                     </p>
                 </div>
 
                 <div
                     ref={dropdownRef}
-                    className={`bg-white rounded-2xl shadow-2xl p-6 md:p-8 lg:p-10 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                    className={`bg-white rounded-3xl shadow-2xl p-6 md:p-8 lg:p-10 transition-all duration-1000 delay-200 border border-orange-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                         }`}
+                    style={{
+                        background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 100%)'
+                    }}
                 >
+                    <div className="mb-6">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <div className="w-1 h-8 bg-linear-to-b from-orange-500 to-orange-600 rounded-full"></div>
+                            <h2 className="text-2xl font-poppins-bold text-gray-800">Filter Pencarian</h2>
+                        </div>
+                        <div className="h-px bg-linear-to-r from-orange-200 via-orange-300 to-orange-200"></div>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         {renderDropdown(
                             'tahun',
                             'Tahun Anggaran',
-                            <Calendar className="h-5 w-5 text-gray-400" />,
+                            <Calendar className="h-5 w-5 text-orange-500" />,
                             tahunAnggaran,
                             setTahunAnggaran,
                             searchTahun,
@@ -211,7 +247,7 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
                         {renderDropdown(
                             'satuan',
                             'Satuan Kerja',
-                            <Building2 className="h-5 w-5 text-gray-400" />,
+                            <Building2 className="h-5 w-5 text-orange-500" />,
                             satuanKerja,
                             setSatuanKerja,
                             searchSatuan,
@@ -222,7 +258,7 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
                         {renderDropdown(
                             'paket',
                             'Paket',
-                            <Package className="h-5 w-5 text-gray-400" />,
+                            <Package className="h-5 w-5 text-orange-500" />,
                             paket,
                             setPaket,
                             searchPaket,
@@ -231,17 +267,51 @@ export default function SearchData({ setSelectedRealization }: searchDataProps) 
                         )}
                     </div>
 
-                    <div className="flex justify-center">
+                    <div className="flex justify-center pt-3">
                         <button
                             onClick={handleSearch}
-                            className="flex cursor-pointer items-center space-x-2 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105"
-                            style={{ backgroundColor: '#f60' }}
-                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ff7a1a'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f60'}
+                            disabled={isSearching}
+                            className={`group relative flex items-center space-x-3 text-white font-poppins-semibold px-10 py-3.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none overflow-hidden ${
+                                isSearching ? '' : 'hover:scale-105'
+                            }`}
+                            style={{ 
+                                background: isSearching 
+                                    ? 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)'
+                                    : 'linear-gradient(135deg, #ff6600 0%, #ff8533 100%)'
+                            }}
                         >
-                            <Search className="h-5 w-5" />
-                            <span className='font-poppins-regular'>Cari Data</span>
+                            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transform -skew-x-12 group-hover:translate-x-full transition-transform duration-700"></div>
+                            
+                            {isSearching ? (
+                                <>
+                                    <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    <span className="relative z-10">Mencari...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Search className="h-5 w-5 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+                                    <span className="relative z-10">Cari Data Realisasi</span>
+                                </>
+                            )}
                         </button>
+                    </div>
+
+                    <div className="mt-6 pt-6 border-t border-orange-100">
+                        <div className="flex items-center justify-center space-x-6 text-sm text-gray-500 font-poppins-regular">
+                            <div className="flex items-center space-x-2">
+                                <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                                <span>Data Tersedia</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <div className="w-2 h-2 rounded-full bg-orange-400"></div>
+                                <span>Sedang Diproses</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <div className="w-2 h-2 rounded-full bg-gray-400"></div>
+                                <span>Tidak Tersedia</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
