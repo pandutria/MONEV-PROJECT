@@ -187,7 +187,6 @@ export default function useDataEntryHooks() {
                     // presentase: Number(item.budget_value) > 0 ? (((Number(item.budget_value) - Number(item.contract_initial)) / Number(item.budget_value)) * 100).toFixed(2) + "%" : "0%"
                 }));
 
-                console.log(mappingData)
                 setDataEntryPengadaan(SortDescById(mappingData));
             } catch (error) {
                 console.error(error);
