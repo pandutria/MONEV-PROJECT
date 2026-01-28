@@ -200,7 +200,6 @@ export default function useDataEntryHooks() {
                 if (!selectedId) return;
                 const response = await API.get(`/dataentry/${selectedId}`);
                 setDataEntryPengadaanById(response.data.data)
-                console.log(response.data.data)
 
                 setSelectedPPK(response.data.data.selected_ppk_id);
             } catch (error) {
