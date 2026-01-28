@@ -43,7 +43,7 @@ export default function PokjaLaporanPenjabatPengadaanUpdateView() {
 
         const filteringUserPPK = () => {
             const filteringData = listUser?.filter((item: UserProps) => {
-                const filter = item.role_id === 2;
+                const filter = item.role_id === 2 || item.role_id === 3;
                 return filter;
             });
 
@@ -183,7 +183,7 @@ export default function PokjaLaporanPenjabatPengadaanUpdateView() {
                                     <FormInput disabled={isDisabled} title="Catatan" type='textarea' name="note" value={note != "" ? note as any : dataEntryPengadaanById?.catatan} onChange={handleChangeEntryPenjabatPengadaan} placeholder="Catatan" />
 
                                     {!isEPurchasing && (
-                                        <FormSelect disabled={isDisabled} title="Ditujukan ke PPK" name="ppk" value={selectedPPK ? selectedPPK : dataEntryPengadaanById?.selected_ppk_id?.toString()} onChange={handleChangeEntryPenjabatPengadaan}>
+                                        <FormSelect disabled={isDisabled} title="Ditujukan ke" name="ppk" value={selectedPPK ? selectedPPK : dataEntryPengadaanById?.selected_ppk_id?.toString()} onChange={handleChangeEntryPenjabatPengadaan}>
                                             {userPPK.map((item, index) => (
                                                 <option key={index} value={item.id}>PPK - {item.fullname}</option>
                                             ))}

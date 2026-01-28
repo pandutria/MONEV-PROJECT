@@ -45,7 +45,7 @@ export default function PokjaLaporanKelompokUpdateView() {
 
         const filteringUserPPK = () => {
             const filteringData = listUser?.filter((item: UserProps) => {
-                const filter = item.role_id === 2;
+                const filter = item.role_id === 2 || item.role_id === 3;
                 return filter;
             });
 

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { SortDescById } from "../utils/SortDescById";
 import { FormatDate } from "../utils/FormatDate";
 import FormatRupiah from "../utils/FormatRupiah";
+import { useAuth } from "../context/AuthContext";
 
 export default function useDataEntryHooks() {
     const [dataEntryPengadaan, setDataEntryPengadaan] = useState<DataEntryProps[]>([]);
@@ -22,6 +23,7 @@ export default function useDataEntryHooks() {
     const [tahunOptions, setTahunOptions] = useState<any[]>([]);
     const [userOptions, setUserOptions] = useState<any[]>([]);
     const [groupOptions, setGroupOptions] = useState<any[]>([]);
+    const { user } = useAuth();
 
     const buildSumberDanaOptions = (data: any[]) => {
         const uniqueMap = new Map<string, string>();
@@ -198,6 +200,7 @@ export default function useDataEntryHooks() {
                 if (!selectedId) return;
                 const response = await API.get(`/dataentry/${selectedId}`);
                 setDataEntryPengadaanById(response.data.data)
+                console.log(response.data.data)
 
                 setSelectedPPK(response.data.data.selected_ppk_id);
             } catch (error) {
@@ -376,6 +379,8 @@ export default function useDataEntryHooks() {
             }
             if (selectedPPK) {
                 formData.append("selected_ppk_id", selectedPPK);
+            } else {
+                formData.append("selected_ppk_id", user?.id as any);
             }
 
             SwalLoading();
