@@ -86,7 +86,7 @@ export default function PokjaHasilKelompokKerja() {
             label: 'NPWP'
         },
         {
-            key: 'pemenang',
+            key: 'alamat_pemenang',
             label: 'Alamat Pemenang'
         },
         {

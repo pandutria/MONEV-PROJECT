@@ -57,6 +57,18 @@ export default function useUserHooks() {
                 return;
             }
 
+            if (Number(roleId) == 3) {
+                if (!pokjaGroupId) {
+                    SwalMessage({
+                        title: "Gagal!",
+                        text: "Kelompok Kerja wajib diisi!",
+                        type: "error"
+                    });
+                }
+
+                return;
+            }
+
             const formData = new FormData();
             formData.append("email", email);
             formData.append("password", password);

@@ -4,10 +4,12 @@ import { Printer, FileDown, FileSpreadsheet } from 'lucide-react';
 interface TableHeaderReportProps {
     title: string;
     tahunOptions?: any[];
+    kelompokOptions?: any[];
     metodePengadaanOptions?: any[];
     sumberDanaOptions?: any[];
     namaPenggunaOptions?: any[];
     selectedTahun?: string;
+    selectedKelompok?: string;
     selectedMetodePengadaan?: string;
     selectedSumberDana?: string;
     selectedNamaPengguna?: string;
@@ -15,21 +17,25 @@ interface TableHeaderReportProps {
     onMetodePengadaanChange?: (value: string) => void;
     onSumberDanaChange?: (value: string) => void;
     onNamaPenggunaChange?: (value: string) => void;
+    onKelompokChange?: (value: string) => void;
     onBuatReport?: () => void;
     onPrint?: () => void;
     onSavePDF?: () => void;
     onSaveExcel?: () => void;
     className?: string;
     isKepala?: boolean;
+    isKelompok?: boolean;
 }
 
 export default function TableHeaderReport({
     title,
     tahunOptions = [],
+    kelompokOptions = [],
     metodePengadaanOptions = [],
     sumberDanaOptions = [],
     namaPenggunaOptions = [],
     selectedTahun = '',
+    selectedKelompok = '',
     selectedMetodePengadaan = '',
     selectedSumberDana = '',
     selectedNamaPengguna = '',
@@ -37,11 +43,13 @@ export default function TableHeaderReport({
     onMetodePengadaanChange,
     onSumberDanaChange,
     onNamaPenggunaChange,
+    onKelompokChange,
     onPrint,
     onSavePDF,
     onSaveExcel,
     className,
-    isKepala = false
+    isKepala = false,
+    isKelompok = false
 }: TableHeaderReportProps) {
     return (
         <div className={`w-full bg-white rounded-lg p-6 mb-6 ${className}`}>
@@ -65,7 +73,7 @@ export default function TableHeaderReport({
                             ))}
                         </select>
 
-                        {isKepala && (
+                        {(isKepala && !isKelompok) && (
                             <select
                                 value={selectedNamaPengguna}
                                 onChange={(e) => onNamaPenggunaChange?.(e.target.value)}
@@ -74,7 +82,22 @@ export default function TableHeaderReport({
                                 <option value="">Pilih Nama Pengguna</option>
                                 {namaPenggunaOptions.map((item, index) => (
                                     <option key={index} value={item.id || item}>
-                                        {item.text || item.name || item}
+                                        {item.id} - {item.text || item.fullname || item}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+
+                        {(isKepala && isKelompok) && (
+                            <select
+                                value={selectedKelompok}
+                                onChange={(e) => onKelompokChange?.(e.target.value)}
+                                className="text-[12px] px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 cursor-pointer bg-white text-gray-700 font-poppins-regular"
+                            >
+                                <option value="">Pilih Kelompok</option>
+                                {kelompokOptions.map((item, index) => (
+                                    <option key={index} value={item.id || item}>
+                                        {item.text || item.fullname || item}
                                     </option>
                                 ))}
                             </select>

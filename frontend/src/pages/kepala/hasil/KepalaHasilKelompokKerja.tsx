@@ -12,10 +12,11 @@ import { Navigate } from "react-router-dom";
 
 export default function KepalaHasilKelompokKerja() {
     const [tahun, setTahun] = useState('');
+    const [KelompokKerja, setKelompokKerja] = useState("");
     const [metodePengadaan, setMetodePengadaan] = useState('');
     const [sumberDana, setSumberDana] = useState('');
     const tableRef = useRef<HTMLDivElement>(null);
-    const { dataEntryPengadaan, tahunOptions, metodePengadaanOptions, sumberDanaOptions } = useDataEntryHooks();
+    const { dataEntryPengadaan, tahunOptions, metodePengadaanOptions, sumberDanaOptions, groupOptions } = useDataEntryHooks();
     const [dataEntryFilter, setDataEntryFilter] = useState<DataEntryProps[]>([]);
     const { user, loading } = useAuth();
     const [metodeOptionsFilter, setMetodeOptionsFilter] = useState<any>([]);
@@ -86,7 +87,7 @@ export default function KepalaHasilKelompokKerja() {
             label: 'NPWP'
         },
         {
-            key: 'pemenang',
+            key: 'alamat_pemenang',
             label: 'Alamat Pemenang'
         },
         {
@@ -119,7 +120,11 @@ export default function KepalaHasilKelompokKerja() {
                     ? item?.sumber_dana === sumberDana
                     : true;
 
-                return filterType && tahunFilter && metodeFilter && sumberDanaFilter;;
+                const kelompokFilter = KelompokKerja
+                    ? Number(item?.user?.pokja_group_id) === Number(KelompokKerja)
+                    : true;
+
+                return filterType && tahunFilter && metodeFilter && sumberDanaFilter && kelompokFilter;
             });
 
             const metodeFilter = metodePengadaanOptions?.filter((item) => {
@@ -131,7 +136,7 @@ export default function KepalaHasilKelompokKerja() {
         }
 
         filteringDataEntry();
-    }, [dataEntryPengadaan, tahun, metodePengadaan, sumberDana, metodePengadaanOptions]);
+    }, [dataEntryPengadaan, tahun, metodePengadaan, sumberDana, metodePengadaanOptions, KelompokKerja]);
 
     const generateTableHTML = () => {
         const thead = `
@@ -289,16 +294,21 @@ export default function KepalaHasilKelompokKerja() {
                     title="DAFTAR PAKET PROSES PEMILIHAN PENYEDIA BARANG/JASA KELOMPOK KERJA"
                     tahunOptions={tahunOptions}
                     metodePengadaanOptions={metodeOptionsFilter}
+                    kelompokOptions={groupOptions}
                     sumberDanaOptions={sumberDanaOptions}
                     selectedTahun={tahun}
+                    selectedKelompok={KelompokKerja}
                     selectedMetodePengadaan={metodePengadaan}
                     selectedSumberDana={sumberDana}
-                    onTahunChange={setTahun}
-                    onMetodePengadaanChange={setMetodePengadaan}
-                    onSumberDanaChange={setSumberDana}
+                    onTahunChange={(item) => setTahun(item)}
+                    onKelompokChange={(item) => setKelompokKerja(item)}
+                    onMetodePengadaanChange={(item) => setMetodePengadaan(item)}
+                    onSumberDanaChange={(item) => setSumberDana(item)}
                     onPrint={() => handlePrint()}
                     onSavePDF={() => handleSavePDF()}
                     onSaveExcel={() => handleSaveExcel()}
+                    isKelompok={true}
+                    isKepala={true}
                 />
                 <div className="p-6" ref={tableRef}>
                     <TableContent

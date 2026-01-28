@@ -12,10 +12,11 @@ import { Navigate } from "react-router-dom";
 
 export default function PokjaHasilPenjabatPengadaan() {
     const [tahun, setTahun] = useState('');
+    const [userPPK, setUserPPK] = useState('');
     const [metodePengadaan, setMetodePengadaan] = useState('');
     const [sumberDana, setSumberDana] = useState('');
     const tableRef = useRef<HTMLDivElement>(null);
-    const { dataEntryPengadaan, sumberDanaOptions, metodePengadaanOptions, tahunOptions } = useDataEntryHooks();
+    const { dataEntryPengadaan, sumberDanaOptions, metodePengadaanOptions, tahunOptions, userOptions } = useDataEntryHooks();
     const [dataEntryFilter, setDataEntryFilter] = useState<DataEntryProps[]>([]);
     const { user, loading } = useAuth();
     const [metodeOptionsFilter, setMetodeOptionsFilter] = useState<any>([]);
@@ -87,7 +88,11 @@ export default function PokjaHasilPenjabatPengadaan() {
                     ? item?.sumber_dana === sumberDana
                     : true;
 
-                return filterType && tahunFilter && metodeFilter && sumberDanaFilter;;
+                const namaPenggunaFilter = userPPK
+                    ? Number(item?.selected_ppk?.id) === Number(userPPK)
+                    : true;
+
+                return filterType && tahunFilter && metodeFilter && sumberDanaFilter && namaPenggunaFilter;
             });
 
             const metodeFilter = metodePengadaanOptions?.filter((item) => {
@@ -99,7 +104,7 @@ export default function PokjaHasilPenjabatPengadaan() {
         }
 
         filteringDataEntry();
-    }, [dataEntryPengadaan, tahun, metodePengadaan, sumberDana, metodePengadaanOptions]);
+    }, [dataEntryPengadaan, tahun, metodePengadaan, sumberDana, metodePengadaanOptions, userPPK]);
 
     const generateTableHTML = () => {
         const thead = `
@@ -267,6 +272,10 @@ export default function PokjaHasilPenjabatPengadaan() {
                     onPrint={() => handlePrint()}
                     onSavePDF={() => handleSavePDF()}
                     onSaveExcel={() => handleSaveExcel()}
+                    isKepala={true}
+                    namaPenggunaOptions={userOptions}
+                    selectedNamaPengguna={userPPK}
+                    onNamaPenggunaChange={(item) => setUserPPK(item)}
                 />
                 <div className="p-6" ref={tableRef}>
                     <TableContent

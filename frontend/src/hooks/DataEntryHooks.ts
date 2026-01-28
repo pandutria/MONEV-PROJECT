@@ -20,6 +20,8 @@ export default function useDataEntryHooks() {
     const [sumberDanaOptions, setSumberDanaOptions] = useState<any[]>([]);
     const [metodePengadaanOptions, setMetodePengadaanOptions] = useState<any[]>([]);
     const [tahunOptions, setTahunOptions] = useState<any[]>([]);
+    const [userOptions, setUserOptions] = useState<any[]>([]);
+    const [groupOptions, setGroupOptions] = useState<any[]>([]);
 
     const buildSumberDanaOptions = (data: any[]) => {
         const uniqueMap = new Map<string, string>();
@@ -93,6 +95,56 @@ export default function useDataEntryHooks() {
         }));
     };
 
+    const buildGroupOptions = (data: any[]) => {
+        const uniqueMap = new Map<string, string>();
+
+        data.forEach(item => {
+            if (typeof item.user.pokja_group === "string") {
+                uniqueMap.set(item.user.pokja_group, item.user.pokja_group);
+            }
+
+            if (
+                typeof item.user.pokja_group === "object" &&
+                item.user.pokja_group
+            ) {
+                uniqueMap.set(
+                    String(item.user.pokja_group.id),
+                    item.user.pokja_group.name,
+                );
+            }
+        });
+
+        return Array.from(uniqueMap.entries()).map(([key, value]) => ({
+            id: key,
+            text: value
+        }));
+    };
+
+    const buildUserOptions = (data: any[]) => {
+        const uniqueMap = new Map<string, string>();
+
+        data.forEach(item => {
+            if (typeof item.selected_ppk === "string") {
+                uniqueMap.set(item.selected_ppk, item.selected_ppk);
+            }
+
+            if (
+                typeof item.selected_ppk === "object" &&
+                item.selected_ppk
+            ) {
+                uniqueMap.set(
+                    String(item.selected_ppk.id),
+                    item.selected_ppk.fullname,
+                );
+            }
+        });
+
+        return Array.from(uniqueMap.entries()).map(([key, value]) => ({
+            id: key,
+            text: value
+        }));
+    };
+
     useEffect(() => {
         const fetchDataEntryPengadaan = async () => {
             try {
@@ -108,25 +160,34 @@ export default function useDataEntryHooks() {
                 const tahunOpts = buildtahunOptions(data);
                 setTahunOptions(tahunOpts);
 
+                const userOpts = buildUserOptions(data);
+                setUserOptions(userOpts);
+
+                const groupOpts = buildGroupOptions(data);
+                setGroupOptions(groupOpts)
+
                 const mappingData = data.map((item: DataEntryProps) => ({
                     ...item,
                     opd: item.user?.opd_organization ?? "Tidak Ada",
-                    nomor_kontrak: item.nomor_kontrak ?? "-",
-                    nama_pimpinan_perusahaan: item.nama_pimpinan_perusahaan ?? "-",
-                    nomor_telp: item.nomor_telp ?? "-",
+                    nomor_kontrak: item.nomor_kontrak ?? "Tidak Ada",
+                    nama_pimpinan_perusahaan: item.nama_pimpinan_perusahaan ?? "Tidak Ada",
+                    nomor_telp: item.nomor_telp ?? "Tidak Ada",
                     nilai_pagu: item.nilai_pagu ?? "Tidak Ada",
                     nilai_hps: item.nilai_hps ?? "Tidak Ada",
-                    nilai_penawaran: FormatRupiah(Number(item.nilai_penawaran)) ?? "-",
-                    nilai_negosiasi: FormatRupiah(Number(item.nilai_negosiasi)) ?? "-",
+                    npwp: item.npwp ?? "Tidak Ada",
+                    nilai_penawaran: FormatRupiah(Number(item.nilai_penawaran)) ?? "Tidak Ada",
+                    alamat_pemenang: item.alamat_pemenang ?? "Tidak Ada",
+                    nilai_negosiasi: FormatRupiah(Number(item.nilai_negosiasi)) ?? "Tidak Ada",
                     tanggal_masuk: FormatDate(item.updated_at),
-                    jumlah_pendaftar: "-",
-                    jumlah_pemasukan: "-",
-                    efisiensi: "-",
-                    presentase: "-",
+                    jumlah_pendaftar: "Tidak Ada",
+                    jumlah_pemasukan: "Tidak Ada",
+                    efisiensi: "Tidak Ada",
+                    presentase: "Tidak Ada",
                     // efisiensi: FormatRupiah(Number(item.budget_value) - Number(item.contract_initial)),
                     // presentase: Number(item.budget_value) > 0 ? (((Number(item.budget_value) - Number(item.contract_initial)) / Number(item.budget_value)) * 100).toFixed(2) + "%" : "0%"
                 }));
 
+                console.log(mappingData)
                 setDataEntryPengadaan(SortDescById(mappingData));
             } catch (error) {
                 console.error(error);
@@ -475,6 +536,8 @@ export default function useDataEntryHooks() {
         handleDataEntryPengadaanDelete,
         sumberDanaOptions,
         metodePengadaanOptions,
-        tahunOptions
+        tahunOptions,
+        userOptions,
+        groupOptions
     }
 }

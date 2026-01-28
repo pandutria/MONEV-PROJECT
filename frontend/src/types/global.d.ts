@@ -199,7 +199,8 @@ declare global {
 
     phone_number?: string
     opd_organization?: string
-    pokja_group_id: pokjaGroupProps
+    pokja_group_id?: number
+    pokja_group: pokjaGroupProps
 
     sk_number?: string
     pbj_number?: string
@@ -262,6 +263,7 @@ declare global {
     catatan: string | null;
 
     selected_ppk_id: number | null;
+    selected_ppk: UserProps | null;
     user?: UserProps | null;
 
     user_id: number;
