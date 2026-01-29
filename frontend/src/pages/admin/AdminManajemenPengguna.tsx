@@ -122,6 +122,7 @@ export default function AdminManajemenPengguna() {
                     showTambah={true}
                     onTambahClick={() => setShowModalAdd(true)}
                     type="pokja"
+                    showTahunQuery={false}
                     searchValue={search}
                     onSearchChange={(item) => setSearch(item)}
                 />

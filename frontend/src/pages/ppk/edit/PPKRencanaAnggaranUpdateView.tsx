@@ -80,7 +80,6 @@ export default function PPKRencanaAnggaranUpdateView() {
 
       if (selectedRevision) {
         setSelectedId(selectedRevision);
-        window.location.href = "#";
       } else {
         setSelectedId(id);
       }
@@ -131,7 +130,7 @@ export default function PPKRencanaAnggaranUpdateView() {
       {showTender && (
         <div className="fixed inset-0 h-screen flex justify-center items-center bg-black/20 z-20">
           <div className="bg-white p-4 rounded-lg flex flex-col max-w-[90vw] max-h-[70vh] gap-4 relative">
-            <div className="absolute top-4 right-4 cursor-pointer text-primary" onClick={() => setShowTender(false)}>
+            <div className="fixed top-4 right-4 cursor-pointer text-primary" onClick={() => setShowTender(false)}>
               <X />
             </div>
             <TableHeader

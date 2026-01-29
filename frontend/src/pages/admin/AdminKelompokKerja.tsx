@@ -81,6 +81,7 @@ export default function AdminKelompokKerja() {
                     showTambah={true}
                     showHapus={true}
                     type="pokja"
+                    showTahunQuery={false}
                     searchValue={search}
                     onSearchChange={(item) => setSearch(item)}
                     onTambahClick={() => setShowModalAdd(true)}

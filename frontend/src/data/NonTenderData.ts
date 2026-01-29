@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-// import MONEV_API from "../server/MonevAPI";
-import API from "../server/API";
+import MONEV_API from "../server/MonevAPI";
 
 export default function NonTenderData() {
   const [nonTenderData, setNonTenderData] = useState<NonTenderDataProps[]>([]);
@@ -9,8 +8,7 @@ export default function NonTenderData() {
   useEffect(() => {
     const fetchNonTenderData = async () => {
       try {
-        const response = await API.get(`/non-tender-selesai?tahun=${nonTenderTahun}`);
-        // const response = await MONEV_API.get(`/nontenderselesai?tahun=${nonTenderTahun}`);
+        const response = await MONEV_API.get(`/nontenderselesai?tahun=${nonTenderTahun}`);
         setNonTenderData(response.data.data);
       } catch (error) {
         console.error(error);

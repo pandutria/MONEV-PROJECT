@@ -213,7 +213,7 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
             <div className="pt-24 pb-12 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000">
                 <div className="max-w-7xl mx-auto">
-                    <BackButton />
+                    <BackButton type='custom' link='/pokja/data-entry-penjabat-pengadaan' />
 
                     {showTender && (
                         <div className="absolute inset-0 h-screen flex justify-center items-center bg-black/20 z-20">
@@ -341,11 +341,17 @@ export default function PokjaLaporanPenjabatPengadaanAdd() {
 
                                     {metodePengadaan === "Pengadaan Langsung" ? (
                                         <div className="md:col-span-2">
-                                            <ShowTableForm tenderCode={selectedTender ? selectedTender?.kd_nontender?.toString() : "Kode Paket / No Tender"} onClick={() => handleShowTender()} />
+                                            <ShowTableForm tenderCode={selectedTender ? selectedTender?.kd_nontender?.toString() : "Kode Paket / No Tender"} onClick={() => {
+                                                setSelectedTender(null)
+                                                handleShowTender()
+                                            }} />
                                         </div>
                                     ) : (
                                         <div className="md:col-span-2">
-                                            <ShowTableForm tenderCode={selectedTender ? selectedTender?.kd_paket?.toString() : "Kode Paket / No Tender"} onClick={() => handleShowTender()} />
+                                            <ShowTableForm tenderCode={selectedTender ? selectedTender?.kd_paket?.toString() : "Kode Paket / No Tender"} onClick={() => {
+                                                setSelectedTender(null)
+                                                handleShowTender()
+                                            }} />
                                         </div>
                                     )}
 

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-// import MONEV_API from "../server/MonevAPI";
-import API from "../server/API";
+import MONEV_API from "../server/MonevAPI";
 
 export default function TenderData() {
   const [tenderData, setTenderData] = useState<TenderDataProps[]>([]);
@@ -10,10 +9,8 @@ export default function TenderData() {
   useEffect(() => {
     const fetchTenderData = async () => {
       try {
-        const responseTenderSelesai = await API.get(`/tender-selesai?tahun=${tenderTahun}`);
-        const responseTender = await API.get(`/tenders?tahun=${tenderTahun}`);
-        // const responseTenderSelesai = await MONEV_API.get(`/tenderselesai?tahun=${tenderTahun}`);
-        // const responseTender = await MONEV_API.get(`/tender?tahun=${tenderTahun}`);
+        const responseTenderSelesai = await MONEV_API.get(`/tenderselesai?tahun=${tenderTahun}`);
+        const responseTender = await MONEV_API.get(`/tender?tahun=${tenderTahun}`);
 
         const tenderSelesaiResData = responseTenderSelesai.data.data;
         const tenderResData = responseTender.data.data;

@@ -152,7 +152,7 @@ export default function PokjaLaporanKelompokAdd() {
 
             <div className="pt-24 pb-12 px-4 md:px-8" data-aos="fade-up" data-aos-duration="1000">
                 <div className="max-w-7xl mx-auto">
-                    <BackButton />
+                    <BackButton type='custom' link='/pokja/data-entry-kelompok-kerja' />
 
                     {showTender && (
                         <div className="absolute inset-0 h-screen flex justify-center items-center bg-black/20 z-20">
